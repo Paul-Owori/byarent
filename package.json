@@ -1,0 +1,27 @@
+{
+  "name": "byarent",
+  "version": "1.0.0",
+  "description": "BYARENT is a home buying platform that allows potential homeowners to view  and purchase houses. It is built on the MERN stack",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "cover": "istanbul cover _mocha",
+    "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paul-Owori/byarent.git"
+  },
+  "author": "Paul Owori",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Paul-Owori/byarent/issues"
+  },
+  "homepage": "https://github.com/Paul-Owori/byarent#readme",
+  "devDependencies": {
+    "coveralls": "^3.0.3",
+    "istanbul": "^0.4.5",
+    "mocha": "^6.1.4",
+    "mocha-lcov-reporter": "^1.3.0"
+  }
+}
