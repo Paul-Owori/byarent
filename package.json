@@ -4,6 +4,7 @@
   "description": "BYARENT is a home buying platform that allows potential homeowners to view  and purchase houses. It is built on the MERN stack",
   "main": "index.js",
   "scripts": {
+    "build": "echo 'build script executed'",
     "test": "mocha",
     "cover": "istanbul cover _mocha",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls"
