@@ -148,7 +148,6 @@ router.delete("/:itemID", (req, res, next) => {
     .exec()
     .then(doc => {
       if (doc) {
-        //console.log("This is what you want to delete", doc);
         //First we extract the array of image paths
         const imagePath = [...doc.item_image];
         //console.log(imagePath);
@@ -161,12 +160,10 @@ router.delete("/:itemID", (req, res, next) => {
         Item.deleteOne({ _id: id })
           .exec()
           .then(result => {
-            res
-              .status(200)
-              .json({
-                message: "Item and all related data has been deleted",
-                Result: result
-              });
+            res.status(200).json({
+              message: "Item and all related data has been deleted",
+              Result: result
+            });
           })
           .catch(err => {
             res.status(500).json({
@@ -179,19 +176,6 @@ router.delete("/:itemID", (req, res, next) => {
         });
       }
     });
-
-  /*Item.deleteOne({ _id: id })
-    .exec()
-    .then(result => {
-      res
-        .status(200)
-        .json({ message: "Item has been deleted", Result: result });
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err
-      });
-    });*/
 });
 
 module.exports = router;

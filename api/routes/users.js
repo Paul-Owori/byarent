@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
-const Order = require("../models/Order");
+const User = require("../models/User");
+const crypto = require("crypto");
 
 router.get("/", (req, res, next) => {
-  Order.find()
+  User.find()
     .exec()
     .then(docs => {
       console.log(docs);
@@ -24,23 +25,22 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/", (req, res, next) => {
-  //This creates a new order object in the database using the order model
-  const order = new Order({
-    _id: new mongoose.Types.ObjectId(),
-    item_name: req.body.name,
-    item_price: req.body.price,
-    item_id: req.body.id,
-    user_id: req.body.user
-  });
-  //This saves the order in the database
-  order
+//To signup a new user
+router.post("/signup", (req, res, next) => {
+  let user = new User();
+  user.user_firstName = req.body.firstName;
+  user.user_lastName = req.body.lastName;
+  user.user_email = req.body.email;
+  user.setPassword(req.body.password);
+
+  //This saves the user in the database
+  user
     .save()
     .then(result => {
       console.log(result);
       res.status(201).json({
-        message: "Handling POST requests to /orders",
-        createdorder: result
+        message: "Handling POST requests to /users",
+        createduser: result
       });
     })
     .catch(err => {
@@ -51,9 +51,32 @@ router.post("/", (req, res, next) => {
     });
 });
 
-router.get("/:orderID", (req, res, next) => {
-  const id = req.params.orderID;
-  Order.findById(id)
+//To login a user
+router.post("/signin", (req, res) => {
+  // find user with requested email
+  //receives two parameters, user email and password
+  User.findOne({ user_email: req.body.email }, function(err, user) {
+    if (user === null) {
+      return res.status(400).send({
+        message: "User not found."
+      });
+    } else {
+      if (user.validPassword(req.body.password)) {
+        return res.status(201).send({
+          message: "User Logged In"
+        });
+      } else {
+        return res.status(400).send({
+          message: "Wrong Password"
+        });
+      }
+    }
+  });
+});
+
+router.get("/:userID", (req, res, next) => {
+  const id = req.params.userID;
+  User.findById(id)
     .exec()
     .then(doc => {
       console.log("From database", doc);
@@ -71,8 +94,8 @@ router.get("/:orderID", (req, res, next) => {
     });
 });
 
-router.patch("/:orderID", (req, res, next) => {
-  const id = req.params.orderID;
+router.patch("/:userID", (req, res, next) => {
+  const id = req.params.userID;
 
   /*A function that allows us to update only one value at a time 
     where necessary instead of forcing us to update all or nothing*/
@@ -82,7 +105,7 @@ router.patch("/:orderID", (req, res, next) => {
     updateOps[ops.propName] = ops.value;
   }
 
-  Order.update({ _id: id }, { $set: updateOps })
+  User.update({ _id: id }, { $set: updateOps })
     .exec()
     .then(result => {
       console.log(result);
@@ -94,9 +117,9 @@ router.patch("/:orderID", (req, res, next) => {
     });
 });
 
-router.delete("/:orderID", (req, res, next) => {
-  const id = req.params.orderID;
-  Order.remove({ _id: id })
+router.delete("/:userID", (req, res, next) => {
+  const id = req.params.userID;
+  User.remove({ _id: id })
     .exec()
     .then(result => {
       res.status(200).json(result);

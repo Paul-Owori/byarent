@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const orderRoutes = require("./api/routes/orders");
 const itemRoutes = require("./api/routes/items");
+const userRoutes = require("./api/routes/users");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(bodyParser.json());
 //Routes
 app.use("/orders", orderRoutes);
 app.use("/items", itemRoutes);
+app.use("/users", userRoutes);
 
 //static files(images)
 app.use("/uploads", express.static("uploads"));
