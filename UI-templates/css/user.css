@@ -15,25 +15,23 @@ body {
   background-size: cover;
 }
 
-.jumbotron {
-  background: none;
-}
-
-.jumbotron h1 {
-  color: white;
-}
-
-.jumbotron p {
+#icon {
   color: white;
 }
 
 .colorME {
   color: white;
 }
-#icon {
-  color: white;
+
+.User {
+  border-radius: 10px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
 }
 
-.test {
-  background-size: cover;
+.form-control {
+  background: transparent;
+  color: white;
+  border: 0px;
+  border-radius: 0px;
+  border-bottom: 2px solid gray;
 }
