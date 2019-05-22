@@ -55,4 +55,8 @@ $(document).ready(function() {
   $("#gitPage").click(function() {
     window.open("https://github.com/Paul-Owori/byarent/tree/master", "_self");
   });
+
+  $("#backHome").click(function() {
+    window.open("https://paul-owori.github.io/byarent/", "_self");
+  });
 });
