@@ -1,0 +1,77 @@
+html,
+body,
+header,
+#intro {
+  height: 100%;
+}
+
+body {
+  padding-top: 100px; /* Stops content from being hidden by navbar */
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url(../img/COVERPAGE4.jpeg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+#icon {
+  color: white;
+}
+
+.colorME {
+  color: white;
+}
+
+.User {
+  border-radius: 10px;
+}
+
+.form-control {
+  background: transparent;
+  color: white;
+  border: 0px;
+  border-radius: 0px;
+  border-bottom: 2px solid gray;
+}
+
+/*
+CSS for Admin View All
+*/
+
+.dispImgBody {
+  height: 200px;
+  width: 100%;
+  border-radius: 5px;
+  background: whitesmoke;
+  margin-top: 0.8rem;
+  display: inline-block; /* change the default display type to inline-block */
+  overflow: hidden;
+  position: relative;
+}
+
+.dispImg {
+  max-height: 200px;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.dispImg:hover {
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  transform: scale(1.5);
+  -ms-transform: scale(1.5); /* IE 9 */
+  -moz-transform: scale(1.5); /* Firefox */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  position: relative;
+}
+
+.dispText {
+  max-height: 120px;
+  max-width: 100%;
+  cursor: pointer;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  overflow: scroll;
+}
