@@ -8,7 +8,7 @@ header,
 body {
   padding-top: 100px; /* Stops content from being hidden by navbar */
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-    url(../img/COVERPAGE6.jpg);
+    url(../img/COVERPAGE5.jpeg);
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -25,7 +25,6 @@ body {
 
 .User {
   border-radius: 10px;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
 }
 
 .form-control {
