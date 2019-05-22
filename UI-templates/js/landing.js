@@ -59,4 +59,39 @@ $(document).ready(function() {
   $("#backHome").click(function() {
     window.open("https://paul-owori.github.io/byarent/", "_self");
   });
+
+  $(".seeMore").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_View_One.html",
+      "_self"
+    );
+  });
+
+  $("#backToViewAll").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_View_All.html",
+      "_self"
+    );
+  });
+
+  $(".goToAll").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_View_All.html",
+      "_self"
+    );
+  });
+
+  $(".editor").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/Admin_View_One.html",
+      "_self"
+    );
+  });
+
+  $(".toAdminAll").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/Admin_View_All.html",
+      "_self"
+    );
+  });
 });
