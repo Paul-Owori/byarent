@@ -98,21 +98,21 @@ $(document).ready(function() {
     );
   });
 
-  $("#tempB").click(function() {
+  $("#tempB3").click(function() {
     window.open(
       "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
       "_self"
     );
   });
 
-  $("#tempB2").click(function() {
+  $("#tempB").click(function() {
     window.open(
       "https://paul-owori.github.io/byarent/UI-templates/User_View_All.html",
       "_self"
     );
   });
 
-  $("#temp3").click(function() {
+  $("#temp2").click(function() {
     window.open(
       "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
       "_self"
