@@ -94,4 +94,18 @@ $(document).ready(function() {
       "_self"
     );
   });
+
+  $("#adminSignUp").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
+      "_self"
+    );
+  });
+
+  $("#adminSignIn").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
+      "_self"
+    );
+  });
 });
