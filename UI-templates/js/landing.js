@@ -112,7 +112,7 @@ $(document).ready(function() {
     );
   });
 
-  $("#temp2").click(function() {
+  $("#tempB2").click(function() {
     window.open(
       "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
       "_self"
