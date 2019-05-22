@@ -45,13 +45,6 @@ $(document).ready(function() {
     window.open("https://paul-owori.github.io/byarent/", "_self");
   });
 
-  $("#adminSignUp").click(function() {
-    window.open(
-      "https://paul-owori.github.io/byarent/UI-templates/Admin_Sign_Up.html",
-      "_self"
-    );
-  });
-
   $("#gitPage").click(function() {
     window.open("https://github.com/Paul-Owori/byarent/tree/master", "_self");
   });
