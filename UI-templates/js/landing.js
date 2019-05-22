@@ -1,25 +1,58 @@
 $(document).ready(function() {
   $("#viewUnits").click(function() {
-    window.open("UI-templates/User_View_All.html", "_self");
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_View_All.html",
+      "_self"
+    );
   });
 
   $("#userSignUp").click(function() {
-    window.open("UI-templates/User_SIgnUp_In.html", "_self");
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_SIgnUp_In.html",
+      "_self"
+    );
   });
 
   $("#houses").click(function() {
-    window.open("UI-templates/User_View_All.html", "_self");
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_View_All.html",
+      "_self"
+    );
   });
 
   $("#userLogin").click(function() {
-    window.open("UI-templates/User_SIgnUp_In.html", "_self");
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_SIgnUp_In.html",
+      "_self"
+    );
   });
 
   $("#about").click(function() {
-    window.open("UI-templates/About.html", "_self");
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/About.html",
+      "_self"
+    );
   });
 
   $("#admin").click(function() {
-    window.open("UI-templates/Admin_Sign_In.html", "_self");
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/Admin_Sign_In.html",
+      "_self"
+    );
+  });
+
+  $("#userLogout").click(function() {
+    window.open("https://paul-owori.github.io/byarent/", "_self");
+  });
+
+  $("#adminSignUp").click(function() {
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/Admin_Sign_Up.html",
+      "_self"
+    );
+  });
+
+  $("#gitPage").click(function() {
+    window.open("https://github.com/Paul-Owori/byarent/tree/master", "_self");
   });
 });
