@@ -90,6 +90,7 @@ $(document).ready(function() {
   });
 
   $(".toAdminAll").click(function() {
+    event.preventDefault();
     window.open(
       "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
       "_self"
@@ -104,10 +105,17 @@ $(document).ready(function() {
     );
   });
 
-  $("#adminSignIn").click(function() {
-    event.preventDefault();
+  $(".tempBAdmin").click(function() {
     window.open(
       "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
+      "_self"
+    );
+  });
+
+  $(".tempB").click(function() {
+    event.preventDefault();
+    window.open(
+      "https://paul-owori.github.io/byarent/UI-templates/User_View_All.html",
       "_self"
     );
   });
