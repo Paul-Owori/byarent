@@ -1,9 +1,9 @@
 $(document).ready(function() {
-  $("#serve").click(function() {
+  $("#viewUnits").click(function() {
     window.open("UI-templates/User_View_All.html", "_self");
   });
 
-  $("#order").click(function() {
-    window.open("userSide/user.html", "_self");
+  $("#userSignUp").click(function() {
+    window.open("UI-templates/User_SIgnUp_In.html", "_self");
   });
 });
