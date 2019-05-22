@@ -14,30 +14,18 @@ $(document).ready(function() {
   });
 
   $("#houses").click(function() {
-    window.open(
-      "paul-owori.github.io/byarent/UI-templates/User_View_All.html",
-      "_self"
-    );
+    window.open("UI-templates/User_View_All.html", "_self");
   });
 
   $("#userLogin").click(function() {
-    window.open(
-      "paul-owori.github.io/byarent/UI-templates/User_SIgnUp_In.html",
-      "_self"
-    );
+    window.open("UI-templates/User_SIgnUp_In.html", "_self");
   });
 
   $("#about").click(function() {
-    window.open(
-      "paul-owori.github.io/byarent/UI-templates/About.html",
-      "_self"
-    );
+    window.open("UI-templates/About.html", "_self");
   });
 
   $("#admin").click(function() {
-    window.open(
-      "paul-owori.github.io/byarent/UI-templates/Admin_Sign_In.html",
-      "_self"
-    );
+    window.open("UI-templates/Admin_Sign_In.html", "_self");
   });
 });
