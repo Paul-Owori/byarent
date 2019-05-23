@@ -91,9 +91,8 @@ $(document).ready(function() {
   });
 
   $("#adminSignUp").click(function() {
-    event.preventDefault();
     window.open(
-      "https://paul-owori.github.io/byarent/UI-templates/Admin_view_all.html",
+      "https://paul-owori.github.io/byarent/UI-templates/Admin_Sign_Up.html",
       "_self"
     );
   });
