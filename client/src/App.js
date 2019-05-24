@@ -2,7 +2,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import AppNavbar from "./Components/AppNavbar";
-import UserSignUp from "./Components/Parts/UserSignUp";
+import UserSignUp from "./Components/UserSignUp";
 
 function App() {
   return (
