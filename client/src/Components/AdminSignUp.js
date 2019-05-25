@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./css/user.css";
 import {
   Container,
   Row,
@@ -8,64 +9,32 @@ import {
   FormGroup,
   Input
 } from "reactstrap";
-import "./css/user.css";
 
-class UserSignUp extends Component {
+class AdminSignUp extends Component {
   state = {};
   render() {
     return (
       <React.Fragment>
         <p>
-          <h1 class="font-weight-light colorME text-center my-5">Welcome!</h1>
+          <h1 class="font-weight-light colorME text-center my-3">
+            Administrator Signup
+          </h1>
         </p>
-        <Container className="text-center">
+        <p class="text-center my-3 ">
+          <small class="colorME font-weight-bold">
+            *This is a restricted page*
+          </small>
+        </p>
+        <Container>
           <Row className="justify-content-center ">
             <Col md="4" className="px-lg-5 User">
-              <h3 className="font-weight-bold colorME text-center my-3">
-                Sign-In
-              </h3>
-              <Form className="text-center">
-                <FormGroup>
-                  <Input
-                    type="email"
-                    className="form-control"
-                    id="signInEmail"
-                    placeholder="Email"
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Input
-                    type="password"
-                    className="form-control"
-                    id="signInPassword"
-                    placeholder="Password"
-                  />
-                </FormGroup>
-                <Button color="light" block type="submit" className="mt-5 mb-3">
-                  SignIn
-                </Button>
-              </Form>
-              <p class="colorME">OR</p>
-              <Button color="primary " block className="mt-3 mb-3">
-                Continue with Facebook
-              </Button>
-              <Button color="danger" block classNAme="mt-3 mb-3">
-                Continue with Google
-              </Button>
-            </Col>
-            <Col md="2">
-              <h3 class="font-weight-bold colorME text-center my-3">OR</h3>
-            </Col>
-            <Col md="4" className="px-lg-5 User">
-              <h3 className="font-weight-bold colorME text-center my-3">
-                Sign-Up
-              </h3>
+              <h3 class="font-weight-bold colorME text-center my-3">Sign-Up</h3>
               <Form className="text-center">
                 <FormGroup>
                   <Input
                     type="name"
                     className="form-control"
-                    id="firstName"
+                    id="adminFirstName"
                     placeholder="First Name"
                   />
                 </FormGroup>
@@ -73,7 +42,7 @@ class UserSignUp extends Component {
                   <Input
                     type="name"
                     className="form-control"
-                    id="lastName"
+                    id="adminLastName"
                     placeholder="Last Name"
                   />
                 </FormGroup>
@@ -81,7 +50,7 @@ class UserSignUp extends Component {
                   <Input
                     type="email"
                     className="form-control"
-                    id="signUpEmail"
+                    id="adminSignUpEmail"
                     placeholder="Email"
                   />
                 </FormGroup>
@@ -89,7 +58,7 @@ class UserSignUp extends Component {
                   <Input
                     type="password"
                     className="form-control"
-                    id="signUpPassword"
+                    id="adminSignUpPassword"
                     placeholder="Password"
                   />
                 </FormGroup>
@@ -97,7 +66,7 @@ class UserSignUp extends Component {
                   <Input
                     type="password"
                     className="form-control"
-                    id="signUpPassword2"
+                    id="adminSignUpPassword2"
                     placeholder="Confirm Password"
                   />
                 </FormGroup>
@@ -118,4 +87,4 @@ class UserSignUp extends Component {
   }
 }
 
-export default UserSignUp;
+export default AdminSignUp;
