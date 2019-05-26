@@ -38,10 +38,7 @@ router.post("/signup", (req, res, next) => {
     .save()
     .then(result => {
       console.log(result);
-      res.status(201).json({
-        message: "Handling POST requests to /users",
-        createduser: result
-      });
+      res.status(201).json(result);
     })
     .catch(err => {
       console.log(err);

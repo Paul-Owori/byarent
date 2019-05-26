@@ -7,7 +7,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "build": "echo 'build script executed'",
-    "test": "mocha",
+    "test": "mocha --timeout 120000 --recursive --exit",
     "cover": "istanbul cover _mocha",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "client": "npm start --prefix client",
@@ -34,11 +34,14 @@
   "dependencies": {
     "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
     "concurrently": "^4.1.0",
     "express": "^4.17.0",
     "gridfs-stream": "^1.1.1",
+    "mockgoose": "^8.0.2",
     "mongoose": "^5.5.9",
     "multer": "^1.4.1",
-    "multer-gridfs-storage": "^3.2.3"
+    "multer-gridfs-storage": "^3.2.3",
+    "supertest": "^4.0.2"
   }
 }

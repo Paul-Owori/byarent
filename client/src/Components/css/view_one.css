@@ -1,0 +1,115 @@
+html,
+body,
+header,
+#intro {
+  height: 100%;
+}
+
+body {
+  padding-top: 100px; /* Stops content from being hidden by navbar */
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url(../../img/COVERPAGE3.jpeg);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.jumbotron {
+  background: none;
+}
+
+.jumbotron h1 {
+  color: white;
+}
+
+.jumbotron p {
+  color: white;
+}
+
+.colorME {
+  color: white;
+}
+
+.greyME {
+  color: gray;
+}
+
+#icon {
+  color: white;
+}
+
+.test {
+  background-size: cover;
+}
+
+.User {
+  border-radius: 10px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+}
+
+.dispImgBody {
+  height: 200px;
+  width: 100%;
+  border-radius: 5px;
+  background: whitesmoke;
+  margin-top: 0.8rem;
+  display: inline-block; /* change the default display type to inline-block */
+  overflow: auto;
+  position: relative;
+}
+
+.dispImg {
+  max-height: 200px;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.dispImg:hover {
+  transition: all 0.2s ease;
+  vertical-align: middle;
+  transform: scale(1.5);
+  -ms-transform: scale(1.5); /* IE 9 */
+  -moz-transform: scale(1.5); /* Firefox */
+  -webkit-transform: scale(1.5); /* Safari and Chrome */
+  -o-transform: scale(1.5); /* Opera */
+  position: relative;
+}
+
+.dispText {
+  max-height: 130px;
+  max-width: 100%;
+  cursor: pointer;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  overflow: scroll;
+  border-radius: 10px;
+}
+
+.imgScroller {
+  height: 650px;
+  overflow: scroll;
+}
+
+.mainImgBody {
+  height: 300px;
+  width: 100%;
+  border-radius: 5px;
+  background: whitesmoke;
+  margin-top: 0.8rem;
+  display: inline-block; /* change the default display type to inline-block */
+  position: relative;
+  overflow: auto;
+  white-space: nowrap;
+}
+
+.mainImg {
+  max-height: 650px;
+  max-width: auto;
+  object-fit: cover;
+}
+
+.whiteBG {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+  border-radius: 10px;
+}
