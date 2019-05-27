@@ -56,57 +56,23 @@ describe("Test all API endpoints for /item", () => {
       });
   });
 
-  // it("logs in the new item", done => {
-  //   request(app)
-  //     .post("/items/signin")
-  //     .send({
-  //       email: "paul@bob.com",
-  //       password: "password"
-  //     })
-  //     .then(res => {
-  //       const loginMessage = res.body.message;
-  //       const status = res.status;
-  //       expect(status).to.equal(200);
-  //       expect(loginMessage).to.equal("item Logged In");
-  //       done();
-  //     });
-  // });
+  it("Deletes the new item", done => {
+    request(app)
+      .get("/items")
+      .then(res => {
+        const item_id = res.body[0]._id;
+        request(app)
+          .delete(`/items/${item_id}`)
+          .then(res => {
+            //console.log("ITEM RESPONSE => ", res.body);
 
-  // it("Implements a patch on the new item object, changing their firstName", done => {
-  //   request(app)
-  //     .get("/items")
-  //     .then(res => {
-  //       const item_id = res.body[0]._id;
-  //       const status = res.status;
-  //       request(app)
-  //         .patch(`/items/${item_id}`)
-  //         .send([{ propName: "item_firstName", value: "NewName" }])
-  //         .then(res => {
-  //           const status2 = res.status;
-  //           const modifiedCount = res.body.result.nModified;
-  //           expect(status2).to.equal(200);
-  //           expect(modifiedCount).to.equal(1);
+            const status2 = res.status;
+            const deletedCount = res.body.deletedCount;
+            expect(status2).to.equal(200);
+            expect(deletedCount).to.equal(1);
 
-  //           done();
-  //         });
-  //     });
-  // });
-
-  // it("Deletes the new item", done => {
-  //   request(app)
-  //     .get("/items")
-  //     .then(res => {
-  //       const item_id = res.body[0]._id;
-  //       request(app)
-  //         .delete(`/items/${item_id}`)
-  //         .then(res => {
-  //           const status2 = res.status;
-  //           const deletedCount = res.body.deletedCount;
-  //           expect(status2).to.equal(200);
-  //           expect(deletedCount).to.equal(1);
-
-  //           done();
-  //         });
-  //     });
-  // });
+            done();
+          });
+      });
+  });
 });

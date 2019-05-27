@@ -155,10 +155,7 @@ router.delete("/:itemID", (req, res, next) => {
         Item.deleteOne({ _id: id })
           .exec()
           .then(result => {
-            res.status(200).json({
-              message: "Item and all related data has been deleted",
-              Result: result
-            });
+            res.status(200).json(result);
           })
           .catch(err => {
             res.status(500).json({
