@@ -41,11 +41,14 @@ describe("Test all API endpoints for /item", () => {
       .attach("itemImage", "test/api/routes/testImages/053alta.jpg")
       .then(res => {
         const body = res.body;
-        expect(body).to.contain.property("_id");
-        expect(body).to.contain.property("item_name");
-        expect(body).to.contain.property("item_description");
-        expect(body).to.contain.property("item_image");
-        expect(body).to.contain.property("isSold");
+        const status = res.status;
+        expect(status).to.equal(201);
+
+        // expect(body).to.contain.property("_id");
+        // expect(body).to.contain.property("item_name");
+        // expect(body).to.contain.property("item_description");
+        // expect(body).to.contain.property("item_image");
+        // expect(body).to.contain.property("isSold");
         done();
       })
       .catch(err => {
