@@ -5,7 +5,19 @@ const app = require("../../../app.js");
 const conn = require("../../../db.js");
 
 describe("Test all API endpoints for /admin", () => {
-  conn.connect();
+  before(done => {
+    conn
+      .connect()
+      .then(() => done())
+      .catch(err => done(err));
+  });
+
+  after(done => {
+    conn
+      .close()
+      .then(() => done())
+      .catch(err => done(err));
+  });
 
   it("Confirms that the admin database collection is empty.", done => {
     request(app)
@@ -99,6 +111,4 @@ describe("Test all API endpoints for /admin", () => {
           });
       });
   });
-
-  conn.close();
 });

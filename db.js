@@ -17,7 +17,6 @@ function connect() {
     } else {
       mongoose.connect(DB_URI, { useNewUrlParser: true }).then((res, err) => {
         if (err) return reject(err);
-        const env = process.env.NODE_ENV;
         console.log("Database online");
         resolve();
       });
@@ -26,6 +25,7 @@ function connect() {
 }
 
 function close() {
+  console.log("Database gone offline");
   return mongoose.disconnect();
 }
 

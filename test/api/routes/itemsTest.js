@@ -5,7 +5,19 @@ const app = require("../../../app.js");
 const conn = require("../../../db.js");
 
 describe("Test all API endpoints for /item", () => {
-  conn.connect();
+  before(done => {
+    conn
+      .connect()
+      .then(() => done())
+      .catch(err => done(err));
+  });
+
+  after(done => {
+    conn
+      .close()
+      .then(() => done())
+      .catch(err => done(err));
+  });
 
   it("Confirms that the item database collection is empty.", done => {
     request(app)
@@ -19,7 +31,6 @@ describe("Test all API endpoints for /item", () => {
   });
 
   it("Creates a new item", done => {
-    const env = process.env.NODE_ENV;
     request(app)
       .post("/items/")
       .set("Content-Type", "multipart/form-data")
@@ -98,6 +109,4 @@ describe("Test all API endpoints for /item", () => {
   //         });
   //     });
   // });
-
-  conn.close();
 });
