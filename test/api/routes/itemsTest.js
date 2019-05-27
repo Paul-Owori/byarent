@@ -33,7 +33,7 @@ describe("Test all API endpoints for /item", () => {
   it("Creates a new item", done => {
     request(app)
       .post("/items/")
-      .set("Content-Type", "multipart/form-data")
+      .field("Content-Type", "multipart/form-data")
       .field("item_name", "House1")
       .field("item_price", "120000")
       .field("item_description", "A big house")

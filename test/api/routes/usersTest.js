@@ -4,7 +4,7 @@ const request = require("supertest");
 const app = require("../../../app.js");
 const conn = require("../../../db.js");
 
-describe("Test all API endpoints for /user", () => {
+describe("Test all API endpoints for /users", () => {
   before(done => {
     conn
       .connect()
