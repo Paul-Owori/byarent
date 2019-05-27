@@ -18,7 +18,6 @@ function connect() {
       mongoose.connect(DB_URI, { useNewUrlParser: true }).then((res, err) => {
         if (err) return reject(err);
         const env = process.env.NODE_ENV;
-        console.log("This is the state => ", env);
         console.log("Database online");
         resolve();
       });

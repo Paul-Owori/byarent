@@ -37,11 +37,7 @@ router.post("/signup", (req, res, next) => {
   admin
     .save()
     .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "Handling POST requests to /admins",
-        createdAdmin: result
-      });
+      res.status(201).json(result);
     })
     .catch(err => {
       console.log(err);
@@ -57,16 +53,16 @@ router.post("/signin", (req, res) => {
   //receives two parameters, admin email and password
   Admin.findOne({ admin_email: req.body.email }, function(err, admin) {
     if (admin === null) {
-      return res.status(400).send({
+      return res.status(404).send({
         message: "Admin not found."
       });
     } else {
       if (admin.validPassword(req.body.password)) {
-        return res.status(201).send({
+        return res.status(200).send({
           message: "Admin Logged In"
         });
       } else {
-        return res.status(400).send({
+        return res.status(404).send({
           message: "Wrong Password"
         });
       }
@@ -105,10 +101,9 @@ router.patch("/:adminID", (req, res, next) => {
     updateOps[ops.propName] = ops.value;
   }
 
-  Admin.update({ _id: id }, { $set: updateOps })
+  Admin.updateMany({ _id: id }, { $set: updateOps })
     .exec()
     .then(result => {
-      console.log(result);
       res.status(200).json({ result });
     })
     .catch(err => {
