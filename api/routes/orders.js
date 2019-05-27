@@ -37,11 +37,7 @@ router.post("/", (req, res, next) => {
   order
     .save()
     .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "Handling POST requests to /orders",
-        createdorder: result
-      });
+      res.status(201).json(result);
     })
     .catch(err => {
       console.log(err);

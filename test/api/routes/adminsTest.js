@@ -31,7 +31,6 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("Creates a new admin", done => {
-    const env = process.env.NODE_ENV;
     request(app)
       .post("/admins/signup")
       .send({

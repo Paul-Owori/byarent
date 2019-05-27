@@ -30,79 +30,40 @@ describe("Test all API endpoints for /orders", () => {
       });
   });
 
-  //   it("Creates a new order", done => {
-  //     const env = process.env.NODE_ENV;
-  //     request(app)
-  //       .post("/orders/signup")
-  //       .send({
-  //         firstName: "Paul",
-  //         lastName: "Bob",
-  //         email: "paul@bob.com",
-  //         password: "password"
-  //       })
-  //       .then(res => {
-  //         const body = res.body;
-  //         expect(body).to.contain.property("_id");
-  //         expect(body).to.contain.property("order_firstName");
-  //         expect(body).to.contain.property("order_lastName");
-  //         expect(body).to.contain.property("order_email");
-  //         expect(body).to.contain.property("order_salt");
-  //         expect(body).to.contain.property("order_hash");
-  //         done();
-  //       });
-  //   });
+  it("Creates a new order", done => {
+    request(app)
+      .post("/orders")
+      .send({
+        name: "Big House",
+        price: "120000",
+        id: "5cebe3b915bc5f35e43f18de",
+        user: "5cebe3b915bc5f35e43f18de"
+      })
+      .then(res => {
+        const body = res.body;
+        expect(body).to.contain.property("_id");
+        expect(body).to.contain.property("item_name");
+        expect(body).to.contain.property("item_id");
+        expect(body).to.contain.property("user_id");
+        done();
+      });
+  });
 
-  //   it("logs in the new order", done => {
-  //     request(app)
-  //       .post("/orders/signin")
-  //       .send({
-  //         email: "paul@bob.com",
-  //         password: "password"
-  //       })
-  //       .then(res => {
-  //         const loginMessage = res.body.message;
-  //         const status = res.status;
-  //         expect(status).to.equal(200);
-  //         expect(loginMessage).to.equal("order Logged In");
-  //         done();
-  //       });
-  //   });
+  it("Deletes the new order", done => {
+    request(app)
+      .get("/orders")
+      .then(res => {
+        const order_id = res.body[0]._id;
+        request(app)
+          .delete(`/orders/${order_id}`)
+          .then(res => {
+            const status2 = res.status;
+            const deletedCount = res.body.deletedCount;
+            expect(status2).to.equal(200);
+            expect(deletedCount).to.equal(1);
 
-  //   it("Implements a patch on the new order object, changing their firstName", done => {
-  //     request(app)
-  //       .get("/orders")
-  //       .then(res => {
-  //         const order_id = res.body[0]._id;
-  //         const status = res.status;
-  //         request(app)
-  //           .patch(`/orders/${order_id}`)
-  //           .send([{ propName: "order_firstName", value: "NewName" }])
-  //           .then(res => {
-  //             const status2 = res.status;
-  //             const modifiedCount = res.body.result.nModified;
-  //             expect(status2).to.equal(200);
-  //             expect(modifiedCount).to.equal(1);
-
-  //             done();
-  //           });
-  //       });
-  //   });
-
-  //   it("Deletes the new order", done => {
-  //     request(app)
-  //       .get("/orders")
-  //       .then(res => {
-  //         const order_id = res.body[0]._id;
-  //         request(app)
-  //           .delete(`/orders/${order_id}`)
-  //           .then(res => {
-  //             const status2 = res.status;
-  //             const deletedCount = res.body.deletedCount;
-  //             expect(status2).to.equal(200);
-  //             expect(deletedCount).to.equal(1);
-
-  //             done();
-  //           });
-  //       });
-  //   });
+            done();
+          });
+      });
+  });
 });

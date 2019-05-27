@@ -31,7 +31,6 @@ describe("Test all API endpoints for /users", () => {
   });
 
   it("Creates a new user", done => {
-    const env = process.env.NODE_ENV;
     request(app)
       .post("/users/signup")
       .send({
