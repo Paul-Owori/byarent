@@ -8,7 +8,6 @@ router.get("/", (req, res, next) => {
   User.find()
     .exec()
     .then(docs => {
-      console.log(docs);
       if (docs.length > 0) {
         res.status(200).json(docs);
       } else {
@@ -18,7 +17,6 @@ router.get("/", (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(err);
       res.status(500).json({
         error: err
       });
@@ -37,11 +35,9 @@ router.post("/signup", (req, res, next) => {
   user
     .save()
     .then(result => {
-      console.log(result);
       res.status(201).json(result);
     })
     .catch(err => {
-      console.log(err);
       res.status(500).json({
         error: err
       });
@@ -54,16 +50,16 @@ router.post("/signin", (req, res) => {
   //receives two parameters, user email and password
   User.findOne({ user_email: req.body.email }, function(err, user) {
     if (user === null) {
-      return res.status(400).send({
+      return res.status(404).send({
         message: "User not found."
       });
     } else {
       if (user.validPassword(req.body.password)) {
-        return res.status(201).send({
+        return res.status(200).send({
           message: "User Logged In"
         });
       } else {
-        return res.status(400).send({
+        return res.status(404).send({
           message: "Wrong Password"
         });
       }
@@ -76,7 +72,6 @@ router.get("/:userID", (req, res, next) => {
   User.findById(id)
     .exec()
     .then(doc => {
-      console.log("From database", doc);
       if (doc) {
         res.status(200).json(doc);
       } else {
@@ -86,7 +81,6 @@ router.get("/:userID", (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(err);
       res.status(500).json({ error: err });
     });
 });
@@ -102,21 +96,19 @@ router.patch("/:userID", (req, res, next) => {
     updateOps[ops.propName] = ops.value;
   }
 
-  User.update({ _id: id }, { $set: updateOps })
+  User.updateMany({ _id: id }, { $set: updateOps })
     .exec()
     .then(result => {
-      console.log(result);
       res.status(200).json({ result });
     })
     .catch(err => {
-      console.log(error);
       res.status(500).json({ error: err });
     });
 });
 
 router.delete("/:userID", (req, res, next) => {
   const id = req.params.userID;
-  User.remove({ _id: id })
+  User.deleteOne({ _id: id })
     .exec()
     .then(result => {
       res.status(200).json(result);
