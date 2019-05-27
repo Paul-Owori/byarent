@@ -8,7 +8,6 @@ router.get("/", (req, res, next) => {
   Admin.find()
     .exec()
     .then(docs => {
-      console.log(docs);
       if (docs.length > 0) {
         res.status(200).json(docs);
       } else {
@@ -75,7 +74,6 @@ router.get("/:adminID", (req, res, next) => {
   Admin.findById(id)
     .exec()
     .then(doc => {
-      console.log("From database", doc);
       if (doc) {
         res.status(200).json(doc);
       } else {
@@ -114,7 +112,7 @@ router.patch("/:adminID", (req, res, next) => {
 
 router.delete("/:adminID", (req, res, next) => {
   const id = req.params.adminID;
-  Admin.remove({ _id: id })
+  Admin.deleteOne({ _id: id })
     .exec()
     .then(result => {
       res.status(200).json(result);

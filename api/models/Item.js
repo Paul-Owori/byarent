@@ -20,7 +20,7 @@ const itemSchema = new Schema({
   item_image: [
     {
       type: String,
-      required: true
+      required: false
     }
   ],
   isSold: {

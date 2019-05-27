@@ -29,7 +29,6 @@ router.get("/", (req, res, next) => {
   Item.find()
     .exec()
     .then(docs => {
-      console.log(docs);
       if (docs.length > 0) {
         res.status(200).json(docs);
       } else {
@@ -69,11 +68,7 @@ router.post("/", upload, (req, res, next) => {
   item
     .save()
     .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "Handling POST requests to /items",
-        createditem: result
-      });
+      res.status(201).json(result);
     })
     .catch(err => {
       console.log(err);
