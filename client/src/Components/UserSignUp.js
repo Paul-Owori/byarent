@@ -9,14 +9,70 @@ import {
   Input
 } from "reactstrap";
 import "./css/user.css";
+import { connect } from "react-redux"; //REQUIRED FOR REDUX
+import { signInUser, addUser } from "../Actions/userActions"; //REQUIRED FOR REDUX
+import PropTypes from "prop-types";
 
 class UserSignUp extends Component {
-  state = {};
+  // componentDidMount() {
+  //   this.props.signInUser(); //REQUIRED FOR REDUX
+  // }
+  state = {
+    loading: false,
+    firstName: "",
+    lastName: "",
+    signUpEmail: "",
+    signUpPassword1: "",
+    signUpPassword2: "",
+    signInEmail: "",
+    signInPassword: ""
+  };
+
+  handleChange = ({ target }) => {
+    this.setState({ [target.name]: target.value });
+  };
+
+  // user.user_firstName = req.body.firstName;
+  // user.user_lastName = req.body.lastName;
+  // user.user_email = req.body.email;
+  // user.setPassword(req.body.password);
+
+  onSignUp = e => {
+    e.preventDefault();
+    console.log("STARTING SIGNUP");
+    if (this.state.signUpPassword1 === this.state.signUpPassword2) {
+      const newUser = {
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        email: this.state.signUpEmail,
+        password: this.state.signUpPassword2
+      };
+      console.log("USER YOU =>", newUser);
+      //Adds an item via the addItem action
+      this.props.addUser(newUser);
+    } else {
+      alert("Passwords do not match!");
+    }
+  };
+
+  onSignIn = e => {
+    e.preventDefault();
+    const newUser = {
+      name: this.state.name
+    };
+    //Adds an item via the addUser action
+    this.props.addUser(newUser);
+    //Then close the moddle
+    this.toggle();
+  };
+
   render() {
     return (
       <React.Fragment>
         <p>
-          <h1 class="font-weight-light colorME text-center my-5">Welcome!</h1>
+          <h1 className="font-weight-light colorME text-center my-5">
+            Welcome!
+          </h1>
         </p>
         <Container className="text-center">
           <Row className="justify-content-center ">
@@ -24,7 +80,7 @@ class UserSignUp extends Component {
               <h3 className="font-weight-bold colorME text-center my-3">
                 Sign-In
               </h3>
-              <Form className="text-center">
+              <Form className="text-center" onSubmit={this.onSignIn}>
                 <FormGroup>
                   <Input
                     type="email"
@@ -45,28 +101,30 @@ class UserSignUp extends Component {
                   SignIn
                 </Button>
               </Form>
-              <p class="colorME">OR</p>
+              <p className="colorME">OR</p>
               <Button color="primary " block className="mt-3 mb-3">
                 Continue with Facebook
               </Button>
-              <Button color="danger" block classNAme="mt-3 mb-3">
+              <Button color="danger" block className="mt-3 mb-3">
                 Continue with Google
               </Button>
             </Col>
             <Col md="2">
-              <h3 class="font-weight-bold colorME text-center my-3">OR</h3>
+              <h3 className="font-weight-bold colorME text-center my-3">OR</h3>
             </Col>
             <Col md="4" className="px-lg-5 User">
               <h3 className="font-weight-bold colorME text-center my-3">
                 Sign-Up
               </h3>
-              <Form className="text-center">
+              <Form className="text-center" onSubmit={this.onSignUp}>
                 <FormGroup>
                   <Input
                     type="name"
                     className="form-control"
                     id="firstName"
+                    name="firstName"
                     placeholder="First Name"
+                    onChange={this.handleChange}
                   />
                 </FormGroup>
                 <FormGroup>
@@ -74,7 +132,9 @@ class UserSignUp extends Component {
                     type="name"
                     className="form-control"
                     id="lastName"
+                    name="lastName"
                     placeholder="Last Name"
+                    onChange={this.handleChange}
                   />
                 </FormGroup>
                 <FormGroup>
@@ -82,15 +142,19 @@ class UserSignUp extends Component {
                     type="email"
                     className="form-control"
                     id="signUpEmail"
+                    name="signUpEmail"
                     placeholder="Email"
+                    onChange={this.handleChange}
                   />
                 </FormGroup>
                 <FormGroup>
                   <Input
                     type="password"
                     className="form-control"
-                    id="signUpPassword"
+                    id="signUpPassword1"
+                    name="signUpPassword1"
                     placeholder="Password"
+                    onChange={this.handleChange}
                   />
                 </FormGroup>
                 <FormGroup>
@@ -98,7 +162,9 @@ class UserSignUp extends Component {
                     type="password"
                     className="form-control"
                     id="signUpPassword2"
+                    name="signUpPassword2"
                     placeholder="Confirm Password"
+                    onChange={this.handleChange}
                   />
                 </FormGroup>
                 <Button
@@ -118,4 +184,25 @@ class UserSignUp extends Component {
   }
 }
 
-export default UserSignUp;
+//export default UserSignUp;
+UserSignUp.propTypes = {
+  addUser: PropTypes.func.isRequired,
+  signInUser: PropTypes.func.isRequired
+  //item: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  user: state.user
+}); //REQUIRED FOR REDUX
+export default connect(
+  mapStateToProps,
+  { addUser, signInUser }
+)(UserSignUp); //REQUIRED FOR REDUX
+
+// const mapStateToProps = state => ({
+//   item: state.item
+// }); //REQUIRED FOR REDUX
+// export default connect(
+//   mapStateToProps,
+//   { addUser }
+// )(ItemModal); //REQUIRED FOR REDUX

@@ -1,15 +1,19 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import { Provider } from "react-redux"; //REQUIRED FOR REDUX
+import store from "./store"; //REQUIRED FOR REDUX
 import AppNavbar from "./Components/AppNavbar";
-import AdminAddOne from "./Components/AdminAddOne";
+import UserSignUp from "./Components/UserSignUp";
 
 function App() {
   return (
-    <div className="App">
-      <AppNavbar />
-      <AdminAddOne />
-    </div>
+    <Provider store={store}>
+      <div className="App">
+        <AppNavbar />
+        <UserSignUp />
+      </div>
+    </Provider>
   );
 }
 

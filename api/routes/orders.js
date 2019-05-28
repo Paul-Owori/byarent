@@ -7,7 +7,6 @@ router.get("/", (req, res, next) => {
   Order.find()
     .exec()
     .then(docs => {
-      console.log(docs);
       if (docs.length > 0) {
         res.status(200).json(docs);
       } else {
@@ -52,7 +51,6 @@ router.get("/:orderID", (req, res, next) => {
   Order.findById(id)
     .exec()
     .then(doc => {
-      console.log("From database", doc);
       if (doc) {
         res.status(200).json(doc);
       } else {
@@ -78,7 +76,7 @@ router.patch("/:orderID", (req, res, next) => {
     updateOps[ops.propName] = ops.value;
   }
 
-  Order.update({ _id: id }, { $set: updateOps })
+  Order.updateMany({ _id: id }, { $set: updateOps })
     .exec()
     .then(result => {
       console.log(result);
@@ -92,7 +90,7 @@ router.patch("/:orderID", (req, res, next) => {
 
 router.delete("/:orderID", (req, res, next) => {
   const id = req.params.orderID;
-  Order.remove({ _id: id })
+  Order.deleteOne({ _id: id })
     .exec()
     .then(result => {
       res.status(200).json(result);

@@ -77,12 +77,10 @@ body {
 }
 
 .dispText {
-  max-height: 130px;
+  height: 500px;
   max-width: 100%;
   cursor: pointer;
-  word-break: break-word;
   text-overflow: ellipsis;
-  overflow: scroll;
   border-radius: 10px;
 }
 
@@ -92,7 +90,7 @@ body {
 }
 
 .mainImgBody {
-  height: 300px;
+  height: 220px;
   width: 100%;
   border-radius: 5px;
   background: whitesmoke;
@@ -112,4 +110,62 @@ body {
 .whiteBG {
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
   border-radius: 10px;
+}
+
+.roundEdges {
+  border-radius: 10px;
+}
+
+.titleBox {
+  font-size: 1.3em;
+  font-weight: bold;
+  background: none;
+  width: 100%;
+}
+
+.descriptionBox {
+  background: none;
+  font-weight: lighter;
+}
+
+.categoryBox {
+  font-size: 1em;
+  font-weight: lighter;
+  background: none;
+  width: 100%;
+  border: 0px;
+  border-radius: 0px;
+  border-bottom: 2px solid gray;
+}
+
+.categoryLabel {
+  width: 100%;
+  font-size: 1em;
+  font-weight: lighter;
+  background: none;
+}
+
+.titleblock {
+  width: 75%;
+}
+
+.priceBox {
+  font-size: 1em;
+  font-weight: lighter;
+  background: none;
+  width: 100%;
+  border: 0px;
+  border-bottom: 3px solid #428bca;
+  border-left: 3px solid #428bca;
+  border-top: 3px solid #428bca;
+  border-right: 3px solid #428bca;
+  border-radius: 5px;
+  color: #428bca;
+}
+
+.leaseOptions {
+  width: 40%;
+}
+.submitButton {
+  width: 100%;
 }
