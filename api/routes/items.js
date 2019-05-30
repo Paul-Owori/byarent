@@ -22,7 +22,7 @@ const fileFilter = (req, file, cb) => {
 };
 const upload = multer({ storage: storage, fileFilter: fileFilter }).array(
   "itemImage",
-  3
+  8
 );
 
 router.get("/", (req, res, next) => {
@@ -62,12 +62,22 @@ router.post("/", upload, (req, res, next) => {
     item_name: req.body.item_name,
     item_description: req.body.item_description,
     item_price: req.body.item_price,
-    item_image: [...pathArray]
+    item_image: [...pathArray],
+    item_purchaseDetails: {
+      address: req.body.address,
+      bedrooms: req.body.bedrooms,
+      bathrooms: req.body.bathrooms,
+      garage: req.body.garage,
+      rent: req.body.rent,
+      sell: req.body.sell
+    }
   });
+
   //This saves the item in the database
   item
     .save()
     .then(result => {
+      console.log("SAVED!", result);
       res.status(201).json(result);
     })
     .catch(err => {

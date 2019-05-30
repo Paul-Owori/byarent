@@ -15,6 +15,7 @@ import PropTypes from "prop-types";
 
 class UserSignUp extends Component {
   // componentDidMount() {
+  //   this.props.addUser(); //REQUIRED FOR REDUX
   //   this.props.signInUser(); //REQUIRED FOR REDUX
   // }
   state = {
@@ -25,11 +26,17 @@ class UserSignUp extends Component {
     signUpPassword1: "",
     signUpPassword2: "",
     signInEmail: "",
-    signInPassword: ""
+    signInPassword: "",
+    user: ""
   };
 
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
+  };
+
+  telliyas = () => {
+    console.log("Local state =>", this.state);
+    console.log("Redux Store => ", this.props);
   };
 
   // user.user_firstName = req.body.firstName;
@@ -57,13 +64,16 @@ class UserSignUp extends Component {
 
   onSignIn = e => {
     e.preventDefault();
-    const newUser = {
-      name: this.state.name
+    console.log("STARTING SIGNIN");
+    const signInUser = {
+      email: this.state.signInEmail,
+      password: this.state.signInPassword
     };
     //Adds an item via the addUser action
-    this.props.addUser(newUser);
+    this.props.signInUser(signInUser);
+    console.log("USER YOU =>", signInUser);
     //Then close the moddle
-    this.toggle();
+    //this.toggle();
   };
 
   render() {
@@ -73,6 +83,15 @@ class UserSignUp extends Component {
           <h1 className="font-weight-light colorME text-center my-5">
             Welcome!
           </h1>
+          <Button
+            type="button"
+            className="mt-5 mb-3 "
+            color="light"
+            block
+            onClick={this.telliyas}
+          >
+            WHATCHUGAT NIGGA
+          </Button>
         </p>
         <Container className="text-center">
           <Row className="justify-content-center ">
@@ -86,7 +105,9 @@ class UserSignUp extends Component {
                     type="email"
                     className="form-control"
                     id="signInEmail"
+                    name="signInEmail"
                     placeholder="Email"
+                    onChange={this.handleChange}
                   />
                 </FormGroup>
                 <FormGroup>
@@ -94,7 +115,9 @@ class UserSignUp extends Component {
                     type="password"
                     className="form-control"
                     id="signInPassword"
+                    name="signInPassword"
                     placeholder="Password"
+                    onChange={this.handleChange}
                   />
                 </FormGroup>
                 <Button color="light" block type="submit" className="mt-5 mb-3">
@@ -169,7 +192,7 @@ class UserSignUp extends Component {
                 </FormGroup>
                 <Button
                   type="submit"
-                  className="mt-5 mb-3 goToAll"
+                  className="mt-5 mb-3 "
                   color="light"
                   block
                 >
@@ -187,7 +210,9 @@ class UserSignUp extends Component {
 //export default UserSignUp;
 UserSignUp.propTypes = {
   addUser: PropTypes.func.isRequired,
-  signInUser: PropTypes.func.isRequired
+  signInUser: PropTypes.func.isRequired,
+  users: PropTypes.array.isRequired,
+  user: PropTypes.object.isRequired
   //item: PropTypes.object.isRequired
 };
 

@@ -16,7 +16,7 @@ export const getUsers = () => dispatch => {
 };
 
 export const addUser = user => dispatch => {
-  dispatch(setUsersLoading());
+  dispatch(setUsersLoading(), { STUFF: "RANDOM OBJECT" });
   fetch("/users/signup", {
     method: "POST",
     headers: {
@@ -24,8 +24,14 @@ export const addUser = user => dispatch => {
     },
     body: JSON.stringify(user)
   })
-    .then(response => response.json())
-    .then(res => dispatch({ type: ADD_USER, payload: res })); //PAYLOAD WAS res.data
+    .then(response => {
+      return response.json();
+    })
+    .then(response => {
+      dispatch({ type: ADD_USER, payload: response });
+      //console.log("CLIENT SIDE", response.status);
+    });
+  //.then(res => dispatch({ type: ADD_USER, payload: res.data })); //PAYLOAD WAS res.data
 };
 
 export const signInUser = user => dispatch => {
@@ -37,7 +43,9 @@ export const signInUser = user => dispatch => {
     },
     body: JSON.stringify(user)
   })
-    .then(response => response.json())
+    .then(response => {
+      return response.json();
+    })
     .then(res => dispatch({ type: SIGNIN_USER, payload: res }));
 };
 

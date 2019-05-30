@@ -35,6 +35,7 @@ router.post("/signup", (req, res, next) => {
   user
     .save()
     .then(result => {
+      //console.log("SERVER SIDE =>", json(result));
       res.status(201).json(result);
     })
     .catch(err => {
@@ -55,8 +56,12 @@ router.post("/signin", (req, res) => {
       });
     } else {
       if (user.validPassword(req.body.password)) {
+        //console.log("REQUESTED USER => ", user);
         return res.status(200).send({
-          message: "User Logged In"
+          _id: user._id,
+          user_firstName: user.user_firstName,
+          user_lastName: user.user_lastName,
+          user_email: user.user_email
         });
       } else {
         return res.status(404).send({

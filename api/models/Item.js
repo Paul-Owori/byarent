@@ -26,6 +26,35 @@ const itemSchema = new Schema({
   isSold: {
     type: Boolean,
     default: false
+  },
+  item_purchaseDetails: {
+    address: {
+      type: String,
+      required: true
+    },
+    bedrooms: {
+      type: Number,
+      required: true,
+      default: 1
+    },
+    bathrooms: {
+      type: Number,
+      required: true,
+      default: 1
+    },
+    garage: {
+      type: Number,
+      required: true,
+      default: 1
+    },
+    rent: {
+      type: Boolean,
+      default: false
+    },
+    sell: {
+      type: Boolean,
+      default: false
+    }
   }
 });
 

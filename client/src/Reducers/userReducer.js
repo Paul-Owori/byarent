@@ -28,7 +28,9 @@ export default function(state = initialState, action) {
     case ADD_USER:
       return {
         ...state,
-        users: [action.payload, ...state.users]
+        users: [...state.users, action.payload],
+        user: action.payload,
+        loading: false
       };
     case SIGNIN_USER:
       return {
