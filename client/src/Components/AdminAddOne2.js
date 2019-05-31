@@ -127,7 +127,18 @@ class AdminAddOne extends Component {
     //this.props.signInUser(newItem);
     const count1 = this.props.item.items.length;
 
-    console.log("ITEM YOU =>", formData);
+    //console.log("ITEM YOU =>", formData);
+    // formData.values.forEach(value => console.log("FORMDATA VALUES", value));
+    let testArray = [];
+    for (var value of formData.values()) {
+      testArray.push(value);
+    }
+    console.log("VALUES=>", testArray);
+    let bob = [...formData.getAll("itemImage")];
+    let billy = [...bob];
+    console.log("bob", bob);
+    console.log("billy", billy);
+
     setTimeout(() => {
       const count2 = this.props.item.items.length;
       if (count2 > count1) {
