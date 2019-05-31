@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
-import { getItems, addItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
+import { addItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import PropTypes from "prop-types";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -14,7 +14,9 @@ import {
   Label,
   FormGroup,
   ListGroupItem,
-  ListGroup
+  ListGroup,
+  Modal,
+  ModalHeader
 } from "reactstrap";
 
 import "./css/view_one.css";
@@ -41,7 +43,10 @@ class AdminAddOne extends Component {
     six: "",
     seven: "",
     eight: "",
-    warner: "greyME"
+    warner: "greyME",
+    item: "",
+    modal: false,
+    added: ""
   };
   constructor(props) {
     super(props);
@@ -89,22 +94,56 @@ class AdminAddOne extends Component {
       filearray.push(this.state.eight.image);
     }
 
-    const newItem = {
-      item_name: this.state.item_name,
-      item_description: this.state.item_description,
-      item_price: this.state.item_price,
-      files: filearray,
-      address: this.state.address,
-      bedrooms: this.state.bedrooms,
-      bathrooms: this.state.bathrooms,
-      garage: this.state.garage,
-      rent: this.state.rent,
-      sell: this.state.sell
-    };
+    let formData = new FormData();
+    formData.append("item_name", `${this.state.item_name}`);
+    formData.append("item_description", `${this.state.item_description}`);
+    formData.append("item_price", `${this.state.item_price}`);
+    formData.append("address", `${this.state.address}`);
+    formData.append("bedrooms", `${this.state.bedrooms}`);
+    formData.append("bathrooms", `${this.state.bathrooms}`);
+    formData.append("garage", `${this.state.garage}`);
+    formData.append("rent", `${this.state.rent}`);
+    formData.append("sell", `${this.state.sell}`);
+    for (let i = 0; i < filearray.length; i++) {
+      formData.append("itemImage", filearray[i]);
+    }
+    this.setState({ item: formData });
+
+    this.props.addItem(formData);
+
+    // const newItem = {
+    //   item_name: this.state.item_name,
+    //   item_description: this.state.item_description,
+    //   item_price: this.state.item_price,
+    //   files: filearray,
+    //   address: this.state.address,
+    //   bedrooms: this.state.bedrooms,
+    //   bathrooms: this.state.bathrooms,
+    //   garage: this.state.garage,
+    //   rent: this.state.rent,
+    //   sell: this.state.sell
+    // };
     //Adds an item via the addUser action
     //this.props.signInUser(newItem);
-    console.log("ITEM YOU =>", newItem);
+    const count1 = this.props.item.items.length;
+
+    console.log("ITEM YOU =>", formData);
+    setTimeout(() => {
+      const count2 = this.props.item.items.length;
+      if (count2 > count1) {
+        this.setState({ added: "SUCCESS!" });
+        this.toggle();
+      } else {
+        this.setState({
+          added:
+            "Something went wrong! Check to make sure all fields have content."
+        });
+        this.toggle();
+      }
+    }, 1000);
+    //this.toggle();
   };
+  //added:
 
   rentToggle = e => {
     e.preventDefault();
@@ -194,9 +233,8 @@ class AdminAddOne extends Component {
         this.setState({ eight: image });
         picSlotCount.push("eight");
       } else {
-        alert(
-          "You have already uploaded the maximum number of images allowed!"
-        );
+        this.setState({ added: "You cannot add more than 8 images!" });
+        this.toggle();
         this.setState({ warner: "crimson" });
       }
       this.setState({
@@ -333,6 +371,13 @@ class AdminAddOne extends Component {
     }
   };
 
+  toggle = () => {
+    this.setState({ modal: !this.state.modal });
+    setTimeout(() => {
+      this.setState({ modal: !this.state.modal });
+    }, 2000);
+  };
+
   render() {
     let pics = this.state.picSlotsUsed;
     return (
@@ -421,9 +466,7 @@ class AdminAddOne extends Component {
                         src={require("../img/upload-icon.png")}
                         className="uploadImage"
                       />
-                      <small className="greyME">
-                        Click or drag and drop to upload an image
-                      </small>
+                      <small>Click or drag and drop to upload an image</small>
                     </div>
                   </div>
                   <div className="text-center my-0 ">
@@ -590,10 +633,26 @@ class AdminAddOne extends Component {
               </Col>
             </Row>
           </div>
+          <Modal isOpen={this.state.modal} toggle={this.toggle}>
+            <ModalHeader toggle={this.toggle}>{this.state.added}</ModalHeader>
+          </Modal>
         </Container>
       </React.Fragment>
     );
   }
 }
 
-export default AdminAddOne;
+//export default AdminAddOne;
+
+const mapStateToProps = state => ({
+  item: state.item
+});
+
+AdminAddOne.propTypes = {
+  addItem: PropTypes.func.isRequired
+};
+//REQUIRED FOR REDUX
+export default connect(
+  mapStateToProps,
+  { addItem }
+)(AdminAddOne); //REQUIRED FOR REDUX

@@ -17,21 +17,23 @@ export const getItems = () => dispatch => {
 
 //PROBLEMS ARE PROBABLY HERE
 export const addItem = item => dispatch => {
-  dispatch(setItemsLoading(), { STUFF: "RANDOM OBJECT" });
+  // dispatch(setItemsLoading());
   fetch("/items", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded" //formData
-    },
-    body: JSON.stringify(item)
+    // headers: {
+    //   "Content-Type": "application/x-www-form-urlencoded" //formData
+    // },
+    body: item
   })
-    .then(response => {
-      return response.json();
+    .then(response => response.json())
+    .then(res => {
+      //console.log("CLIENT SIDE", res.status, "res ITSELEF=>", res);
+      dispatch({ type: ADD_ITEM, payload: res });
     })
-    .then(response => {
-      dispatch({ type: ADD_ITEM, payload: response });
-      //console.log("CLIENT SIDE", response.status);
+    .catch(error => {
+      console.error("Error:", error);
     });
+  //.then(res => dispatch({ type: ADD_ITEM, payload: res }));
   //.then(res => dispatch({ type: ADD_USER, payload: res.data })); //PAYLOAD WAS res.data
 };
 

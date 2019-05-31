@@ -51,6 +51,7 @@ router.post("/", upload.single("itemImage"), (req, res, next) => {
 */
 router.post("/", upload, (req, res, next) => {
   //Get the paths of each of the images uploaded
+
   const imageArray = [...req.files];
   pathArray = imageArray.map((image, i, imageArray) => {
     return image.path;
@@ -77,14 +78,10 @@ router.post("/", upload, (req, res, next) => {
   item
     .save()
     .then(result => {
-      console.log("SAVED!", result);
       res.status(201).json(result);
     })
     .catch(err => {
       console.log(err);
-      res.status(500).json({
-        error: err
-      });
     });
 });
 
