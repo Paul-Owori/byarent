@@ -22,38 +22,42 @@ import {
 import "./css/view_one.css";
 
 class AdminAddOne extends Component {
-  state = {
-    item_name: "",
-    item_description: "",
-    item_price: "",
-    files: "",
-    address: "",
-    bedrooms: "",
-    bathrooms: "",
-    garage: "",
-    rent: false,
-    sell: false,
-    picUpload: "",
-    picSlotsUsed: [],
-    one: "",
-    two: "",
-    three: "",
-    four: "",
-    five: "",
-    six: "",
-    seven: "",
-    eight: "",
-    warner: "greyME",
-    item: "",
-    modal: false,
-    added: ""
-  };
   constructor(props) {
     super(props);
     this.fileUpload = React.createRef();
+    //this.resetter = React.createRef();
+    this.resetForm = React.createRef();
     this.showFileUpload = this.showFileUpload.bind(this);
+    this.resetNow = this.resetNow.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
     this.onDrop = this.onDrop.bind(this);
+
+    this.state = {
+      item_name: "",
+      item_description: "",
+      item_price: "",
+      files: "",
+      address: "",
+      bedrooms: "",
+      bathrooms: "",
+      garage: "",
+      rent: false,
+      sell: false,
+      picUpload: "",
+      picSlotsUsed: [],
+      one: "",
+      two: "",
+      three: "",
+      four: "",
+      five: "",
+      six: "",
+      seven: "",
+      eight: "",
+      warner: "greyME",
+      item: "",
+      modal: false,
+      added: ""
+    };
   }
 
   handleChange = ({ target }) => {
@@ -144,6 +148,7 @@ class AdminAddOne extends Component {
       if (count2 > count1) {
         this.setState({ added: "SUCCESS!" });
         this.toggle();
+        //this.resetNow();
       } else {
         this.setState({
           added:
@@ -337,6 +342,9 @@ class AdminAddOne extends Component {
   showFileUpload() {
     this.fileUpload.current.click();
   }
+  resetNow() {
+    this.resetForm.current.click();
+  }
 
   onDragOver(e) {
     e.preventDefault();
@@ -401,7 +409,7 @@ class AdminAddOne extends Component {
           block
           onClick={this.telliyas}
         >
-          WHATCHUGAT NIGGA
+          LOG
         </Button>
         <Button
           type="button"
@@ -496,7 +504,7 @@ class AdminAddOne extends Component {
                     id="inputDescription"
                     placeholder="Input description here."
                     rows="6"
-                    className=" roundEdges dispText my-2 descriptionBox colorME"
+                    className=" roundEdges my-2 descriptionBox colorME"
                     name="item_description"
                     onChange={this.handleChange}
                   />
@@ -629,15 +637,31 @@ class AdminAddOne extends Component {
                           SELL
                         </Button>
                       </FormGroup>
-                      <Button
-                        type="submit"
-                        className="submitButton font-weight-bold"
-                        outline
-                        color="success"
-                        onClick={this.onSubmit}
-                      >
-                        SUBMIT
-                      </Button>
+                      <FormGroup row className="mt-0 mb-2">
+                        <Col xs="6">
+                          <Button
+                            type="submit"
+                            className="submitButton font-weight-bold"
+                            outline
+                            color="success"
+                            onClick={this.onSubmit}
+                          >
+                            SUBMIT
+                          </Button>
+                        </Col>
+                        <Col xs="6">
+                          <Button
+                            type="reset"
+                            value="Reset"
+                            outline
+                            color="secondary"
+                            className="resetButton"
+                            ref={this.resetForm}
+                          >
+                            RESET
+                          </Button>
+                        </Col>
+                      </FormGroup>
                     </Col>
                   </Row>
                 </Form>

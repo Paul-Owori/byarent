@@ -12,7 +12,10 @@ export const getItems = () => dispatch => {
   dispatch(setItemsLoading());
   fetch("/items")
     .then(res => res.json())
-    .then(res => dispatch({ type: GET_ITEMS, payload: res }));
+    .then(res => dispatch({ type: GET_ITEMS, payload: res }))
+    .catch(error => {
+      console.error("Error:", error);
+    });
 };
 
 //PROBLEMS ARE PROBABLY HERE
@@ -90,5 +93,9 @@ export const setItemsLoading = () => {
       })
       .then(response => response.json());  
   }
+  
+
+
+  
   
   */

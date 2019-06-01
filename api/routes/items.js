@@ -26,16 +26,12 @@ const upload = multer({ storage: storage, fileFilter: fileFilter }).array(
 );
 
 router.get("/", (req, res, next) => {
+  console.log("REACHED BEGINNING OF REQUEST!!");
   Item.find()
     .exec()
     .then(docs => {
-      if (docs.length > 0) {
-        res.status(200).json(docs);
-      } else {
-        res.status(404).json({
-          message: "No items found."
-        });
-      }
+      console.log("JSON DOCS FROM ITEMS.JS=>", docs[0].item_image[0]);
+      res.status(200).send(docs);
     })
     .catch(err => {
       console.log(err);

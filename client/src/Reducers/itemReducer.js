@@ -8,15 +8,21 @@ import {
 } from "../Actions/itemTypes";
 
 const initialState = {
-  items: [],
+  items: [1, 2, 3],
   item: {},
   loading: false
 };
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case GET_ITEMS:
-      return { ...state, items: action.payload, loading: false };
+    case GET_ITEMS: {
+      //console.log("Supposed payload=>", action.payload);
+      return {
+        ...state,
+        items: action.payload,
+        loading: false
+      };
+    }
     case GET_ITEM:
       return { ...state, item: action.payload, loading: false };
     case DELETE_ITEM:
