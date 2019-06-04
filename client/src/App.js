@@ -10,6 +10,8 @@ import AdminSignIn from "./Components/AdminSignIn";
 import UserSignUp from "./Components/UserSignUp";
 import UserViewOne from "./Components/UserViewOne";
 import AdminAddOne2 from "./Components/AdminAddOne2";
+import AdminViewAll from "./Components/AdminViewAll";
+import AdminEditOne from "./Components/AdminEditOne";
 import AdminSignUp from "./Components/AdminSignUp";
 import LandingPage from "./Components/LandingPage";
 import About from "./Components/About";
@@ -22,11 +24,14 @@ function App() {
           <AppNavbar path="/" component={AppNavbar} />
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/user" component={UserSignUp} />
-          <Route path="/user/all" component={UserViewAll} />
-          <Route path="/user/:item_id" component={UserViewOne} />
-          <Route path="/admin" component={AdminSignIn} />
-          <Route path="/admin/signUp" component={AdminSignUp} />
-          <Route path="/admin/add" component={AdminAddOne2} />
+          <Route exact path="/user/all" component={UserViewAll} />
+          <Route exact path="/user/:item_id" component={UserViewOne} />
+          <Route exact path="/admin" component={AdminSignIn} />
+          <Route exact path="/admin/signUp" component={AdminSignUp} />
+          <Route exact path="/admin/add" component={AdminAddOne2} />
+          <Route exact path="/admin/edit/:item_id" component={AdminEditOne} />
+          <Route exact path="/admin/all" component={AdminViewAll} />
+
           <Route path="/about" component={About} />
         </Router>
       </div>

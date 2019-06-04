@@ -7,12 +7,12 @@ import { connect } from "react-redux"; //REQUIRED FOR REDUX
 import { getItems, getItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import PropTypes from "prop-types";
 
-class UserViewAll extends Component {
+class AdminViewAll extends Component {
   componentWillMount() {
-    const currentUser = JSON.parse(sessionStorage.getItem("user"));
-    currentUser
-      ? this.setState({ user: currentUser })
-      : this.setState({ user: {} });
+    const currentAdmin = JSON.parse(sessionStorage.getItem("admin"));
+    currentAdmin
+      ? this.setState({ admin: currentAdmin })
+      : this.setState({ admin: {} });
     //setTimeout(() => {
     //   if (this.props.user.user) {
     //     this.setState({ user: this.props.user.user });
@@ -29,7 +29,7 @@ class UserViewAll extends Component {
   }
 
   state = {
-    user: {},
+    admin: {},
     loading: false,
     items: null
   };
@@ -44,22 +44,22 @@ class UserViewAll extends Component {
       JSON.parse(sessionStorage.getItem("item"))
     );
     console.log(
-      "CURRENT USER IS SESSION STORAGE=>",
-      JSON.parse(sessionStorage.getItem("user"))
+      "CURRENT ADMIN IS SESSION STORAGE=>",
+      JSON.parse(sessionStorage.getItem("admin"))
     );
     console.log("Just props", this.props);
 
     console.log("HISTORY from props", this.props.history);
     //console.log("CURRENT CART=>", JSON.parse(sessionStorage.getItem("cart")));
 
-    let oldCart = [...this.props.item.items];
-    let newCart = oldCart.filter(item => {
-      return item.item_image.length > 5;
-    });
-    console.log("old cart=>", oldCart);
-    console.log("new cart=>", newCart);
-    sessionStorage.setItem("cart", JSON.stringify(newCart));
-    //console.log("WINDOW=>", window.document);
+    // let oldCart = [...this.props.item.items];
+    // let newCart = oldCart.filter(item => {
+    //   return item.item_image.length > 5;
+    // });
+    // console.log("old cart=>", oldCart);
+    // console.log("new cart=>", newCart);
+    // sessionStorage.setItem("cart", JSON.stringify(newCart));
+    // //console.log("WINDOW=>", window.document);
     // console.log(
     //   "Attempt at image construction=>",
     //   "http://localhost:5000/" + this.props.item.items[0].item_image[0]
@@ -92,12 +92,12 @@ class UserViewAll extends Component {
     }
   };
 
-  getItem = id => {
-    //this.props.getItem(id);
+  editItem = id => {
+    //this.props.editItem(id);
     //console.log(id);
     sessionStorage.setItem("item", JSON.stringify(id));
-
-    this.props.history.push(`/user/${id}`);
+    //admin/edit/
+    this.props.history.push(`/admin/edit/${id}`);
   };
 
   rentOrBuy = purchaseDetails => {
@@ -106,6 +106,13 @@ class UserViewAll extends Component {
     } else {
       return "Buy";
     }
+  };
+  addItem = () => {
+    this.props.history.push("/admin/add");
+  };
+
+  newAdmin = () => {
+    this.props.history.push("/admin/signUp");
   };
   render() {
     return (
@@ -120,13 +127,47 @@ class UserViewAll extends Component {
           LOG
         </Button>
         <h2 className="colorME text-center">
-          Welcome {this.state.user ? this.state.user.user_firstName : ""}!
+          Welcome {this.state.admin ? this.state.admin.admin_firstName : ""}!
         </h2>
-        <Container className="mb-5">
+        <Container className="mb-5 text-center ">
           <React.Fragment>
+            <Row className="adminMenu  justify-content-start">
+              <Col xs="3" className="ml-3 mr-2">
+                <Button
+                  className="adminMenuBtn mt-3"
+                  size="lg"
+                  outline
+                  color="danger"
+                  onClick={this.addItem}
+                >
+                  Add unit{" "}
+                </Button>
+              </Col>
+              <Col xs="3" className="ml-4 mr-2 mt-3">
+                <Button
+                  className="adminMenuBtn"
+                  size="lg"
+                  outline
+                  color="success"
+                >
+                  Recent Orders{" "}
+                </Button>
+              </Col>
+              <Col xs="3" className="ml-4 mt-3">
+                <Button
+                  className="adminMenuBtn"
+                  size="lg"
+                  outline
+                  color="light"
+                  onClick={this.newAdmin}
+                >
+                  Add New Admin{" "}
+                </Button>
+              </Col>
+            </Row>
             <TransitionGroup>
               {this.checker() ? (
-                <Row className="">
+                <Row className="justify-content-start">
                   {this.props.item.items.map(
                     ({
                       _id,
@@ -134,11 +175,12 @@ class UserViewAll extends Component {
                       item_description,
                       item_price,
                       item_image,
-                      item_purchaseDetails
+                      item_purchaseDetails,
+                      isSold
                     }) => (
                       <Col
                         md="3"
-                        className="User dark bg-dark my-3  text-center"
+                        className="User dark bg-dark my-3  text-center "
                       >
                         <div className="mt-2">
                           <h5 className="colorME font-weight-bold">
@@ -158,26 +200,44 @@ class UserViewAll extends Component {
                           <p className="text-justify colorME dispText ">
                             {item_description}
                           </p>
-                          <Button
-                            color="warning"
-                            className="mb-3 priceAndRent "
-                          >
-                            {item_price}
-                          </Button>
-                          <Button color="info" className=" mb-3 priceAndRent">
-                            {item_purchaseDetails.rent
-                              ? "Rent"
-                              : item_purchaseDetails.sell
-                              ? "Buy"
-                              : ""}
-                          </Button>
+                          <Row className="justify-content-around">
+                            <Col xl="3">
+                              <Button
+                                color={isSold === true ? "warning" : "success"}
+                                className="mb-3 priceAndRent2 "
+                              >
+                                {isSold === true ? "Sold" : "Available"}
+                              </Button>
+                            </Col>
+                            <Col xl="3">
+                              <Button
+                                color="warning"
+                                className="mb-3 priceAndRent2 "
+                              >
+                                {item_price}
+                              </Button>
+                            </Col>
+                            <Col xl="3">
+                              <Button
+                                color="info"
+                                className=" mb-3 priceAndRent2"
+                              >
+                                {item_purchaseDetails.rent
+                                  ? "Rent"
+                                  : item_purchaseDetails.sell
+                                  ? "Buy"
+                                  : ""}
+                              </Button>
+                            </Col>
+                          </Row>
+
                           <Button
                             color="light"
                             block
                             className="mr-2 mb-3 seeMore "
-                            onClick={this.getItem.bind(this, _id)}
+                            onClick={this.editItem.bind(this, _id)}
                           >
-                            See More
+                            Edit this unit
                           </Button>
                         </div>
                       </Col>
@@ -208,7 +268,7 @@ class UserViewAll extends Component {
   }
 }
 
-UserViewAll.propTypes = {
+AdminViewAll.propTypes = {
   getItems: PropTypes.func.isRequired,
   getItem: PropTypes.func.isRequired,
   item: PropTypes.object,
@@ -222,7 +282,7 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { getItems, getItem }
-)(UserViewAll);
+)(AdminViewAll);
 
 /*
 

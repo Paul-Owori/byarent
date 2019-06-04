@@ -35,7 +35,10 @@ class UserViewOne extends Component {
     activeIndex: 0,
     imageArray: [],
     modal: false,
-    activeImage: ""
+    warnInfo: "",
+    modalWarn: false,
+    activeImage: "",
+    user: JSON.parse(sessionStorage.getItem("user"))
   };
 
   checker = () => {
@@ -114,21 +117,41 @@ class UserViewOne extends Component {
   };
 
   addToCart = () => {
-    let cart = [];
-    cart.push(this.state.item);
+    if (this.state.user && this.state.user.user_firstName) {
+      let cart = [];
+      cart.push(this.state.item);
 
-    if (sessionStorage.getItem("cart") === null) {
-      sessionStorage.setItem("cart", JSON.stringify(cart));
+      if (sessionStorage.getItem("cart") === null) {
+        sessionStorage.setItem("cart", JSON.stringify(cart));
+      } else {
+        let oldCart = JSON.parse(sessionStorage.getItem("cart"));
+        let newCart = [...oldCart, ...cart];
+        sessionStorage.setItem("cart", JSON.stringify(newCart));
+      }
+      this.setState({
+        warnInfo: `${this.state.item.item_name} added to cart`
+      });
+      setTimeout(() => {
+        this.toggleWarn();
+      }, 100);
+      this.forceUpdate();
     } else {
-      let oldCart = JSON.parse(sessionStorage.getItem("cart"));
-      let newCart = [...oldCart, ...cart];
-      sessionStorage.setItem("cart", JSON.stringify(newCart));
+      this.setState({
+        warnInfo: "You need to be logged in to add an item to your cart!"
+      });
+      setTimeout(() => {
+        this.toggleWarn();
+      }, 100);
     }
-    window.location.reload();
+  };
+  toggleWarn = () => {
+    this.setState({ modalWarn: !this.state.modalWarn });
+    setTimeout(() => {
+      this.setState({ modalWarn: !this.state.modalWarn });
+    }, 1500);
   };
 
   render() {
-    const { item } = this.state.item;
     return (
       <React.Fragment>
         <Button
@@ -272,14 +295,14 @@ class UserViewOne extends Component {
                 </Col>
               </Row>
             </Container>
-          ) : this.checker && !window.location.hash ? (
-            "This page will reload in " +
-            setTimeout(() => {
-              window.location = window.location + "#loaded";
-              window.location.reload();
-            }, 150)
           ) : (
-            console.log("ERROR")
+            setTimeout(() => {
+              this.forceUpdate();
+              setTimeout(() => {
+                this.forceUpdate();
+              }, 200);
+              //window.stop();
+            }, 150)
           )}
           <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle}>
             <ModalHeader toggle={this.toggle}>
@@ -292,6 +315,15 @@ class UserViewOne extends Component {
                 className="activeImage"
               />
             </ModalBody>
+          </Modal>
+          <Modal
+            size="lg"
+            isOpen={this.state.modalWarn}
+            toggle={this.toggleWarn}
+          >
+            <ModalHeader toggle={this.toggleWarn}>
+              {this.state.warnInfo}
+            </ModalHeader>
           </Modal>
         </React.Fragment>
       </React.Fragment>

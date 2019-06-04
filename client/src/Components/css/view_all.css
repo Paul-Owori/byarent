@@ -69,7 +69,7 @@ CSS for Admin View All
 }
 
 .dispText {
-  height: 120px;
+  height: 110px;
   max-width: 100%;
   cursor: pointer;
   word-break: break-word;
@@ -80,9 +80,16 @@ CSS for Admin View All
 .priceAndRent {
   width: 45%;
 }
+.priceAndRent2 {
+  width: auto;
+}
 
 .greyME {
   color: gray;
+}
+
+.adminMenuBtn {
+  width: 100%;
 }
 
 .loadbody {

@@ -58,7 +58,10 @@ router.post("/signin", (req, res) => {
     } else {
       if (admin.validPassword(req.body.password)) {
         return res.status(200).send({
-          message: "Admin Logged In"
+          _id: admin._id,
+          admin_firstName: admin.admin_firstName,
+          admin_lastName: admin.admin_lastName,
+          admin_email: admin.admin_email
         });
       } else {
         return res.status(404).send({

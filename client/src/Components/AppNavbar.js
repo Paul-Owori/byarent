@@ -61,13 +61,19 @@ class AppNavbar extends Component {
       ? sessionStorage.removeItem("user")
       : admin
       ? sessionStorage.removeItem("admin")
-      : window.location.reload();
+      : this.forceUpdate();
 
     if (cart) {
       sessionStorage.removeItem("cart");
     }
 
-    window.location.reload();
+    this.setState({ user: "", admin: "" });
+
+    setTimeout(() => {
+      this.forceUpdate();
+    }, 100);
+
+    //this.forceUpdate();
 
     //this.props.history.push("/");
     // this.props.history.push("/");
@@ -77,16 +83,33 @@ class AppNavbar extends Component {
     this.setState({});
   };
 
-  //userCheck = () => {
-  // JSON.parse(sessionStorage.getItem("user")) ? true : false;
-  // if (JSON.parse(sessionStorage.getItem("user"))) {
-  //   return true;
-  // } else if (this.props.user.user) {
-  //   return true;
-  // } else {
-  //   return false;
-  // }
-  //};
+  deleteCartItem = _id => {
+    //     var numbers = [1, 3, 6, 8, 11];
+
+    // var lucky = numbers.filter(function(number) {
+    //   return number > 7;
+    // });
+
+    // [ 8, 11 ]
+
+    let oldCart = JSON.parse(sessionStorage.getItem("cart"));
+    let newCart = oldCart.filter(item => {
+      return item._id !== _id;
+    });
+    console.log("Old cart=>", oldCart);
+    console.log("New cart=>", newCart);
+    sessionStorage.setItem("cart", JSON.stringify(newCart));
+    setTimeout(() => {
+      this.setState({ cart: JSON.parse(sessionStorage.getItem("cart")) });
+    }, 100);
+    //sessionStorage.setItem("cart", newCart);
+  };
+
+  housesNav = () => {
+    sessionStorage.getItem("admin") !== null
+      ? this.props.history.push("/admin/all")
+      : this.props.history.push("/user/all");
+  };
 
   render() {
     return (
@@ -103,15 +126,23 @@ class AppNavbar extends Component {
             <Nav className="ml-auto" navbar>
               <NavItem>
                 <NavLink>
-                  <RouterNavLink to="/user/all" className="greyME2">
+                  <RouterNavLink
+                    to={
+                      sessionStorage.getItem("admin") !== null
+                        ? "/admin/all"
+                        : "/user/all"
+                    }
+                    className="greyME2"
+                  >
                     Houses
                   </RouterNavLink>
                 </NavLink>
               </NavItem>
-              {(sessionStorage.getItem("user") === null ? (
+              {(sessionStorage.getItem("user") === null &&
+              sessionStorage.getItem("admin") === null ? (
                 false
               ) : (
-                true || this.state.loggedIn === true
+                true
               )) ? (
                 <NavItem>
                   <NavLink>
@@ -141,9 +172,7 @@ class AppNavbar extends Component {
                 </NavLink>
               </NavItem>
               <NavItem>
-                {this.state.user ? (
-                  ""
-                ) : this.state.admin ? (
+                {this.state.user || this.state.admin ? (
                   ""
                 ) : (
                   <NavLink>
@@ -180,7 +209,7 @@ class AppNavbar extends Component {
           </Collapse>
         </Navbar>
 
-        <Modal isOpen={this.state.modal} toggle={this.modalToggle}>
+        <Modal isOpen={this.state.modal} toggle={this.modalToggle} size="lg">
           <ModalHeader toggle={this.modalToggle}>
             {this.state.user ? this.state.user.user_firstName + "'s " : ""}
             Shopping Cart
@@ -191,7 +220,7 @@ class AppNavbar extends Component {
                 this.state.cart.map(
                   ({ _id, item_name, item_purchaseDetails, item_price }) => (
                     <CSSTransition key={_id} timeout={500} classNames="fade">
-                      <Row>
+                      <Row className="mb-3">
                         <Col xs="3">
                           <h5>{item_name}</h5>
                         </Col>
@@ -213,6 +242,7 @@ class AppNavbar extends Component {
                             className="remove-btn"
                             color="danger"
                             size="sm"
+                            onClick={this.deleteCartItem.bind(this, _id)}
                           >
                             Delete
                           </Button>
@@ -225,6 +255,9 @@ class AppNavbar extends Component {
                 <p>You haven't added anything to your cart yet</p>
               )}
             </TransitionGroup>
+            <Button className="checkout" color="dark" size="block">
+              Check out cart
+            </Button>
           </ModalBody>
         </Modal>
       </div>
