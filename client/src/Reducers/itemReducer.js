@@ -8,7 +8,7 @@ import {
 } from "../Actions/itemTypes";
 
 const initialState = {
-  items: [1, 2, 3],
+  items: [],
   item: {},
   loading: false
 };

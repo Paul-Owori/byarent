@@ -10,7 +10,7 @@ import {
 
 const initialState = {
   users: [],
-  user: {},
+  user: "",
   loading: false
 };
 

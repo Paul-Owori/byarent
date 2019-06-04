@@ -1,0 +1,16 @@
+#icon {
+  color: white;
+}
+
+.colorME {
+  color: white;
+}
+
+.greyME2 {
+  color: rgb(167, 162, 162);
+}
+
+.greyME2:hover {
+  color: whitesmoke;
+  text-decoration: none;
+}

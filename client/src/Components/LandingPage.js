@@ -1,35 +1,48 @@
 import React, { Component } from "react";
-import { Jumbotron, Container } from "reactstrap";
+import { Jumbotron, Container, Button } from "reactstrap";
 import "./css/landingPage.css";
 
 class LandingPage extends Component {
   state = {};
+
+  redirectToSignUp = () => {
+    this.props.history.push("/user");
+  };
+  redirectToViewAll = () => {
+    this.props.history.push("/user/all");
+  };
   render() {
     return (
       <Container className="my-5">
         <Jumbotron className="text-center my-3">
-          <h1 class="display-1 font-weight-bold">ByaRent!</h1>
-          <p class="lead">
+          <h1 className="display-1 font-weight-bold">ByaRent!</h1>
+          <p className="lead">
             You are a few steps away from Buying / Renting your dream home!
           </p>
-          <hr class="my-4" />
+          <hr className="my-4" />
           <p>Select one of the options below to get started.</p>
-          <a
+          <Button
             id="viewUnits"
-            class="btn btn-outline-light btn-lg mr-2"
-            href="#"
+            className="mr-2"
+            onClick={this.redirectToViewAll}
+            outline
+            size="lg"
+            color="light"
             role="button"
           >
             View available units
-          </a>
-          <a
+          </Button>
+          <Button
             id="userSignUp"
-            class="btn btn-outline-light btn-lg ml-2"
-            href="#"
+            classNAme="ml-2"
+            onClick={this.redirectToSignUp}
+            outline
+            size="lg"
+            color="light"
             role="button"
           >
             SignUp / SignIn
-          </a>
+          </Button>
         </Jumbotron>
       </Container>
     );

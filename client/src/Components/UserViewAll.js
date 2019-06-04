@@ -4,17 +4,23 @@ import "./css/view_all.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
 //import { signInUser, addUser } from "../Actions/userActions"; //REQUIRED FOR REDUX
-import { getItems } from "../Actions/itemActions"; //REQUIRED FOR REDUX
+import { getItems, getItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import PropTypes from "prop-types";
 
 class UserViewAll extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: false,
-      items: null
-    };
+  componentWillMount() {
+    const currentUser = JSON.parse(sessionStorage.getItem("user"));
+    currentUser
+      ? this.setState({ user: currentUser })
+      : this.setState({ user: {} });
+    //setTimeout(() => {
+    //   if (this.props.user.user) {
+    //     this.setState({ user: this.props.user.user });
+    //     //sessionStorage.setItem("user", JSON.stringify(this.props.user.user));
+    //   } else if (currentUser) {
+    //     this.setState({ user: currentUser });
+    //   }
+    //  }, 100);
   }
 
   componentDidMount() {
@@ -22,10 +28,29 @@ class UserViewAll extends Component {
     this.props.getItems();
   }
 
+  state = {
+    user: {},
+    loading: false,
+    items: null
+  };
+
   telliyas = () => {
+    //this.stateSetter();
     console.log("Local state =>", this.state);
     console.log("Redux Store => ", this.props);
     console.log("Items?", this.props.item.items);
+    console.log(
+      "CURRENT ITEM IS SESSION STORAGE=>",
+      JSON.parse(sessionStorage.getItem("item"))
+    );
+    console.log(
+      "CURRENT USER IS SESSION STORAGE=>",
+      JSON.parse(sessionStorage.getItem("user"))
+    );
+    console.log("Just props", this.props);
+
+    console.log("HISTORY from props", this.props.history);
+    //console.log("WINDOW=>", window.document);
     // console.log(
     //   "Attempt at image construction=>",
     //   "http://localhost:5000/" + this.props.item.items[0].item_image[0]
@@ -35,6 +60,15 @@ class UserViewAll extends Component {
     // );
     // console.log(freaky);
   };
+
+  // stateSetter = () => {
+  //   const currentUser = sessionStorage.getItem("user");
+  //   if (this.props.user.user) {
+  //     this.setState({ user: this.props.user.user });
+  //   } else if (currentUser) {
+  //     this.setState({ user: JSON.parse(currentUser) });
+  //   }
+  // };
 
   checker = () => {
     if (
@@ -47,6 +81,14 @@ class UserViewAll extends Component {
     } else {
       return false;
     }
+  };
+
+  getItem = id => {
+    //this.props.getItem(id);
+    //console.log(id);
+    sessionStorage.setItem("item", JSON.stringify(id));
+
+    this.props.history.push(`/user/${id}`);
   };
 
   rentOrBuy = purchaseDetails => {
@@ -68,7 +110,9 @@ class UserViewAll extends Component {
         >
           LOG
         </Button>
-        <h2 className="colorME text-center">Welcome!</h2>
+        <h2 className="colorME text-center">
+          Welcome {this.state.user ? this.state.user.user_firstName : ""}!
+        </h2>
         <Container className="mb-5">
           <React.Fragment>
             <TransitionGroup>
@@ -111,10 +155,19 @@ class UserViewAll extends Component {
                           >
                             {item_price}
                           </Button>
-                          <Button color="info" className="mb-3 priceAndRent">
-                            {this.rentOrBuy(item_purchaseDetails)}
+                          <Button color="info" className=" mb-3 priceAndRent">
+                            {item_purchaseDetails.rent
+                              ? "Rent"
+                              : item_purchaseDetails.sell
+                              ? "Buy"
+                              : ""}
                           </Button>
-                          <Button color="light" block className="mb-3 seeMore ">
+                          <Button
+                            color="light"
+                            block
+                            className="mr-2 mb-3 seeMore "
+                            onClick={this.getItem.bind(this, _id)}
+                          >
                             See More
                           </Button>
                         </div>
@@ -132,7 +185,7 @@ class UserViewAll extends Component {
                           window.location = window.location + "#loaded";
                           window.location.reload();
                           //window.stop();
-                        }, 2000)
+                        }, 150)
                       : console.log("ERROR")}
                   </h5>
                   <div className=" loadbody my-5" />
@@ -147,16 +200,19 @@ class UserViewAll extends Component {
 }
 
 UserViewAll.propTypes = {
-  getItems: PropTypes.func.isRequired
-  //item: PropTypes.object.isRequired
+  getItems: PropTypes.func.isRequired,
+  getItem: PropTypes.func.isRequired,
+  item: PropTypes.object,
+  user: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  item: state.item
+  item: state.item,
+  user: state.user
 });
 export default connect(
   mapStateToProps,
-  { getItems }
+  { getItems, getItem }
 )(UserViewAll);
 
 /*

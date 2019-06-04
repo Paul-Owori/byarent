@@ -72,6 +72,8 @@ class UserSignUp extends Component {
     //Adds an item via the addUser action
     this.props.signInUser(signInUser);
     console.log("USER YOU =>", signInUser);
+    //TEST!!
+    this.props.history.push("/user/all");
     //Then close the moddle
     //this.toggle();
   };

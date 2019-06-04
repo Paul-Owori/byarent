@@ -46,7 +46,10 @@ export const signInUser = user => dispatch => {
     .then(response => {
       return response.json();
     })
-    .then(res => dispatch({ type: SIGNIN_USER, payload: res }));
+    .then(res => {
+      sessionStorage.setItem("user", JSON.stringify(res));
+      dispatch({ type: SIGNIN_USER, payload: res });
+    });
 };
 
 //   export const getUsers = () => dispatch => {

@@ -7,15 +7,23 @@ header,
 
 body {
   padding-top: 100px; /* Stops content from being hidden by navbar */
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url(../../img/COVERPAGE4.jpeg) no-repeat center center fixed;
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url(../../img/COVERPAGE3.jpeg);
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 
-#icon {
+.jumbotron {
+  background: none;
+}
+
+.jumbotron h1 {
+  color: white;
+}
+
+.jumbotron p {
   color: white;
 }
 
@@ -23,22 +31,22 @@ body {
   color: white;
 }
 
+.greyME {
+  color: gray;
+}
+
+#icon {
+  color: white;
+}
+
+.test {
+  background-size: cover;
+}
+
 .User {
   border-radius: 10px;
-  margin: 15px !important;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
 }
-
-.form-control {
-  background: transparent;
-  color: white;
-  border: 0px;
-  border-radius: 0px;
-  border-bottom: 2px solid gray;
-}
-
-/*
-CSS for Admin View All
-*/
 
 .dispImgBody {
   height: 200px;
@@ -47,7 +55,7 @@ CSS for Admin View All
   background: whitesmoke;
   margin-top: 0.8rem;
   display: inline-block; /* change the default display type to inline-block */
-  overflow: hidden;
+  overflow: auto;
   position: relative;
 }
 
@@ -68,28 +76,50 @@ CSS for Admin View All
   position: relative;
 }
 
-.dispText {
-  height: 120px;
+.dispText2 {
+  height: 110px;
   max-width: 100%;
   cursor: pointer;
   word-break: break-word;
   text-overflow: ellipsis;
   overflow: scroll;
+  border-radius: 10px;
 }
 
-.priceAndRent {
-  width: 45%;
+.imgScroller {
+  max-height: 650px;
+  overflow: scroll;
 }
 
-.greyME {
-  color: gray;
-}
-
-.loadbody {
-  height: 500px;
-  width: auto;
+.mainImgBody2 {
+  height: 300px;
+  width: 100%;
   border-radius: 5px;
+  background: black;
   margin-top: 0.8rem;
-  position: relative;
-  background: url(../../img/Loader.gif) no-repeat center center;
+}
+
+.mainImg2 {
+  height: 300px;
+  max-width: 100%;
+}
+
+.mainImgPlus {
+  max-height: 650px;
+  max-width: auto;
+  object-fit: cover;
+}
+
+.whiteBG {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+  border-radius: 10px;
+}
+
+.backButton {
+  position: fixed;
+}
+
+.activeImage {
+  width: 100%;
+  max-height: 100%;
 }

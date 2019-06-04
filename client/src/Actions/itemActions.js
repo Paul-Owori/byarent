@@ -40,6 +40,19 @@ export const addItem = item => dispatch => {
   //.then(res => dispatch({ type: ADD_USER, payload: res.data })); //PAYLOAD WAS res.data
 };
 
+export const getItem = _id => dispatch => {
+  dispatch(setItemsLoading());
+  fetch(`/items/${_id}`)
+    .then(res => res.json())
+    .then(res => {
+      dispatch({ type: GET_ITEM, payload: res });
+      sessionStorage.setItem("item", JSON.stringify(res));
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    });
+};
+
 //   export const getUsers = () => dispatch => {
 //     dispatch(setUsersLoading());
 //     fetch("/users")
