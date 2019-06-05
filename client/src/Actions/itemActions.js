@@ -53,6 +53,23 @@ export const getItem = _id => dispatch => {
     });
 };
 
+export const updateItem = (item, _id) => dispatch => {
+  // console.log("Form data received=>", item);
+  // console.log("id received=>", _id);
+  // dispatch({ type: UPDATE_ITEM, payload: item });
+
+  fetch(`/items/${_id}`, {
+    method: "PATCH",
+    body: item
+  })
+    .then(response => response.json())
+    .then(res => {
+      dispatch({ type: UPDATE_ITEM, payload: res });
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    });
+};
 //   export const getUsers = () => dispatch => {
 //     dispatch(setUsersLoading());
 //     fetch("/users")

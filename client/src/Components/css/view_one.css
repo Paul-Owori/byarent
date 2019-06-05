@@ -47,9 +47,11 @@ body {
   background-size: cover;
 }
 
-.User {
+.User2 {
   border-radius: 10px;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+  border: 5px pink;
+  margin: 5px !important;
 }
 
 .dispImgBody {
@@ -205,4 +207,7 @@ body {
 }
 .submitButton {
   width: 100%;
+}
+.testing {
+  width: 85%;
 }

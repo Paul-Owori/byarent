@@ -25,7 +25,7 @@ function App() {
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/user" component={UserSignUp} />
           <Route exact path="/user/all" component={UserViewAll} />
-          <Route exact path="/user/:item_id" component={UserViewOne} />
+          <Route exact path="/user/one/:item_id" component={UserViewOne} />
           <Route exact path="/admin" component={AdminSignIn} />
           <Route exact path="/admin/signUp" component={AdminSignUp} />
           <Route exact path="/admin/add" component={AdminAddOne2} />

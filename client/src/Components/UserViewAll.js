@@ -97,7 +97,7 @@ class UserViewAll extends Component {
     //console.log(id);
     sessionStorage.setItem("item", JSON.stringify(id));
 
-    this.props.history.push(`/user/${id}`);
+    this.props.history.push(`/user/one/${id}`);
   };
 
   rentOrBuy = purchaseDetails => {

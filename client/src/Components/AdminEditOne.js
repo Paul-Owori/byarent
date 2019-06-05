@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
-import { addItem, getItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
+import { updateItem, getItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import PropTypes from "prop-types";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -56,7 +56,10 @@ class AdminAddOne extends Component {
       warner: "greyME",
       item: "",
       modal: false,
-      added: ""
+      added: "",
+      oldImageCount: "",
+      oldImages: [],
+      totalCount: 0
     };
   }
 
@@ -69,12 +72,23 @@ class AdminAddOne extends Component {
     setTimeout(() => {
       this.setState({
         item: this.props.item.item,
-        imageArray: this.props.item.item.item_image
+        oldImageCount: this.props.item.item.item_image.length,
+        oldImages: [...this.props.item.item.item_image],
+        totalCount: this.props.item.item.item_image.length,
+        item_name: this.props.item.item.item_name,
+        item_description: this.props.item.item.item_description,
+        item_price: this.props.item.item.item_price,
+        address: this.props.item.item.item_purchaseDetails.address,
+        bedrooms: this.props.item.item.item_purchaseDetails.bedrooms,
+        bathrooms: this.props.item.item.item_purchaseDetails.bathrooms,
+        garage: this.props.item.item.item_purchaseDetails.garage,
+        rent: this.props.item.item.item_purchaseDetails.rent,
+        sell: this.props.item.item.item_purchaseDetails.sell
       });
-    }, 50);
+    }, 150);
     setTimeout(() => {
       this.forceUpdate();
-    }, 200);
+    }, 300);
   }
 
   handleChange = ({ target }) => {
@@ -125,12 +139,13 @@ class AdminAddOne extends Component {
     formData.append("garage", `${this.state.garage}`);
     formData.append("rent", `${this.state.rent}`);
     formData.append("sell", `${this.state.sell}`);
+    formData.append("oldImages", JSON.stringify(this.state.oldImages));
     for (let i = 0; i < filearray.length; i++) {
       formData.append("itemImage", filearray[i]);
     }
-    this.setState({ item: formData });
+    // this.setState({ item: formData });
 
-    this.props.addItem(formData);
+    this.props.updateItem(formData, this.state.item._id);
 
     // const newItem = {
     //   item_name: this.state.item_name,
@@ -144,9 +159,9 @@ class AdminAddOne extends Component {
     //   rent: this.state.rent,
     //   sell: this.state.sell
     // };
-    //Adds an item via the addUser action
+    //Adds an item via the addUser2 action
     //this.props.signInUser(newItem);
-    const count1 = this.props.item.items.length;
+    //const count1 = this.props.item.items.length;
 
     //console.log("ITEM YOU =>", formData);
     // formData.values.forEach(value => console.log("FORMDATA VALUES", value));
@@ -161,8 +176,8 @@ class AdminAddOne extends Component {
     console.log("billy", billy);
 
     setTimeout(() => {
-      const count2 = this.props.item.items.length;
-      if (count2 > count1) {
+      const success = this.props.item.item.message;
+      if (success === "SUCCESS!") {
         this.setState({ added: "SUCCESS!" });
         this.toggle();
         //this.resetNow();
@@ -241,29 +256,29 @@ class AdminAddOne extends Component {
   imageHandler = image => {
     if (image) {
       let picSlotCount = [];
-      if (!this.state.one) {
-        this.setState({ one: image });
+      if (!this.state.one && this.state.totalCount < 8) {
+        this.setState({ one: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("one");
-      } else if (!this.state.two) {
-        this.setState({ two: image });
+      } else if (!this.state.two && this.state.totalCount < 8) {
+        this.setState({ two: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("two");
-      } else if (!this.state.three) {
-        this.setState({ three: image });
+      } else if (!this.state.three && this.state.totalCount < 8) {
+        this.setState({ three: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("three");
-      } else if (!this.state.four) {
-        this.setState({ four: image });
+      } else if (!this.state.four && this.state.totalCount < 8) {
+        this.setState({ four: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("four");
-      } else if (!this.state.five) {
-        this.setState({ five: image });
+      } else if (!this.state.five && this.state.totalCount < 8) {
+        this.setState({ five: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("five");
-      } else if (!this.state.six) {
-        this.setState({ six: image });
+      } else if (!this.state.six && this.state.totalCount < 8) {
+        this.setState({ six: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("six");
-      } else if (!this.state.seven) {
-        this.setState({ seven: image });
+      } else if (!this.state.seven && this.state.totalCount < 8) {
+        this.setState({ seven: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("seven");
-      } else if (!this.state.eight) {
-        this.setState({ eight: image });
+      } else if (!this.state.eight && this.state.totalCount < 8) {
+        this.setState({ eight: image, totalCount: this.state.totalCount + 1 });
         picSlotCount.push("eight");
       } else {
         this.setState({ added: "You cannot add more than 8 images!" });
@@ -281,6 +296,7 @@ class AdminAddOne extends Component {
     if (number === "one") {
       this.setState({
         one: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "one";
         })
@@ -288,6 +304,7 @@ class AdminAddOne extends Component {
     } else if (number === "two") {
       this.setState({
         two: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "two";
         })
@@ -295,6 +312,7 @@ class AdminAddOne extends Component {
     } else if (number === "three") {
       this.setState({
         three: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "three";
         })
@@ -302,6 +320,7 @@ class AdminAddOne extends Component {
     } else if (number === "four") {
       this.setState({
         four: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "four";
         })
@@ -309,6 +328,7 @@ class AdminAddOne extends Component {
     } else if (number === "five") {
       this.setState({
         five: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "five";
         })
@@ -316,6 +336,7 @@ class AdminAddOne extends Component {
     } else if (number === "six") {
       this.setState({
         six: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "six";
         })
@@ -323,6 +344,7 @@ class AdminAddOne extends Component {
     } else if (number === "seven") {
       this.setState({
         seven: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "seven";
         })
@@ -330,6 +352,7 @@ class AdminAddOne extends Component {
     } else if (number === "eight") {
       this.setState({
         eight: "",
+        totalCount: this.state.totalCount - 1,
         picSlotsUsed: this.state.picSlotsUsed.filter(function(value) {
           return value !== "eight";
         })
@@ -418,6 +441,17 @@ class AdminAddOne extends Component {
     this.props.history.push("/admin/all");
   };
 
+  deleteOldImage = image => {
+    this.setState({
+      oldImageCount: this.state.oldImageCount - 1,
+      totalCount: this.state.totalCount - 1,
+      warner: "greyME",
+      oldImages: this.state.oldImages.filter(item => {
+        return item !== image;
+      })
+    });
+  };
+
   render() {
     let pics = this.state.picSlotsUsed;
     return (
@@ -441,7 +475,7 @@ class AdminAddOne extends Component {
         >
           delete an image from array
         </Button>
-        <Container className="my-3">
+        <Container fluid className="my-3 border fluid testing">
           <div class="text-justify">
             <Button
               color="secondary"
@@ -451,28 +485,32 @@ class AdminAddOne extends Component {
             >
               Go Back
             </Button>
-            {this.props.item.item ? (
+            {this.state.item && this.state.oldImages ? (
               <Row className="justify-content-around">
-                <Col xs="3" className="User  my-3 imgScroller text-center">
+                <Col xs="3" className="User2  my-3 imgScroller text-center">
                   <h4 className="greyME  my-2">
-                    Uploaded Images:{this.state.picSlotsUsed.length}
+                    Old Images:
+                    {this.state.oldImageCount ? this.state.oldImageCount : 0}
                   </h4>
+                  <p className={this.state.warner}>
+                    Total count:{this.state.totalCount}
+                  </p>
                   <p className={this.state.warner}>
                     NOTE: Only 8(eight) images allowed per item.
                   </p>
                   <ListGroup>
                     <TransitionGroup className="shopping-list">
-                      {pics.map(number => (
+                      {this.state.oldImages.map(image => (
                         <CSSTransition
-                          key={number}
+                          key={image}
                           timeout={500}
                           classNames="fade"
                         >
-                          <ListGroupItem className=" my-3 User">
+                          <ListGroupItem className=" my-3 User2">
                             <div className="dispImgBody  mb-0">
                               <img
                                 className="dispImg"
-                                src={this.numberer(number)}
+                                src={`http://localhost:5000/${image}`}
                               />
                             </div>
                             <Button
@@ -480,7 +518,7 @@ class AdminAddOne extends Component {
                               color="danger"
                               size="sm"
                               block
-                              onClick={this.deleteimage.bind(this, number)}
+                              onClick={this.deleteOldImage.bind(this, image)}
                             >
                               Delete
                             </Button>
@@ -490,9 +528,9 @@ class AdminAddOne extends Component {
                     </TransitionGroup>
                   </ListGroup>
                 </Col>
-                <Col xs="8" className="User my-3 colorME text-center">
+                <Col xs="5" className="User2 my-3 colorME text-center">
                   <Form onSubmit={this.onSubmit}>
-                    <div className="mainImgContainer">
+                    <div className="mainImgContainer mt-3">
                       <div
                         className="mainImgBody text-center mb-3 selectableImg"
                         onClick={this.showFileUpload}
@@ -522,6 +560,7 @@ class AdminAddOne extends Component {
                         placeholder="Input Title"
                         className="roundEdges mt-1 titleBox colorME border"
                         name="item_name"
+                        value={this.state.item_name}
                         onChange={this.handleChange}
                       />
                     </div>
@@ -533,6 +572,7 @@ class AdminAddOne extends Component {
                       rows="6"
                       className=" roundEdges my-2 descriptionBox colorME"
                       name="item_description"
+                      value={this.state.item_description}
                       onChange={this.handleChange}
                     />
                     <Row className="justify-content-around  my-2">
@@ -554,6 +594,7 @@ class AdminAddOne extends Component {
                               placeholder="Input address here"
                               className="ml-auto my-0 categoryBox colorME"
                               name="address"
+                              value={this.state.address}
                               onChange={this.handleChange}
                             />
                           </Col>
@@ -573,6 +614,7 @@ class AdminAddOne extends Component {
                               placeholder="0"
                               className="ml-auto my-0 categoryBox colorME"
                               name="bedrooms"
+                              value={this.state.bedrooms}
                               onChange={this.handleChange}
                             />
                           </Col>
@@ -592,6 +634,7 @@ class AdminAddOne extends Component {
                               placeholder="0"
                               className="ml-auto my-0 categoryBox colorME"
                               name="bathrooms"
+                              value={this.state.bathrooms}
                               onChange={this.handleChange}
                             />
                           </Col>
@@ -611,6 +654,7 @@ class AdminAddOne extends Component {
                               placeholder="0"
                               className="ml-auto mt-0 mb-3 categoryBox colorME"
                               name="garage"
+                              value={this.state.garage}
                               onChange={this.handleChange}
                             />
                           </Col>
@@ -633,6 +677,7 @@ class AdminAddOne extends Component {
                               className="ml-auto mt-5 priceBox "
                               styles={{ width: "100%" }}
                               name="item_price"
+                              value={this.state.item_price}
                               onChange={this.handleChange}
                             />
                           </Col>
@@ -645,6 +690,7 @@ class AdminAddOne extends Component {
                             color="light"
                             active={this.state.rent}
                             name="rent"
+                            value={this.state.rent}
                             onClick={this.rentToggle}
                           >
                             RENT
@@ -658,6 +704,7 @@ class AdminAddOne extends Component {
                             outline
                             name="sell"
                             color="light"
+                            value={this.state.sell}
                             active={this.state.sell}
                             onClick={this.sellToggle}
                           >
@@ -678,11 +725,51 @@ class AdminAddOne extends Component {
                     </Row>
                   </Form>
                 </Col>
+                <Col xs="3" className="User2  my-3 imgScroller text-center">
+                  <h4 className="greyME  my-2">
+                    New Images:{this.state.picSlotsUsed.length}
+                  </h4>
+                  <p className={this.state.warner}>
+                    Total count:{this.state.totalCount}
+                  </p>
+                  <p className={this.state.warner}>
+                    NOTE: Only 8(eight) images allowed per item.
+                  </p>
+                  <ListGroup>
+                    <TransitionGroup className="shopping-list">
+                      {pics.map(number => (
+                        <CSSTransition
+                          key={number}
+                          timeout={500}
+                          classNames="fade"
+                        >
+                          <ListGroupItem className=" my-3 User2">
+                            <div className="dispImgBody  mb-0">
+                              <img
+                                className="dispImg"
+                                src={this.numberer(number)}
+                              />
+                            </div>
+                            <Button
+                              className="remove-btn mt-0"
+                              color="danger"
+                              size="sm"
+                              block
+                              onClick={this.deleteimage.bind(this, number)}
+                            >
+                              Delete
+                            </Button>
+                          </ListGroupItem>
+                        </CSSTransition>
+                      ))}
+                    </TransitionGroup>
+                  </ListGroup>
+                </Col>
               </Row>
             ) : (
               setTimeout(() => {
                 this.forceUpdate();
-              }, 300)
+              }, 500)
             )}
           </div>
           <Modal isOpen={this.state.modal} toggle={this.toggle}>
@@ -701,11 +788,11 @@ const mapStateToProps = state => ({
 });
 
 AdminAddOne.propTypes = {
-  addItem: PropTypes.func.isRequired,
+  updateItem: PropTypes.func.isRequired,
   getItem: PropTypes.func.isRequired
 };
 //REQUIRED FOR REDUX
 export default connect(
   mapStateToProps,
-  { addItem, getItem }
+  { updateItem, getItem }
 )(AdminAddOne); //REQUIRED FOR REDUX

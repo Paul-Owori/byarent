@@ -260,7 +260,7 @@ class UserViewOne extends Component {
                         </Col>
                       </Row>
                       <Row>
-                        <Col xs="4">Bedrooms:</Col>
+                        <Col xs="4">Bathrooms:</Col>
                         <Col xs="8">
                           {this.state.item.item_purchaseDetails.bathrooms}
                         </Col>

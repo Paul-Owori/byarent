@@ -42,10 +42,10 @@ export default function(state = initialState, action) {
       return {
         ...state,
         item: action.payload,
-        items: [
-          action.payload,
-          ...state.items.filter(item => item._id !== action.payload._id)
-        ],
+        // items: [
+        //   action.payload,
+        //   ...state.items.filter(item => item._id !== action.payload._id)
+        // ],
         loading: false
       };
     case ITEMS_LOADING:

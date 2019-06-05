@@ -101,41 +101,83 @@ router.get("/:itemID", (req, res, next) => {
     });
 });
 
-router.patch("/:itemID", (req, res, next) => {
+router.patch("/:itemID", upload, (req, res, next) => {
   const id = req.params.itemID;
 
-  /*A function that allows us to update only one value at a time 
-    where necessary instead of forcing us to update all or nothing*/
+  const imageArray = [...req.files];
+  const pathArray = imageArray.map((image, i, imageArray) => {
+    return image.path;
+  });
 
-  const updateOps = {};
-  for (const ops of req.body) {
-    //I need to insert a delete image patch!!
-    updateOps[ops.propName] = ops.value;
-  }
+  const oldImagesReceived = JSON.parse(req.body.oldImages);
+  const oldImagesInStore = [];
 
-  Item.update({ _id: id }, { $set: updateOps })
+  //Checking which images should be deleted from the ones already in the store.
+  arrayCompare = (arr1, arr2) => {
+    console.log("STARTING COMPARISON");
+    arr3 = [];
+    arr1.forEach(item => {
+      if (arr2.includes(item) === false) {
+        arr3.push(item);
+        console.log("false");
+      } else {
+        console.log("true");
+      }
+    });
+    console.log("ARR3==>>", arr3);
+    return arr3;
+  };
+
+  Item.findById(id)
     .exec()
-    .then(result => {
-      console.log(result);
-      res.status(200).json({ result });
+    .then(doc => {
+      if (doc) {
+        oldImagesInStore.push(...doc.item_image);
+      } else {
+        res.status(404).json({
+          message: "Nothing found"
+        });
+      }
     })
     .catch(err => {
-      console.log(error);
+      console.log(err);
       res.status(500).json({ error: err });
     });
-  /*So to patch an entry, you have to tailor your input from the front end into something like this;
-      To http://localhost:3000/items/5cd94a2179897f471c4dd0fd  make sure to mention the target id
-     [
-         {"propName": "name", "value": "Paul"}
-     ]
 
-     or 
+  setTimeout(() => {
+    const oldImagesToDelete = arrayCompare(oldImagesInStore, oldImagesReceived);
+    const newImageArray = [...oldImagesReceived, ...pathArray];
+    oldImagesToDelete.forEach(image => {
+      fs.unlinkSync(image);
+    });
+    let updater = {
+      item_name: req.body.item_name,
+      item_description: req.body.item_description,
+      item_price: req.body.item_price,
+      item_purchaseDetails: {
+        address: req.body.address,
+        bedrooms: req.body.bedrooms,
+        bathrooms: req.body.bathrooms,
+        garage: req.body.garage,
+        rent: req.body.rent,
+        sell: req.body.sell
+      },
+      item_image: [...newImageArray]
+    };
 
-     [
-         {"propName": "price", "value": "12000"}
-     ]
-     
-     */
+    setTimeout(() => {
+      Item.update({ _id: id }, updater)
+        .exec()
+        .then(result => {
+          console.log(result);
+          res.status(200).json({ result: result, message: "SUCCESS!" });
+        })
+        .catch(err => {
+          console.log(error);
+          res.status(500).json({ error: err });
+        });
+    }, 100);
+  }, 500);
 });
 
 router.delete("/:itemID", (req, res, next) => {
