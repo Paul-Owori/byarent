@@ -5,8 +5,10 @@ header,
   height: 100%;
 }
 
-body {
-  padding-top: 100px; /* Stops content from being hidden by navbar */
+.adminOneContainer {
+  padding-top: 100px;
+  height: 100%;
+  width: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url(../../img/COVERPAGE3.jpeg);
   -webkit-background-size: cover;

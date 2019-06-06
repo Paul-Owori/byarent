@@ -16,7 +16,6 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case GET_ITEMS: {
-      //console.log("Supposed payload=>", action.payload);
       return {
         ...state,
         items: action.payload,
@@ -42,10 +41,6 @@ export default function(state = initialState, action) {
       return {
         ...state,
         item: action.payload,
-        // items: [
-        //   action.payload,
-        //   ...state.items.filter(item => item._id !== action.payload._id)
-        // ],
         loading: false
       };
     case ITEMS_LOADING:

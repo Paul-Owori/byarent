@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { connect } from "react-redux"; //REQUIRED FOR REDUX
-import { addItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
+import { connect } from "react-redux";
+import { addItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -25,7 +25,6 @@ class AdminAddOne extends Component {
   constructor(props) {
     super(props);
     this.fileUpload = React.createRef();
-    //this.resetter = React.createRef();
     this.resetForm = React.createRef();
     this.showFileUpload = this.showFileUpload.bind(this);
     this.resetNow = this.resetNow.bind(this);
@@ -64,40 +63,8 @@ class AdminAddOne extends Component {
     this.setState({ [target.name]: target.value });
   };
 
-  telliyas = () => {
-    console.log("Local state =>", this.state);
-    console.log("Redux Store => ", this.props);
-    this.setState({
-      item_name: "",
-      item_description: "",
-      item_price: "",
-      files: "",
-      address: "",
-      bedrooms: "",
-      bathrooms: "",
-      garage: "",
-      rent: false,
-      sell: false,
-      picUpload: "",
-      picSlotsUsed: [],
-      one: "",
-      two: "",
-      three: "",
-      four: "",
-      five: "",
-      six: "",
-      seven: "",
-      eight: "",
-      warner: "greyME",
-      item: "",
-      modal: false,
-      added: ""
-    });
-  };
-
   onSubmit = e => {
     e.preventDefault();
-    console.log("STARTING SUBMISSION");
     let filearray = [];
     if (this.state.one) {
       filearray.push(this.state.one.image);
@@ -141,40 +108,42 @@ class AdminAddOne extends Component {
 
     this.props.addItem(formData);
 
-    // const newItem = {
-    //   item_name: this.state.item_name,
-    //   item_description: this.state.item_description,
-    //   item_price: this.state.item_price,
-    //   files: filearray,
-    //   address: this.state.address,
-    //   bedrooms: this.state.bedrooms,
-    //   bathrooms: this.state.bathrooms,
-    //   garage: this.state.garage,
-    //   rent: this.state.rent,
-    //   sell: this.state.sell
-    // };
-    //Adds an item via the addUser action
-    //this.props.signInUser(newItem);
     const count1 = this.props.item.items.length;
-
-    //console.log("ITEM YOU =>", formData);
-    // formData.values.forEach(value => console.log("FORMDATA VALUES", value));
-    let testArray = [];
-    for (var value of formData.values()) {
-      testArray.push(value);
-    }
-    console.log("VALUES=>", testArray);
-    let bob = [...formData.getAll("itemImage")];
-    let billy = [...bob];
-    console.log("bob", bob);
-    console.log("billy", billy);
 
     setTimeout(() => {
       const count2 = this.props.item.items.length;
       if (count2 > count1) {
         this.setState({ added: "SUCCESS!" });
         this.toggle();
-        //this.resetNow();
+
+        setTimeout(() => {
+          this.setState({
+            item_name: "",
+            item_description: "",
+            item_price: "",
+            files: "",
+            address: "",
+            bedrooms: "",
+            bathrooms: "",
+            garage: "",
+            rent: false,
+            sell: false,
+            picUpload: "",
+            picSlotsUsed: [],
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            warner: "greyME",
+            item: "",
+
+            added: ""
+          });
+        }, 1600);
       } else {
         this.setState({
           added:
@@ -183,9 +152,7 @@ class AdminAddOne extends Component {
         this.toggle();
       }
     }, 1000);
-    //this.toggle();
   };
-  //added:
 
   rentToggle = e => {
     e.preventDefault();
@@ -193,7 +160,6 @@ class AdminAddOne extends Component {
     if (this.state.sell === true) {
       this.setState({ sell: false });
     }
-    console.log("RENT WAS TOGGLED");
   };
 
   sellToggle = e => {
@@ -202,49 +168,22 @@ class AdminAddOne extends Component {
     if (this.state.rent === true) {
       this.setState({ rent: false });
     }
-    console.log("SELL WAS TOGGLED");
   };
 
   imageUpload = e => {
-    e.persist();
-    console.log("EEEE=>", e);
-    console.log("TARGET FILES=>", e.target.files);
     e.preventDefault();
-    let tempImageArray = [];
-    let fileArray = [];
     let files = e.target.files;
     let index;
-    //Processes incoming files into objects containing a dataURL and the file itself
-    let handleLoadImage = file => {
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          //fileArray.push(file);
-          tempImageArray.push({ image: file, imagePreviewUrl: reader.result });
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    console.log("FILES=>", files);
 
     for (index = 0; index < files.length; index++) {
       let file = files[index];
-      //handleLoadImage(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        //fileArray.push(file);
         this.imageHandler({ image: file, imagePreviewUrl: reader.result });
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  onFilesAdded = evt => {
-    const files = evt.target.files;
-    // if (this.props.onFilesAdded) {
-    //   const array = this.fileListToArray(files);
-    //   this.props.onFilesAdded(array);
-    // }
   };
 
   imageHandler = image => {
@@ -377,30 +316,14 @@ class AdminAddOne extends Component {
   }
   onDrop(e) {
     e.preventDefault();
-
-    let tempImageArray = [];
-    let fileArray = [];
     let files = e.dataTransfer.files;
     let index;
-    //Processes incoming files into objects containing a dataURL and the file itself
-    let handleLoadImage = file => {
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          //fileArray.push(file);
-          tempImageArray.push({ image: file, imagePreviewUrl: reader.result });
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    console.log("FILES=>", files);
 
     for (index = 0; index < files.length; index++) {
       let file = files[index];
-      //handleLoadImage(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        //fileArray.push(file);
         this.imageHandler({ image: file, imagePreviewUrl: reader.result });
       };
       reader.readAsDataURL(file);
@@ -430,26 +353,9 @@ class AdminAddOne extends Component {
   render() {
     let pics = this.state.picSlotsUsed;
     return (
-      <React.Fragment>
+      <Container fluid className="adminOneContainer">
         <h3 className="greyME text-center">Click any field to edit it</h3>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.telliyas}
-        >
-          LOG
-        </Button>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.deleteimage}
-        >
-          delete an image from array
-        </Button>
+
         <Container className="my-3">
           <div class="text-justify">
             <Button
@@ -479,6 +385,7 @@ class AdminAddOne extends Component {
                         <ListGroupItem className=" my-3 User">
                           <div className="dispImgBody  mb-0">
                             <img
+                              alt={number}
                               className="dispImg"
                               src={this.numberer(number)}
                             />
@@ -530,6 +437,7 @@ class AdminAddOne extends Component {
                       placeholder="Input Title"
                       className="roundEdges mt-1 titleBox colorME border"
                       name="item_name"
+                      value={this.state.item_name}
                       onChange={this.handleChange}
                     />
                   </div>
@@ -541,6 +449,7 @@ class AdminAddOne extends Component {
                     rows="6"
                     className=" roundEdges my-2 descriptionBox colorME"
                     name="item_description"
+                    value={this.state.item_description}
                     onChange={this.handleChange}
                   />
                   <Row className="justify-content-around  my-2">
@@ -562,6 +471,7 @@ class AdminAddOne extends Component {
                             placeholder="Input address here"
                             className="ml-auto my-0 categoryBox colorME"
                             name="address"
+                            value={this.state.address}
                             onChange={this.handleChange}
                           />
                         </Col>
@@ -581,6 +491,7 @@ class AdminAddOne extends Component {
                             placeholder="0"
                             className="ml-auto my-0 categoryBox colorME"
                             name="bedrooms"
+                            value={this.state.bedrooms}
                             onChange={this.handleChange}
                           />
                         </Col>
@@ -600,6 +511,7 @@ class AdminAddOne extends Component {
                             placeholder="0"
                             className="ml-auto my-0 categoryBox colorME"
                             name="bathrooms"
+                            value={this.state.bathrooms}
                             onChange={this.handleChange}
                           />
                         </Col>
@@ -619,6 +531,7 @@ class AdminAddOne extends Component {
                             placeholder="0"
                             className="ml-auto mt-0 mb-3 categoryBox colorME"
                             name="garage"
+                            value={this.state.garage}
                             onChange={this.handleChange}
                           />
                         </Col>
@@ -641,6 +554,7 @@ class AdminAddOne extends Component {
                             className="ml-auto mt-5 priceBox "
                             styles={{ width: "100%" }}
                             name="item_price"
+                            value={this.state.item_price}
                             onChange={this.handleChange}
                           />
                         </Col>
@@ -692,12 +606,10 @@ class AdminAddOne extends Component {
             <ModalHeader toggle={this.toggle}>{this.state.added}</ModalHeader>
           </Modal>
         </Container>
-      </React.Fragment>
+      </Container>
     );
   }
 }
-
-//export default AdminAddOne;
 
 const mapStateToProps = state => ({
   item: state.item
@@ -706,8 +618,8 @@ const mapStateToProps = state => ({
 AdminAddOne.propTypes = {
   addItem: PropTypes.func.isRequired
 };
-//REQUIRED FOR REDUX
+
 export default connect(
   mapStateToProps,
   { addItem }
-)(AdminAddOne); //REQUIRED FOR REDUX
+)(AdminAddOne);

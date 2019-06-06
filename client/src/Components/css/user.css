@@ -6,7 +6,16 @@ header,
 }
 
 body {
-  padding-top: 100px; /* Stops content from being hidden by navbar */
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url(../../img/COVERPAGE6.jpg);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.adminSignUpContainer {
+  padding-top: 60px;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url(../../img/COVERPAGE6.jpg);
   -webkit-background-size: cover;
@@ -75,4 +84,15 @@ CSS for Admin View All
   word-break: break-word;
   text-overflow: ellipsis;
   overflow: scroll;
+}
+
+.signInBtn {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  margin-left: -104.5px;
+}
+
+.bottomDiv {
+  height: 100%;
 }

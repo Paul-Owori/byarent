@@ -5,7 +5,9 @@ header,
   height: 100%;
 }
 
-body {
+.allContainer {
+  height: 100%;
+  width: 100%;
   padding-top: 100px; /* Stops content from being hidden by navbar */
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url(../../img/COVERPAGE4.jpeg) no-repeat center center fixed;
@@ -78,7 +80,7 @@ CSS for Admin View All
 }
 
 .priceAndRent {
-  width: 45%;
+  margin: 3px;
 }
 .priceAndRent2 {
   width: auto;
@@ -90,6 +92,10 @@ CSS for Admin View All
 
 .adminMenuBtn {
   width: 100%;
+}
+
+.controlOverFlow {
+  overflow-wrap: break-word;
 }
 
 .loadbody {

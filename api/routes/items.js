@@ -114,17 +114,12 @@ router.patch("/:itemID", upload, (req, res, next) => {
 
   //Checking which images should be deleted from the ones already in the store.
   arrayCompare = (arr1, arr2) => {
-    console.log("STARTING COMPARISON");
     arr3 = [];
     arr1.forEach(item => {
       if (arr2.includes(item) === false) {
         arr3.push(item);
-        console.log("false");
-      } else {
-        console.log("true");
       }
     });
-    console.log("ARR3==>>", arr3);
     return arr3;
   };
 
@@ -166,7 +161,7 @@ router.patch("/:itemID", upload, (req, res, next) => {
     };
 
     setTimeout(() => {
-      Item.update({ _id: id }, updater)
+      Item.updateMany({ _id: id }, updater)
         .exec()
         .then(result => {
           console.log(result);
@@ -178,6 +173,23 @@ router.patch("/:itemID", upload, (req, res, next) => {
         });
     }, 100);
   }, 500);
+});
+
+router.patch("/buy/:itemID", (req, res, next) => {
+  const id = req.params.itemID;
+
+  /*A function that allows us to update only one value at a time 
+    where necessary instead of forcing us to update all or nothing*/
+
+  Item.updateOne({ _id: id }, { isSold: true })
+    .exec()
+    .then(result => {
+      res.status(200).json({ result });
+    })
+    .catch(err => {
+      console.log(error);
+      res.status(500).json({ error: err });
+    });
 });
 
 router.delete("/:itemID", (req, res, next) => {

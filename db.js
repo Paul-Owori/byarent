@@ -5,6 +5,7 @@ const mockgoose = new Mockgoose(mongoose);
 
 function connect() {
   return new Promise((resolve, reject) => {
+    //If a test is runnning, the mock database, mockgoose will be used instead of mongoose
     if (process.env.NODE_ENV === "test") {
       mockgoose.prepareStorage().then(() => {
         mongoose.connect(DB_URI, { useNewUrlParser: true }).then((res, err) => {
@@ -14,7 +15,9 @@ function connect() {
           resolve();
         });
       });
-    } else {
+    }
+    //Otherwise, the actual database is used
+    else {
       mongoose.connect(DB_URI, { useNewUrlParser: true }).then((res, err) => {
         if (err) return reject(err);
         console.log("Database online");

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Button } from "reactstrap";
 import "./css/view_all.css";
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { TransitionGroup } from "react-transition-group";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
-//import { signInUser, addUser } from "../Actions/userActions"; //REQUIRED FOR REDUX
 import { getItems, getItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import PropTypes from "prop-types";
 
@@ -13,18 +12,9 @@ class UserViewAll extends Component {
     currentUser
       ? this.setState({ user: currentUser })
       : this.setState({ user: {} });
-    //setTimeout(() => {
-    //   if (this.props.user.user) {
-    //     this.setState({ user: this.props.user.user });
-    //     //sessionStorage.setItem("user", JSON.stringify(this.props.user.user));
-    //   } else if (currentUser) {
-    //     this.setState({ user: currentUser });
-    //   }
-    //  }, 100);
   }
 
   componentDidMount() {
-    // this.setState({ loading: this.props.items.loading });
     this.props.getItems();
   }
 
@@ -33,51 +23,6 @@ class UserViewAll extends Component {
     loading: false,
     items: null
   };
-
-  telliyas = () => {
-    //this.stateSetter();
-    console.log("Local state =>", this.state);
-    console.log("Redux Store => ", this.props);
-    console.log("Items?", this.props.item.items);
-    console.log(
-      "CURRENT ITEM IS SESSION STORAGE=>",
-      JSON.parse(sessionStorage.getItem("item"))
-    );
-    console.log(
-      "CURRENT USER IS SESSION STORAGE=>",
-      JSON.parse(sessionStorage.getItem("user"))
-    );
-    console.log("Just props", this.props);
-
-    console.log("HISTORY from props", this.props.history);
-    //console.log("CURRENT CART=>", JSON.parse(sessionStorage.getItem("cart")));
-
-    let oldCart = [...this.props.item.items];
-    let newCart = oldCart.filter(item => {
-      return item.item_image.length > 5;
-    });
-    console.log("old cart=>", oldCart);
-    console.log("new cart=>", newCart);
-    sessionStorage.setItem("cart", JSON.stringify(newCart));
-    //console.log("WINDOW=>", window.document);
-    // console.log(
-    //   "Attempt at image construction=>",
-    //   "http://localhost:5000/" + this.props.item.items[0].item_image[0]
-    // );
-    // let freaky = this.props.item.items.forEach(item =>
-    //   console.log("ITEM=>", item)
-    // );
-    // console.log(freaky);
-  };
-
-  // stateSetter = () => {
-  //   const currentUser = sessionStorage.getItem("user");
-  //   if (this.props.user.user) {
-  //     this.setState({ user: this.props.user.user });
-  //   } else if (currentUser) {
-  //     this.setState({ user: JSON.parse(currentUser) });
-  //   }
-  // };
 
   checker = () => {
     if (
@@ -93,8 +38,6 @@ class UserViewAll extends Component {
   };
 
   getItem = id => {
-    //this.props.getItem(id);
-    //console.log(id);
     sessionStorage.setItem("item", JSON.stringify(id));
 
     this.props.history.push(`/user/one/${id}`);
@@ -109,23 +52,20 @@ class UserViewAll extends Component {
   };
   render() {
     return (
-      <React.Fragment>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.telliyas}
-        >
-          LOG
-        </Button>
+      <Container fluid className="allContainer">
         <h2 className="colorME text-center">
-          Welcome {this.state.user ? this.state.user.user_firstName : ""}!
+          Welcome{" "}
+          {this.props.user.user
+            ? this.props.user.user.user_firstName
+            : this.state.user
+            ? this.state.user.user_firstName
+            : ""}
+          !
         </h2>
         <Container className="mb-5">
           <React.Fragment>
             <TransitionGroup>
-              {this.checker() ? (
+              {this.checker() === true ? (
                 <Row className="">
                   {this.props.item.items.map(
                     ({
@@ -189,10 +129,9 @@ class UserViewAll extends Component {
                   <h5 className="greyME font-weight-bold">
                     Try refreshing this page if it does not refresh automaticaly
                     in{" "}
-                    {this.checker()
+                    {this.checker() === true
                       ? setTimeout(() => {
                           this.forceUpdate();
-                          //window.stop();
                         }, 150)
                       : console.log("ERROR")}{" "}
                     seconds
@@ -203,7 +142,7 @@ class UserViewAll extends Component {
             </TransitionGroup>
           </React.Fragment>
         </Container>
-      </React.Fragment>
+      </Container>
     );
   }
 }
@@ -223,131 +162,3 @@ export default connect(
   mapStateToProps,
   { getItems, getItem }
 )(UserViewAll);
-
-/*
-
-<div className="dispImgBody">
-                      <img src={`http://localhost:5000/` + item_image[0]} className="dispImg" alt="" />
-                    </div>
-
-
-
-<Col md="3" className="User dark bg-dark my-3 ">
-              <div className="mt-2">
-                <h5 className="colorME font-weight-bold">item.name</h5>
-              </div>
-
-              <div className="dispImgBody">
-                <img src="" className="dispImg" alt="" />
-              </div>
-
-              <div className="mt-1">
-                <p className="text-justify colorME dispText ">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                  Cupiditate tenetur, eos id rem repudiandae, culpa quam nemo
-                  vero esse doloremque tempore voluptatibus quas? Numquam non
-                  laudantium nobis cum quas eius. Lorem ipsum, dolor sit amet
-                  consectetur adipisicing elit. Cupiditate tenetur, eos id rem
-                  repudiandae, culpa quam nemo vero esse doloremque tempore
-                  voluptatibus quas? Numquam non laudantium nobis cum quas eius.
-                </p>
-                <Button color="warning" className="mb-3 priceAndRent ">
-                  $500
-                </Button>
-                <Button color="info" className="mb-3 priceAndRent">
-                  Rent
-                </Button>
-                <Button color="light" block className="mb-3 seeMore ">
-                  See More
-                </Button>
-              </div>
-            </Col>
-
-
-
-
-
-            const { items } = this.props.item.items;
-    return (
-      <React.Fragment>
-        <h3 className="greyME text-center">Welcome!</h3>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.telliyas}
-        >
-          WHATCHUGAT NIGGA
-        </Button>
-        <Container>
-          <Row>
-            <TransitionGroup>
-              {items.map(
-                ({
-                  _id,
-                  item_name,
-                  item_description,
-                  item_price,
-                  item_image,
-                  item_purchaseDetails
-                }) => (
-                  <Col md="3" className="User dark bg-dark my-3 ">
-                    <div className="mt-2">
-                      <h5 className="colorME font-weight-bold">{item_name}</h5>
-                    </div>
-
-                    <div className="dispImgBody">
-                      <img src="" className="dispImg" alt="" />
-                    </div>
-
-                    <div className="mt-1">
-                      <p className="text-justify colorME dispText ">
-                        {item_description}
-                      </p>
-                      <Button
-                        color="warning"
-                        className="mb-3 priceAndRent "
-                      >
-                        {item_price}
-                      </Button>
-                      <Button color="info" className="mb-3 priceAndRent">
-                        {this.rentOrBuy(item_purchaseDetails)}
-                      </Button>
-                      <Button color="light" block className="mb-3 seeMore ">
-                        See More
-                      </Button>
-                    </div>
-                  </Col>
-                )
-              )}
-            </TransitionGroup>
-          </Row>
-        </Container>
-      </React.Fragment>
-    );
-  }
-}
-
-
-
-<Container>
-          <Row>
-            <TransitionGroup>
-                  <Col md="3" className="User dark bg-dark my-3 ">
-                    <div className="mt-2">
-                      <h5 className="colorME font-weight-bold">{item_name}</h5>
-                    </div>
-
-                    <div className="dispImgBody">
-                      <img src="" className="dispImg" alt="" />
-                    </div>
-                    </div>
-                  </Col>
-                )
-              )}
-            </TransitionGroup>
-          </Row>
-          </Container>
-
-*/

@@ -24,19 +24,45 @@ router.get("/", (req, res, next) => {
 });
 
 router.post("/", (req, res, next) => {
+  console.log("ORDERS RECEIVED BY BACKEND==>>", req.body);
   //This creates a new order object in the database using the order model
   const order = new Order({
     _id: new mongoose.Types.ObjectId(),
     item_name: req.body.name,
+    rentOrSale: req.body.rentOrSale,
     item_price: req.body.price,
     item_id: req.body.id,
-    user_id: req.body.user
+    user_id: req.body.user_id,
+    date: req.body.date
   });
   //This saves the order in the database
   order
     .save()
     .then(result => {
       res.status(201).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
+});
+
+router.get("/user/:userID", (req, res, next) => {
+  const id = req.params.userID;
+  console.log("Orders have been requested for user ==>>", id);
+  Order.find({ user_id: id })
+    .exec()
+    .then(docs => {
+      if (docs.length > 0) {
+        console.log(docs);
+        res.status(200).json(docs);
+      } else {
+        res.status(404).json({
+          message: "No entries found."
+        });
+      }
     })
     .catch(err => {
       console.log(err);

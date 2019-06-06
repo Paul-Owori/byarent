@@ -5,10 +5,12 @@ header,
   height: 100%;
 }
 
-body {
-  padding-top: 100px; /* Stops content from being hidden by navbar */
+.userOneContainer {
+  padding-top: 50px;
+  height: 100%;
+  width: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-    url(../../img/COVERPAGE3.jpeg);
+    url(../../img/COVERPAGE5.jpeg);
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;

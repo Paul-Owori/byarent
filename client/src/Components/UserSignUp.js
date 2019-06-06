@@ -6,7 +6,9 @@ import {
   Button,
   Form,
   FormGroup,
-  Input
+  Input,
+  Modal,
+  ModalHeader
 } from "reactstrap";
 import "./css/user.css";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
@@ -14,10 +16,6 @@ import { signInUser, addUser } from "../Actions/userActions"; //REQUIRED FOR RED
 import PropTypes from "prop-types";
 
 class UserSignUp extends Component {
-  // componentDidMount() {
-  //   this.props.addUser(); //REQUIRED FOR REDUX
-  //   this.props.signInUser(); //REQUIRED FOR REDUX
-  // }
   state = {
     loading: false,
     firstName: "",
@@ -27,75 +25,92 @@ class UserSignUp extends Component {
     signUpPassword2: "",
     signInEmail: "",
     signInPassword: "",
-    user: ""
+    user: "",
+    warnModalText: "",
+    warnModal: false
   };
 
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
 
-  telliyas = () => {
-    console.log("Local state =>", this.state);
-    console.log("Redux Store => ", this.props);
-  };
-
-  // user.user_firstName = req.body.firstName;
-  // user.user_lastName = req.body.lastName;
-  // user.user_email = req.body.email;
-  // user.setPassword(req.body.password);
-
   onSignUp = e => {
     e.preventDefault();
-    console.log("STARTING SIGNUP");
+
     if (this.state.signUpPassword1 === this.state.signUpPassword2) {
-      const newUser = {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        email: this.state.signUpEmail,
-        password: this.state.signUpPassword2
-      };
-      console.log("USER YOU =>", newUser);
-      //Adds an item via the addItem action
-      this.props.addUser(newUser);
+      if (
+        this.state.firstName &&
+        this.state.lastName &&
+        this.state.signUpEmail &&
+        this.state.signUpPassword2
+      ) {
+        const newUser = {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          email: this.state.signUpEmail,
+          password: this.state.signUpPassword2
+        };
+
+        this.props.addUser(newUser);
+        this.setState({
+          firstName: "",
+          lastName: "",
+          signUpEmail: "",
+          signUpPassword2: "",
+          signUpPassword1: ""
+        });
+      } else {
+        this.setState({
+          warnModalText: "Make sure to fill in all fields before you submit"
+        });
+        setTimeout(() => {
+          this.warnModaltoggle();
+        }, 100);
+      }
     } else {
-      alert("Passwords do not match!");
+      this.setState({ warnModalText: "Passwords do not match!" });
+      setTimeout(() => {
+        this.warnModaltoggle();
+      }, 100);
     }
   };
 
   onSignIn = e => {
     e.preventDefault();
-    console.log("STARTING SIGNIN");
+
     const signInUser = {
       email: this.state.signInEmail,
       password: this.state.signInPassword
     };
-    //Adds an item via the addUser action
     this.props.signInUser(signInUser);
-    console.log("USER YOU =>", signInUser);
-    //TEST!!
-    this.props.history.push("/user/all");
-    //Then close the moddle
-    //this.toggle();
+    setTimeout(() => {
+      if (this.props.user.user && this.props.user.user.user_firstName) {
+        this.props.history.push("/user/all");
+      } else {
+        this.setState({ warnModalText: "Login Error! Please try again" });
+        setTimeout(() => {
+          this.warnModaltoggle();
+        }, 100);
+      }
+    }, 300);
+  };
+
+  warnModaltoggle = () => {
+    this.setState({ warnModal: !this.state.warnModal });
+    setTimeout(() => {
+      this.setState({ warnModal: !this.state.warnModal });
+    }, 1500);
   };
 
   render() {
     return (
-      <React.Fragment>
+      <Container fluid className="adminSignUpContainer">
         <p>
           <h1 className="font-weight-light colorME text-center my-5">
             Welcome!
           </h1>
-          <Button
-            type="button"
-            className="mt-5 mb-3 "
-            color="light"
-            block
-            onClick={this.telliyas}
-          >
-            WHATCHUGAT NIGGA
-          </Button>
         </p>
-        <Container className="text-center">
+        <Container className="text-center mb-5">
           <Row className="justify-content-center ">
             <Col md="4" className="px-lg-5 User">
               <h3 className="font-weight-bold colorME text-center my-3">
@@ -112,7 +127,7 @@ class UserSignUp extends Component {
                     onChange={this.handleChange}
                   />
                 </FormGroup>
-                <FormGroup>
+                <FormGroup className="mb-5 ">
                   <Input
                     type="password"
                     className="form-control"
@@ -122,17 +137,16 @@ class UserSignUp extends Component {
                     onChange={this.handleChange}
                   />
                 </FormGroup>
-                <Button color="light" block type="submit" className="mt-5 mb-3">
+
+                <Button
+                  color="light"
+                  block
+                  type="submit"
+                  className="mb-3 align-bottom"
+                >
                   SignIn
                 </Button>
               </Form>
-              <p className="colorME">OR</p>
-              <Button color="primary " block className="mt-3 mb-3">
-                Continue with Facebook
-              </Button>
-              <Button color="danger" block className="mt-3 mb-3">
-                Continue with Google
-              </Button>
             </Col>
             <Col md="2">
               <h3 className="font-weight-bold colorME text-center my-3">OR</h3>
@@ -149,6 +163,7 @@ class UserSignUp extends Component {
                     id="firstName"
                     name="firstName"
                     placeholder="First Name"
+                    value={this.state.firstName}
                     onChange={this.handleChange}
                   />
                 </FormGroup>
@@ -158,6 +173,7 @@ class UserSignUp extends Component {
                     className="form-control"
                     id="lastName"
                     name="lastName"
+                    value={this.state.lastName}
                     placeholder="Last Name"
                     onChange={this.handleChange}
                   />
@@ -168,6 +184,7 @@ class UserSignUp extends Component {
                     className="form-control"
                     id="signUpEmail"
                     name="signUpEmail"
+                    value={this.state.signUpEmail}
                     placeholder="Email"
                     onChange={this.handleChange}
                   />
@@ -178,6 +195,7 @@ class UserSignUp extends Component {
                     className="form-control"
                     id="signUpPassword1"
                     name="signUpPassword1"
+                    value={this.state.signUpPassword1}
                     placeholder="Password"
                     onChange={this.handleChange}
                   />
@@ -188,48 +206,39 @@ class UserSignUp extends Component {
                     className="form-control"
                     id="signUpPassword2"
                     name="signUpPassword2"
+                    value={this.state.signUpPassword2}
                     placeholder="Confirm Password"
                     onChange={this.handleChange}
                   />
                 </FormGroup>
-                <Button
-                  type="submit"
-                  className="mt-5 mb-3 "
-                  color="light"
-                  block
-                >
+                <Button type="submit" className="mt-5 mb-3" color="light" block>
                   SignUp
                 </Button>
               </Form>
             </Col>
           </Row>
         </Container>
-      </React.Fragment>
+        <Modal isOpen={this.state.warnModal} toggle={this.warnModaltoggle}>
+          <ModalHeader toggle={this.warnModaltoggle}>
+            {this.state.warnModalText}
+          </ModalHeader>
+        </Modal>
+      </Container>
     );
   }
 }
 
-//export default UserSignUp;
 UserSignUp.propTypes = {
   addUser: PropTypes.func.isRequired,
   signInUser: PropTypes.func.isRequired,
   users: PropTypes.array.isRequired,
   user: PropTypes.object.isRequired
-  //item: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   user: state.user
-}); //REQUIRED FOR REDUX
+});
 export default connect(
   mapStateToProps,
   { addUser, signInUser }
-)(UserSignUp); //REQUIRED FOR REDUX
-
-// const mapStateToProps = state => ({
-//   item: state.item
-// }); //REQUIRED FOR REDUX
-// export default connect(
-//   mapStateToProps,
-//   { addUser }
-// )(ItemModal); //REQUIRED FOR REDUX
+)(UserSignUp);

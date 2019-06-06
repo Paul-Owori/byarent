@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { connect } from "react-redux"; //REQUIRED FOR REDUX
-import { updateItem, getItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
+import { connect } from "react-redux";
+import { updateItem, getItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -25,7 +25,6 @@ class AdminAddOne extends Component {
   constructor(props) {
     super(props);
     this.fileUpload = React.createRef();
-    //this.resetter = React.createRef();
     this.resetForm = React.createRef();
     this.showFileUpload = this.showFileUpload.bind(this);
     this.resetNow = this.resetNow.bind(this);
@@ -95,11 +94,6 @@ class AdminAddOne extends Component {
     this.setState({ [target.name]: target.value });
   };
 
-  telliyas = () => {
-    console.log("Local state =>", this.state);
-    console.log("Redux Store => ", this.props);
-  };
-
   onSubmit = e => {
     e.preventDefault();
     console.log("STARTING SUBMISSION");
@@ -143,44 +137,14 @@ class AdminAddOne extends Component {
     for (let i = 0; i < filearray.length; i++) {
       formData.append("itemImage", filearray[i]);
     }
-    // this.setState({ item: formData });
 
     this.props.updateItem(formData, this.state.item._id);
-
-    // const newItem = {
-    //   item_name: this.state.item_name,
-    //   item_description: this.state.item_description,
-    //   item_price: this.state.item_price,
-    //   files: filearray,
-    //   address: this.state.address,
-    //   bedrooms: this.state.bedrooms,
-    //   bathrooms: this.state.bathrooms,
-    //   garage: this.state.garage,
-    //   rent: this.state.rent,
-    //   sell: this.state.sell
-    // };
-    //Adds an item via the addUser2 action
-    //this.props.signInUser(newItem);
-    //const count1 = this.props.item.items.length;
-
-    //console.log("ITEM YOU =>", formData);
-    // formData.values.forEach(value => console.log("FORMDATA VALUES", value));
-    let testArray = [];
-    for (var value of formData.values()) {
-      testArray.push(value);
-    }
-    console.log("VALUES=>", testArray);
-    let bob = [...formData.getAll("itemImage")];
-    let billy = [...bob];
-    console.log("bob", bob);
-    console.log("billy", billy);
 
     setTimeout(() => {
       const success = this.props.item.item.message;
       if (success === "SUCCESS!") {
         this.setState({ added: "SUCCESS!" });
         this.toggle();
-        //this.resetNow();
       } else {
         this.setState({
           added:
@@ -189,9 +153,7 @@ class AdminAddOne extends Component {
         this.toggle();
       }
     }, 1000);
-    //this.toggle();
   };
-  //added:
 
   rentToggle = e => {
     e.preventDefault();
@@ -199,7 +161,6 @@ class AdminAddOne extends Component {
     if (this.state.sell === true) {
       this.setState({ sell: false });
     }
-    console.log("RENT WAS TOGGLED");
   };
 
   sellToggle = e => {
@@ -208,49 +169,23 @@ class AdminAddOne extends Component {
     if (this.state.rent === true) {
       this.setState({ rent: false });
     }
-    console.log("SELL WAS TOGGLED");
   };
 
   imageUpload = e => {
     e.persist();
-    console.log("EEEE=>", e);
-    console.log("TARGET FILES=>", e.target.files);
     e.preventDefault();
-    let tempImageArray = [];
-    let fileArray = [];
     let files = e.target.files;
     let index;
-    //Processes incoming files into objects containing a dataURL and the file itself
-    let handleLoadImage = file => {
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          //fileArray.push(file);
-          tempImageArray.push({ image: file, imagePreviewUrl: reader.result });
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    console.log("FILES=>", files);
 
     for (index = 0; index < files.length; index++) {
       let file = files[index];
-      //handleLoadImage(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
-        //fileArray.push(file);
         this.imageHandler({ image: file, imagePreviewUrl: reader.result });
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  onFilesAdded = evt => {
-    const files = evt.target.files;
-    // if (this.props.onFilesAdded) {
-    //   const array = this.fileListToArray(files);
-    //   this.props.onFilesAdded(array);
-    // }
   };
 
   imageHandler = image => {
@@ -392,29 +327,13 @@ class AdminAddOne extends Component {
   onDrop(e) {
     e.preventDefault();
 
-    let tempImageArray = [];
-    let fileArray = [];
     let files = e.dataTransfer.files;
     let index;
-    //Processes incoming files into objects containing a dataURL and the file itself
-    let handleLoadImage = file => {
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          //fileArray.push(file);
-          tempImageArray.push({ image: file, imagePreviewUrl: reader.result });
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-    console.log("FILES=>", files);
 
     for (index = 0; index < files.length; index++) {
       let file = files[index];
-      //handleLoadImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        //fileArray.push(file);
         this.imageHandler({ image: file, imagePreviewUrl: reader.result });
       };
       reader.readAsDataURL(file);
@@ -455,27 +374,10 @@ class AdminAddOne extends Component {
   render() {
     let pics = this.state.picSlotsUsed;
     return (
-      <React.Fragment>
+      <Container fluid className="adminOneContainer">
         <h3 className="greyME text-center">Click any field to edit it</h3>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.telliyas}
-        >
-          LOG
-        </Button>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.deleteimage}
-        >
-          delete an image from array
-        </Button>
-        <Container fluid className="my-3 border fluid testing">
+
+        <Container fluid className="my-3 testing">
           <div class="text-justify">
             <Button
               color="secondary"
@@ -509,6 +411,7 @@ class AdminAddOne extends Component {
                           <ListGroupItem className=" my-3 User2">
                             <div className="dispImgBody  mb-0">
                               <img
+                                alt=""
                                 className="dispImg"
                                 src={`http://localhost:5000/${image}`}
                               />
@@ -746,6 +649,7 @@ class AdminAddOne extends Component {
                           <ListGroupItem className=" my-3 User2">
                             <div className="dispImgBody  mb-0">
                               <img
+                                alt=""
                                 className="dispImg"
                                 src={this.numberer(number)}
                               />
@@ -776,12 +680,10 @@ class AdminAddOne extends Component {
             <ModalHeader toggle={this.toggle}>{this.state.added}</ModalHeader>
           </Modal>
         </Container>
-      </React.Fragment>
+      </Container>
     );
   }
 }
-
-//export default AdminAddOne;
 
 const mapStateToProps = state => ({
   item: state.item
@@ -791,8 +693,8 @@ AdminAddOne.propTypes = {
   updateItem: PropTypes.func.isRequired,
   getItem: PropTypes.func.isRequired
 };
-//REQUIRED FOR REDUX
+
 export default connect(
   mapStateToProps,
   { updateItem, getItem }
-)(AdminAddOne); //REQUIRED FOR REDUX
+)(AdminAddOne);

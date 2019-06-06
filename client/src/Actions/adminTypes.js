@@ -5,3 +5,4 @@ export const ADD_ADMIN = "ADD_ADMIN";
 export const DELETE_ADMIN = "DELETE_ADMIN";
 export const ADMINS_LOADING = "ADMINS_LOADING";
 export const SIGNIN_ADMIN = "SIGNIN_ADMIN";
+export const LOGOUT_ADMIN = "LOGOUT_ADMIN";

@@ -27,6 +27,7 @@ router.get("/", (req, res, next) => {
 //To signup a new admin
 router.post("/signup", (req, res, next) => {
   let admin = new Admin();
+
   admin.admin_firstName = req.body.firstName;
   admin.admin_lastName = req.body.lastName;
   admin.admin_email = req.body.email;

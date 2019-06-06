@@ -5,13 +5,15 @@ import {
   DELETE_USER,
   UPDATE_USER,
   USERS_LOADING,
-  SIGNIN_USER
+  SIGNIN_USER,
+  LOGOUT_USER
 } from "../Actions/userTypes";
 
 const initialState = {
   users: [],
   user: {},
-  loading: false
+  loading: false,
+  loggedIn: false
 };
 
 export default function(state = initialState, action) {
@@ -20,6 +22,8 @@ export default function(state = initialState, action) {
       return { ...state, users: action.payload, loading: false };
     case GET_USER:
       return { ...state, user: action.payload, loading: false };
+    case LOGOUT_USER:
+      return { ...state, user: {}, loading: false, loggedIn: false };
     case DELETE_USER:
       return {
         ...state,
@@ -36,7 +40,8 @@ export default function(state = initialState, action) {
       return {
         ...state,
         user: action.payload,
-        loading: false
+        loading: false,
+        loggedIn: true
       };
     case UPDATE_USER:
       return {

@@ -6,7 +6,6 @@ header,
 }
 
 body {
-  padding-top: 100px; /* Stops content from being hidden by navbar */
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url(../../img/COVERPAGE6.jpg);
   -webkit-background-size: cover;

@@ -40,5 +40,3 @@ function App() {
 }
 
 export default App;
-
-//<Route path="/user/one" component={UserViewOne} />

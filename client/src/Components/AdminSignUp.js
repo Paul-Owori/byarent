@@ -7,10 +7,12 @@ import {
   Button,
   Form,
   FormGroup,
-  Input
+  Input,
+  Modal,
+  ModalHeader
 } from "reactstrap";
-import { connect } from "react-redux"; //REQUIRED FOR REDUX
-import { addAdmin } from "../Actions/adminActions"; //REQUIRED FOR REDUX
+import { connect } from "react-redux";
+import { addAdmin } from "../Actions/adminActions";
 import PropTypes from "prop-types";
 
 class AdminSignUp extends Component {
@@ -19,7 +21,9 @@ class AdminSignUp extends Component {
     lastName: "",
     signUpEmail: "",
     signUpPassword: "",
-    signUpPassword2: ""
+    signUpPassword2: "",
+    warnModalText: "",
+    warnModal: false
   };
 
   handleChange = ({ target }) => {
@@ -31,26 +35,62 @@ class AdminSignUp extends Component {
     console.log("Redux Store => ", this.props);
   };
 
+  warnModaltoggle = () => {
+    this.setState({ warnModal: !this.state.warnModal });
+    setTimeout(() => {
+      this.setState({ warnModal: !this.state.warnModal });
+    }, 1500);
+  };
+
   onSignUp = e => {
     e.preventDefault();
-    console.log("STARTING SIGNUP");
+
     if (this.state.signUpPassword === this.state.signUpPassword2) {
-      const newAdmin = {
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-        email: this.state.signUpEmail,
-        password: this.state.signUpPassword2
-      };
-      console.log("USER YOU =>", newAdmin);
-      //Adds an item via the addItem action
-      this.props.addAdmin(newAdmin);
+      if (
+        this.state.firstName &&
+        this.state.lastName &&
+        this.state.signUpEmail &&
+        this.state.signUpPassword2
+      ) {
+        const newAdmin = {
+          firstName: this.state.firstName,
+          lastName: this.state.lastName,
+          email: this.state.signUpEmail,
+          password: this.state.signUpPassword2
+        };
+
+        this.props.addAdmin(newAdmin);
+        this.setState({
+          firstName: "",
+          lastName: "",
+          signUpEmail: "",
+          signUpPassword: "",
+          signUpPassword2: ""
+        });
+        this.setState({
+          warnModalText: `Success! You can now try logging in`
+        });
+        setTimeout(() => {
+          this.warnModaltoggle();
+        }, 100);
+      } else {
+        this.setState({
+          warnModalText: "Make sure to fill in all fields before you submit!"
+        });
+        setTimeout(() => {
+          this.warnModaltoggle();
+        }, 100);
+      }
     } else {
-      alert("Passwords do not match!");
+      this.setState({ warnModalText: "Passwords do not match!" });
+      setTimeout(() => {
+        this.warnModaltoggle();
+      }, 100);
     }
   };
   render() {
     return (
-      <React.Fragment>
+      <Container fluid className="adminSignUpContainer">
         <p>
           <h1 class="font-weight-light colorME text-center my-3">
             Administrator Signup
@@ -61,15 +101,6 @@ class AdminSignUp extends Component {
             *This is a restricted page*
           </small>
         </p>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.telliyas}
-        >
-          WHATCHUGAT NIGGA
-        </Button>
         <Container>
           <Row className="justify-content-center ">
             <Col md="4" className="px-lg-5 User">
@@ -81,6 +112,7 @@ class AdminSignUp extends Component {
                     className="form-control"
                     id="firstName"
                     name="firstName"
+                    value={this.state.firstName}
                     placeholder="First Name"
                     onChange={this.handleChange}
                   />
@@ -91,6 +123,7 @@ class AdminSignUp extends Component {
                     className="form-control"
                     id="lastName"
                     name="lastName"
+                    value={this.state.lastName}
                     placeholder="Last Name"
                     onChange={this.handleChange}
                   />
@@ -101,6 +134,7 @@ class AdminSignUp extends Component {
                     className="form-control"
                     id="signUpEmail"
                     name="signUpEmail"
+                    value={this.state.signUpEmail}
                     placeholder="Email"
                     onChange={this.handleChange}
                   />
@@ -111,6 +145,7 @@ class AdminSignUp extends Component {
                     className="form-control"
                     id="signUpPassword"
                     name="signUpPassword"
+                    value={this.state.signUpPassword}
                     placeholder="Password"
                     onChange={this.handleChange}
                   />
@@ -121,6 +156,7 @@ class AdminSignUp extends Component {
                     className="form-control"
                     id="signUpPassword2"
                     name="signUpPassword2"
+                    value={this.state.signUpPassword2}
                     placeholder="Confirm Password"
                     onChange={this.handleChange}
                   />
@@ -137,7 +173,12 @@ class AdminSignUp extends Component {
             </Col>
           </Row>
         </Container>
-      </React.Fragment>
+        <Modal isOpen={this.state.warnModal} toggle={this.warnModaltoggle}>
+          <ModalHeader toggle={this.warnModaltoggle}>
+            {this.state.warnModalText}
+          </ModalHeader>
+        </Modal>
+      </Container>
     );
   }
 }
@@ -145,13 +186,12 @@ class AdminSignUp extends Component {
 AdminSignUp.propTypes = {
   addAdmin: PropTypes.func.isRequired,
   admin: PropTypes.object.isRequired
-  //item: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   admin: state.admin
-}); //REQUIRED FOR REDUX
+});
 export default connect(
   mapStateToProps,
   { addAdmin }
-)(AdminSignUp); //REQUIRED FOR REDUX
+)(AdminSignUp);

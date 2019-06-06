@@ -4,7 +4,7 @@ const crypto = require("crypto");
 
 //Creates a schema
 const adminSchema = new Schema({
-  _id: mongoose.Schema.Types.ObjectId,
+  admin_id: mongoose.Schema.Types.ObjectId,
   admin_firstName: {
     type: String,
     required: true

@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import "./css/user_viewOne.css";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
 import { getItem, getItems } from "../Actions/itemActions"; //REQUIRED FOR REDUX
+import { preOrder } from "../Actions/orderActions"; //REQUIRED FOR REDUX
+
 import PropTypes from "prop-types";
 
 import {
@@ -47,28 +49,6 @@ class UserViewOne extends Component {
     } else {
       return false;
     }
-  };
-
-  telliyas = () => {
-    //this.stateSetter();
-    console.log("Local state =>", this.state);
-    console.log("Redux Store => ", this.props);
-    //console.log("Items?", this.props.item.items);
-    console.log(
-      "CURRENT ITEM IN SESSION STORAGE=>",
-      JSON.parse(sessionStorage.getItem("item"))
-    );
-    console.log("Just props", this.props);
-
-    // console.log("HISTORY from props", this.props.history);
-    // console.log(
-    //   "Attempt at image construction=>",
-    //   "http://localhost:5000/" + this.props.item.items[0].item_image[0]
-    // );
-    // let freaky = this.props.item.items.forEach(item =>
-    //   console.log("ITEM=>", item)
-    // );
-    // console.log(freaky);
   };
 
   setActiveImage = image => {
@@ -118,16 +98,8 @@ class UserViewOne extends Component {
 
   addToCart = () => {
     if (this.state.user && this.state.user.user_firstName) {
-      let cart = [];
-      cart.push(this.state.item);
+      this.props.preOrder(this.state.item);
 
-      if (sessionStorage.getItem("cart") === null) {
-        sessionStorage.setItem("cart", JSON.stringify(cart));
-      } else {
-        let oldCart = JSON.parse(sessionStorage.getItem("cart"));
-        let newCart = [...oldCart, ...cart];
-        sessionStorage.setItem("cart", JSON.stringify(newCart));
-      }
       this.setState({
         warnInfo: `${this.state.item.item_name} added to cart`
       });
@@ -153,16 +125,7 @@ class UserViewOne extends Component {
 
   render() {
     return (
-      <React.Fragment>
-        <Button
-          type="button"
-          className="mt-5 mb-3 "
-          color="light"
-          block
-          onClick={this.telliyas}
-        >
-          LOG
-        </Button>
+      <Container fluid className="userOneContainer">
         <Button
           type="button"
           className="mt-5 mb-3 backButton "
@@ -186,6 +149,7 @@ class UserViewOne extends Component {
                       key={this.state.item.item_image.indexOf(item)}
                     >
                       <img
+                        alt={item}
                         src={"http://localhost:5000/" + item}
                         onClick={this.assignIndex.bind(
                           this,
@@ -211,6 +175,9 @@ class UserViewOne extends Component {
                       </Col>
                       <Col xs="10">
                         <img
+                          alt={
+                            this.state.item.item_image[this.state.activeIndex]
+                          }
                           src={
                             "http://localhost:5000/" +
                             this.state.item.item_image[this.state.activeIndex]
@@ -295,14 +262,15 @@ class UserViewOne extends Component {
                 </Col>
               </Row>
             </Container>
+          ) : this.state.item && this.state.item.item_name ? (
+            setTimeout(() => {
+              this.forceUpdate();
+              //window.stop();
+            }, 150)
           ) : (
             setTimeout(() => {
               this.forceUpdate();
-              setTimeout(() => {
-                this.forceUpdate();
-              }, 200);
-              //window.stop();
-            }, 150)
+            }, 200)
           )}
           <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle}>
             <ModalHeader toggle={this.toggle}>
@@ -311,7 +279,7 @@ class UserViewOne extends Component {
             <ModalBody>
               <img
                 src={"http://localhost:5000/" + this.state.activeImage}
-                alt="Active Image"
+                alt={this.state.activeImage}
                 className="activeImage"
               />
             </ModalBody>
@@ -326,24 +294,27 @@ class UserViewOne extends Component {
             </ModalHeader>
           </Modal>
         </React.Fragment>
-      </React.Fragment>
+      </Container>
     );
   }
 }
 
 const mapStateToProps = state => ({
   item: state.item,
-  user: state.user
+  user: state.user,
+  order: state.order
 });
 
 UserViewOne.propTypes = {
   getItem: PropTypes.func.isRequired,
   getItems: PropTypes.func.isRequired,
+  preOrder: PropTypes.func.isRequired,
   item: PropTypes.object,
-  user: PropTypes.object
+  user: PropTypes.object,
+  order: PropTypes.object
 };
 //REQUIRED FOR REDUX
 export default connect(
   mapStateToProps,
-  { getItem, getItems }
+  { getItem, getItems, preOrder }
 )(UserViewOne);

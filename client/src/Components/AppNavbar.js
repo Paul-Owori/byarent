@@ -17,98 +17,193 @@ import {
   Button
 } from "reactstrap";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-
+import { userLogout } from "../Actions/userActions"; //REQUIRED FOR REDUX
+import { adminLogout } from "../Actions/adminActions"; //REQUIRED FOR REDUX
+import {
+  addOrders,
+  deletePreOrder,
+  getOrdersUser
+} from "../Actions/orderActions"; //REQUIRED FOR REDUX
+import { buyItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
 import PropTypes from "prop-types";
-
 import "./css/navbar.css";
 
 class AppNavbar extends Component {
   state = {
-    user: JSON.parse(sessionStorage.getItem("user")),
-    admin: JSON.parse(sessionStorage.getItem("admin")),
-    //admin: this.props.admin.admin,
-    cart: JSON.parse(sessionStorage.getItem("cart")),
-    loggedIn: sessionStorage.getItem("user") === null ? false : true,
+    user: [],
+    admin: [],
+    orders: [],
+    pre_orders: [],
+    cart: [],
+    cartColor: "",
+    fav_color: "",
+    loggedIn: "",
     isOpen: false,
-    modal: false
+    modal: false,
+    fav_modal: false
   };
+  componentDidMount() {
+    let currentUser = JSON.parse(sessionStorage.getItem("user"));
+    if (currentUser && currentUser._id) {
+      this.props.getOrdersUser(currentUser._id);
+    }
+
+    this.setState({
+      user: sessionStorage.getItem("user")
+        ? JSON.parse(sessionStorage.getItem("user"))
+        : "",
+      admin: sessionStorage.getItem("admin")
+        ? JSON.parse(sessionStorage.getItem("admin"))
+        : "",
+      cart: sessionStorage.getItem("cart")
+        ? JSON.parse(sessionStorage.getItem("cart"))
+        : [],
+      pre_orders:
+        this.props.pre_orders && this.props.pre_orders.length
+          ? this.props.pre_orders
+          : JSON.parse(sessionStorage.getItem("cart")),
+      loggedIn: sessionStorage.getItem("user") === null ? false : true,
+      orders: sessionStorage.getItem("orders")
+        ? JSON.parse(sessionStorage.getItem("orders"))
+        : [],
+      cartColor:
+        (this.props.pre_orders && this.props.pre_orders.length) ||
+        (JSON.parse(sessionStorage.getItem("cart")) &&
+          JSON.parse(sessionStorage.getItem("cart")).length)
+          ? "fas fa-shopping-cart cart fa-lg"
+          : "fas fa-shopping-cart fa-lg",
+      fav_color:
+        (this.props.orders && this.props.orders.length) ||
+        (JSON.parse(sessionStorage.getItem("orders")) &&
+          JSON.parse(sessionStorage.getItem("orders")).length)
+          ? "fas fa-heart redME fa-lg"
+          : "fas fa-heart fa-lg"
+    });
+  }
+
+  componentWillReceiveProps() {
+    this.setState({
+      user: sessionStorage.getItem("user")
+        ? JSON.parse(sessionStorage.getItem("user"))
+        : "",
+      admin: sessionStorage.getItem("admin")
+        ? JSON.parse(sessionStorage.getItem("admin"))
+        : "",
+      cart: sessionStorage.getItem("cart")
+        ? JSON.parse(sessionStorage.getItem("cart"))
+        : [],
+      pre_orders:
+        this.props.pre_orders && this.props.pre_orders.length
+          ? this.props.pre_orders
+          : JSON.parse(sessionStorage.getItem("cart")),
+      loggedIn: sessionStorage.getItem("user") === null ? false : true,
+      orders:
+        this.props.order.orders && this.props.order.orders.length
+          ? this.props.order.orders
+          : sessionStorage.getItem("orders")
+          ? JSON.parse(sessionStorage.getItem("orders"))
+          : [],
+      cartColor:
+        (this.props.pre_orders && this.props.pre_orders.length) ||
+        sessionStorage.getItem("cart")
+          ? "fas fa-shopping-cart cart"
+          : "fas fa-shopping-cart"
+    });
+  }
 
   toggle = () => {
     this.setState({ isOpen: !this.state.isOpen });
   };
 
   modalToggle = () => {
-    this.setState({ modal: !this.state.modal });
+    setTimeout(() => {
+      this.setState({ modal: !this.state.modal });
+    }, 50);
+  };
+
+  fav_modalToggle = () => {
+    setTimeout(() => {
+      this.setState({ fav_modal: !this.state.fav_modal });
+    }, 50);
   };
 
   logOut = () => {
-    //this.setState({ loggedIn: false });
-    // console.log("Redux state=>", this.props);
-    // console.log("Local Storage=>", this.state);
-    // console.log(
-    //   "Session storage user =>",
-    //   JSON.parse(sessionStorage.getItem("user"))
-    // );
-    // console.log("HISTORY from props", this.props.history);
-    // console.log("Just props", this.props);
+    this.props.userLogout();
+    this.props.adminLogout();
 
     const user = sessionStorage.getItem("user");
     const admin = sessionStorage.getItem("admin");
     const cart = sessionStorage.getItem("cart");
-
-    user
-      ? sessionStorage.removeItem("user")
-      : admin
-      ? sessionStorage.removeItem("admin")
-      : this.forceUpdate();
-
-    if (cart) {
-      sessionStorage.removeItem("cart");
-    }
-
-    this.setState({ user: "", admin: "" });
+    const orders = sessionStorage.getItem("orders");
 
     setTimeout(() => {
-      this.forceUpdate();
-    }, 100);
+      if (user) {
+        sessionStorage.removeItem("user");
+      }
+      if (admin) {
+        sessionStorage.removeItem("user");
+      }
+      if (cart) {
+        sessionStorage.removeItem("cart");
+      }
+      if (orders) {
+        sessionStorage.removeItem("orders");
+      }
+    }, 50);
 
-    //this.forceUpdate();
-
-    //this.props.history.push("/");
-    // this.props.history.push("/");
+    this.setState({ user: "", admin: "" });
   };
 
   signIn = () => {
     this.setState({});
   };
 
+  updateComponent = () => {
+    console.log("This just doesnt work");
+    this.forceUpdate();
+  };
+
   deleteCartItem = _id => {
-    //     var numbers = [1, 3, 6, 8, 11];
-
-    // var lucky = numbers.filter(function(number) {
-    //   return number > 7;
-    // });
-
-    // [ 8, 11 ]
-
-    let oldCart = JSON.parse(sessionStorage.getItem("cart"));
-    let newCart = oldCart.filter(item => {
-      return item._id !== _id;
-    });
-    console.log("Old cart=>", oldCart);
-    console.log("New cart=>", newCart);
-    sessionStorage.setItem("cart", JSON.stringify(newCart));
-    setTimeout(() => {
-      this.setState({ cart: JSON.parse(sessionStorage.getItem("cart")) });
-    }, 100);
-    //sessionStorage.setItem("cart", newCart);
+    this.props.deletePreOrder(_id);
+    this.forceUpdate();
   };
 
   housesNav = () => {
     sessionStorage.getItem("admin") !== null
       ? this.props.history.push("/admin/all")
       : this.props.history.push("/user/all");
+  };
+
+  orderCheckout = orders => {
+    let orderArray = [];
+    let userID = JSON.parse(sessionStorage.getItem("user"))._id;
+    setTimeout(() => {
+      orders.forEach(order => {
+        this.props.buyItem(order, order._id);
+        orderArray.push({
+          name: order.item_name,
+          rentOrSale:
+            order.item_purchaseDetails.rent === true ? "rent" : "sale",
+          price: order.item_price,
+          item_id: order._id,
+          user_id: userID,
+          date: new Date().toString()
+        });
+      });
+    }, 150);
+
+    setTimeout(() => {
+      this.props.addOrders(orderArray);
+    }, 300);
+    console.log("ORDERS RECEIVED ==>>", orderArray);
+
+    setTimeout(() => {
+      orders.forEach(order => {
+        this.deleteCartItem(order._id);
+      });
+      this.setState({ orders: this.props.order.orders });
+    }, 380);
   };
 
   render() {
@@ -186,15 +281,35 @@ class AppNavbar extends Component {
                 ""
               ) : (
                 <NavItem>
-                  <NavLink className="greyME2">
+                  <NavLink>
                     <i
-                      className="fas fa-shopping-cart"
+                      className={this.state.cartColor}
                       onClick={this.modalToggle}
                     />
-                    {this.state.cart ? this.state.cart.length : ""}
+                    <small>
+                      {this.state.pre_orders
+                        ? this.state.pre_orders.length
+                        : sessionStorage.getItem("cart")
+                        ? JSON.parse(sessionStorage.getItem("cart")).length
+                        : 0}
+                    </small>
                   </NavLink>
                 </NavItem>
               )}
+              {sessionStorage.getItem("user") === null ? (
+                ""
+              ) : (
+                <NavItem>
+                  <NavLink>
+                    <i
+                      className={this.state.fav_color}
+                      onClick={this.fav_modalToggle}
+                    />
+                    <small>{this.state.orders.length}</small>
+                  </NavLink>
+                </NavItem>
+              )}
+
               <NavItem>
                 <NavLink>
                   <RouterNavLink
@@ -215,8 +330,10 @@ class AppNavbar extends Component {
             Shopping Cart
           </ModalHeader>
           <ModalBody>
-            <TransitionGroup className="shopping-list">
-              {this.state.cart ? (
+            <TransitionGroup>
+              {this.state.cart &&
+              this.state.cart.length &&
+              sessionStorage.getItem("cart") !== null ? (
                 this.state.cart.map(
                   ({ _id, item_name, item_purchaseDetails, item_price }) => (
                     <CSSTransition key={_id} timeout={500} classNames="fade">
@@ -255,9 +372,60 @@ class AppNavbar extends Component {
                 <p>You haven't added anything to your cart yet</p>
               )}
             </TransitionGroup>
-            <Button className="checkout" color="dark" size="block">
+            <Button
+              onClick={
+                sessionStorage.getItem("cart")
+                  ? this.orderCheckout.bind(
+                      this,
+                      JSON.parse(sessionStorage.getItem("cart"))
+                    )
+                  : console.log("Error")
+              }
+              className="checkout"
+              color="dark"
+              size="block"
+            >
               Check out cart
             </Button>
+          </ModalBody>
+        </Modal>
+        <Modal
+          isOpen={this.state.fav_modal}
+          toggle={this.fav_modalToggle}
+          size="lg"
+        >
+          <ModalHeader toggle={this.fav_modalToggle}>
+            {this.state.user ? this.state.user.user_firstName + "'s " : ""}
+            Favourites
+          </ModalHeader>
+          <ModalBody>
+            <TransitionGroup className="shopping-list">
+              {this.state.orders && this.state.orders.length ? (
+                this.state.orders.map(
+                  ({ _id, item_name, rentOrSale, item_price, date }) => (
+                    <CSSTransition key={_id} timeout={500} classNames="fade">
+                      <Row className="mb-3">
+                        <Col xs="3">
+                          <h5>{item_name}</h5>
+                        </Col>
+                        <Col xs="3">
+                          <h6>Ordered on {date}</h6>
+                        </Col>
+                        <Col xs="2">
+                          <h6>UGX {item_price}</h6>
+                        </Col>
+                        <Col xs="2">
+                          <h6 className="font-weight-bold">{rentOrSale}</h6>
+                        </Col>
+                        <Col xs="2" />
+                      </Row>
+                    </CSSTransition>
+                  )
+                )
+              ) : (
+                <p>You haven't made any orders yet</p>
+              )}
+            </TransitionGroup>
           </ModalBody>
         </Modal>
       </div>
@@ -266,14 +434,25 @@ class AppNavbar extends Component {
 }
 
 AppNavbar.propTypes = {
-  user: PropTypes.object.isRequired
-  //item: PropTypes.object.isRequired
+  userLogout: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  admin: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired,
+  order: PropTypes.object.isRequired,
+  deletePreOrder: PropTypes.func.isRequired,
+  addOrders: PropTypes.func.isRequired,
+  pre_orders: PropTypes.object.isRequired,
+  getOrdersUser: PropTypes.func.isRequired,
+  buyItem: PropTypes.func.isRequired
 };
 
-//export default AppNavbar;
-
 const mapStateToProps = state => ({
-  user: state.user
-  //admin: state.admin
-}); //REQUIRED FOR REDUX
-export default connect(mapStateToProps)(AppNavbar);
+  user: state.user,
+  admin: state.admin,
+  order: state.order,
+  item: state.item
+});
+export default connect(
+  mapStateToProps,
+  { userLogout, adminLogout, addOrders, deletePreOrder, getOrdersUser, buyItem }
+)(AppNavbar);
