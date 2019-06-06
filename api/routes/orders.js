@@ -51,12 +51,11 @@ router.post("/", (req, res, next) => {
 
 router.get("/user/:userID", (req, res, next) => {
   const id = req.params.userID;
-  console.log("Orders have been requested for user ==>>", id);
+
   Order.find({ user_id: id })
     .exec()
     .then(docs => {
       if (docs.length > 0) {
-        console.log(docs);
         res.status(200).json(docs);
       } else {
         res.status(404).json({
@@ -105,7 +104,6 @@ router.patch("/:orderID", (req, res, next) => {
   Order.updateMany({ _id: id }, { $set: updateOps })
     .exec()
     .then(result => {
-      console.log(result);
       res.status(200).json({ result });
     })
     .catch(err => {

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const DB_URI = "mongodb://localhost:27017/byarent";
+const DB_URI = "mongodb://localhost:27017/byarent"; //mongodb://localhost:27017/byarent   //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
 const Mockgoose = require("mockgoose").Mockgoose;
 const mockgoose = new Mockgoose(mongoose);
 

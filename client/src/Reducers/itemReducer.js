@@ -4,7 +4,8 @@ import {
   ADD_ITEM,
   DELETE_ITEM,
   UPDATE_ITEM,
-  ITEMS_LOADING
+  ITEMS_LOADING,
+  GET_AVAILABLE_ITEMS
 } from "../Actions/itemTypes";
 
 const initialState = {
@@ -16,6 +17,13 @@ const initialState = {
 export default function(state = initialState, action) {
   switch (action.type) {
     case GET_ITEMS: {
+      return {
+        ...state,
+        items: action.payload,
+        loading: false
+      };
+    }
+    case GET_AVAILABLE_ITEMS: {
       return {
         ...state,
         items: action.payload,

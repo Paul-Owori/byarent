@@ -4,7 +4,8 @@ import {
   ADD_ITEM,
   DELETE_ITEM,
   UPDATE_ITEM,
-  ITEMS_LOADING
+  ITEMS_LOADING,
+  GET_AVAILABLE_ITEMS
 } from "../Actions/itemTypes";
 
 export const getItems = () => dispatch => {
@@ -12,6 +13,26 @@ export const getItems = () => dispatch => {
   fetch("/items")
     .then(res => res.json())
     .then(res => dispatch({ type: GET_ITEMS, payload: res }))
+    .catch(error => {
+      console.error("Error:", error);
+    });
+};
+
+export const getAvailableItems = () => dispatch => {
+  dispatch(setItemsLoading());
+  fetch("/items")
+    .then(res => res.json())
+    .then(res => {
+      let availableItemArray = [];
+      res.forEach(item => {
+        if (item.isSold === false) {
+          availableItemArray.push(item);
+        }
+      });
+      setTimeout(() => {
+        dispatch({ type: GET_AVAILABLE_ITEMS, payload: availableItemArray });
+      }, 150);
+    })
     .catch(error => {
       console.error("Error:", error);
     });

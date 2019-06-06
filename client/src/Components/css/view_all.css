@@ -90,6 +90,13 @@ CSS for Admin View All
   color: gray;
 }
 
+.greenME {
+  color: #5cb85c;
+}
+.dangerME {
+  color: #d9534f;
+}
+
 .adminMenuBtn {
   width: 100%;
 }
@@ -105,4 +112,8 @@ CSS for Admin View All
   margin-top: 0.8rem;
   position: relative;
   background: url(../../img/Loader.gif) no-repeat center center;
+}
+
+.invisibleItem {
+  display: none;
 }

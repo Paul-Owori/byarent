@@ -6,7 +6,11 @@ import {
   Button,
   Modal,
   ModalHeader,
-  ModalBody
+  ModalBody,
+  ButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from "reactstrap";
 import "./css/view_all.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
@@ -41,7 +45,12 @@ class AdminViewAll extends Component {
     orders: [],
     deleteItem: {},
     order_modal: false,
-    deleteModal: false
+    deleteModal: false,
+    filter: false,
+    rentItemsVisible: true,
+    saleItemsVisible: true,
+    availableItemsVisible: "",
+    soldItemsVisible: ""
   };
 
   checker = () => {
@@ -101,6 +110,70 @@ class AdminViewAll extends Component {
       this.deleteModalToggle();
     }, 50);
   };
+
+  visibilityCheck = (isSold, rent) => {
+    if (rent === true && this.state.rentItemsVisible === true) {
+      if (isSold === true) {
+        return `User dark bg-dark my-3  text-center ${
+          this.state.soldItemsVisible
+        }`;
+      } else {
+        return `User dark bg-dark my-3  text-center ${
+          this.state.availableItemsVisible
+        }`;
+      }
+    } else if (rent === true && this.state.rentItemsVisible === false) {
+      return "User dark bg-dark my-3  text-center invisibleItem";
+    } else if (rent === false && this.state.saleItemsVisible === true) {
+      if (isSold === true) {
+        return `User dark bg-dark my-3  text-center ${
+          this.state.soldItemsVisible
+        }`;
+      } else {
+        return `User dark bg-dark my-3  text-center ${
+          this.state.availableItemsVisible
+        }`;
+      }
+    } else if (rent === false && this.state.saleItemsVisible === false) {
+      return "User dark bg-dark my-3  text-center invisibleItem";
+    }
+  };
+
+  filterToggle = () => {
+    this.setState({ filter: !this.state.filter });
+  };
+
+  availableOnly = () => {
+    this.setState({
+      availableItemsVisible: "",
+      soldItemsVisible: "invisibleItem"
+    });
+  };
+
+  soldOnly = () => {
+    this.setState({
+      availableItemsVisible: "invisibleItem",
+      soldItemsVisible: ""
+    });
+  };
+
+  rentOnly = () => {
+    this.setState({ saleItemsVisible: false, rentItemsVisible: true });
+  };
+
+  saleOnly = () => {
+    this.setState({ rentItemsVisible: false, saleItemsVisible: true });
+  };
+
+  showAll = () => {
+    this.setState({
+      saleItemsVisible: true,
+      rentItemsVisible: true,
+      availableItemsVisible: "",
+      soldItemsVisible: ""
+    });
+  };
+
   render() {
     return (
       <Container fluid className="allContainer">
@@ -144,6 +217,51 @@ class AdminViewAll extends Component {
                 </Button>
               </Col>
             </Row>
+
+            <Row className="justify-content-start">
+              <Col xs="3">
+                <ButtonDropdown
+                  isOpen={this.state.filter}
+                  toggle={this.filterToggle}
+                >
+                  <Button
+                    id="filter"
+                    color="secondary"
+                    className="my-4"
+                    onClick={this.filterToggle}
+                  >
+                    FILTER FOR:
+                  </Button>
+                  <DropdownToggle filter color="secondary" className="my-4">
+                    <i class="fas fa-caret-down" />
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem onClick={this.showAll}>
+                      All available units
+                    </DropdownItem>
+                    <DropdownItem onClick={this.rentOnly}>
+                      Rent only
+                    </DropdownItem>
+                    <DropdownItem onClick={this.saleOnly}>
+                      Sale Only
+                    </DropdownItem>
+                    <DropdownItem
+                      className="greenME font-weight-bold"
+                      onClick={this.availableOnly}
+                    >
+                      Available Only
+                    </DropdownItem>
+                    <DropdownItem
+                      className="dangerME font-weight-bold"
+                      onClick={this.soldOnly}
+                    >
+                      Sold Only
+                    </DropdownItem>
+                  </DropdownMenu>
+                </ButtonDropdown>
+              </Col>
+            </Row>
+
             <TransitionGroup>
               {this.checker() ? (
                 <Row className="justify-content-start">
@@ -159,7 +277,10 @@ class AdminViewAll extends Component {
                     }) => (
                       <Col
                         md="3"
-                        className="User dark bg-dark my-3  text-center "
+                        className={this.visibilityCheck(
+                          isSold,
+                          item_purchaseDetails.rent
+                        )}
                       >
                         <div className="mt-2">
                           <h5 className="colorME font-weight-bold">

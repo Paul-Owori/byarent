@@ -1,9 +1,18 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Button } from "reactstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  ButtonDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
+} from "reactstrap";
 import "./css/view_all.css";
 import { TransitionGroup } from "react-transition-group";
-import { connect } from "react-redux"; //REQUIRED FOR REDUX
-import { getItems, getItem } from "../Actions/itemActions"; //REQUIRED FOR REDUX
+import { connect } from "react-redux";
+import { getAvailableItems, getItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
 
 class UserViewAll extends Component {
@@ -15,13 +24,21 @@ class UserViewAll extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems();
+    this.props.getAvailableItems();
+    setTimeout(() => {
+      let availableItemArray = [];
+      this.setState({ items: this.props.item.items });
+    }, 150);
+    console.log("Mounted");
   }
 
   state = {
     user: {},
     loading: false,
-    items: null
+    items: [],
+    filter: false,
+    saleItemsVisible: true,
+    rentItemsVisible: true
   };
 
   checker = () => {
@@ -43,6 +60,10 @@ class UserViewAll extends Component {
     this.props.history.push(`/user/one/${id}`);
   };
 
+  filterToggle = () => {
+    this.setState({ filter: !this.state.filter });
+  };
+
   rentOrBuy = purchaseDetails => {
     if ((purchaseDetails.rent = true)) {
       return "Rent";
@@ -50,9 +71,34 @@ class UserViewAll extends Component {
       return "Buy";
     }
   };
+
+  visibilityCheck = rent => {
+    if (rent === true && this.state.rentItemsVisible === true) {
+      return "User dark bg-dark my-3  text-center";
+    } else if (rent === true && this.state.rentItemsVisible === false) {
+      return "User dark bg-dark my-3  text-center invisibleItem";
+    } else if (rent === false && this.state.saleItemsVisible === true) {
+      return "User dark bg-dark my-3  text-center";
+    } else if (rent === false && this.state.saleItemsVisible === false) {
+      return "User dark bg-dark my-3  text-center invisibleItem";
+    }
+  };
+
+  rentOnly = () => {
+    this.setState({ saleItemsVisible: false, rentItemsVisible: true });
+  };
+
+  saleOnly = () => {
+    this.setState({ rentItemsVisible: false, saleItemsVisible: true });
+  };
+
+  showAll = () => {
+    this.setState({ saleItemsVisible: true, rentItemsVisible: true });
+  };
+
   render() {
     return (
-      <Container fluid className="allContainer">
+      <Container fluid className="allContainer text-center">
         <h2 className="colorME text-center">
           Welcome{" "}
           {this.props.user.user
@@ -62,6 +108,22 @@ class UserViewAll extends Component {
             : ""}
           !
         </h2>
+        <ButtonDropdown isOpen={this.state.filter} toggle={this.filterToggle}>
+          <Button id="filter" color="secondary">
+            FILTER FOR:
+          </Button>
+          <DropdownToggle filter color="secondary">
+            <i class="fas fa-caret-down" />
+          </DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem onClick={this.showAll}>
+              All available units
+            </DropdownItem>
+            <DropdownItem onClick={this.rentOnly}>Rent only</DropdownItem>
+            <DropdownItem onClick={this.saleOnly}>Sale Only</DropdownItem>
+          </DropdownMenu>
+        </ButtonDropdown>
+
         <Container className="mb-5">
           <React.Fragment>
             <TransitionGroup>
@@ -78,7 +140,9 @@ class UserViewAll extends Component {
                     }) => (
                       <Col
                         md="3"
-                        className="User dark bg-dark my-3  text-center"
+                        className={this.visibilityCheck(
+                          item_purchaseDetails.rent
+                        )}
                       >
                         <div className="mt-2">
                           <h5 className="colorME font-weight-bold">
@@ -148,7 +212,7 @@ class UserViewAll extends Component {
 }
 
 UserViewAll.propTypes = {
-  getItems: PropTypes.func.isRequired,
+  getAvailableItems: PropTypes.func.isRequired,
   getItem: PropTypes.func.isRequired,
   item: PropTypes.object,
   user: PropTypes.object
@@ -160,5 +224,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { getItems, getItem }
+  { getAvailableItems, getItem }
 )(UserViewAll);
