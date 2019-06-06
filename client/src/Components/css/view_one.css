@@ -92,6 +92,11 @@ header,
   border-radius: 10px;
 }
 
+.clicker:hover {
+  cursor: pointer;
+  text-shadow: 1px 1px 0.5px rgb(237, 237, 237);
+}
+
 .imgScroller {
   height: 650px;
   overflow: scroll;

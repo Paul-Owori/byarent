@@ -146,6 +146,11 @@ class UserSignUp extends Component {
                 >
                   SignIn
                 </Button>
+                <h5 className="greyME">Default account details:</h5>
+                <p className="greyME">
+                  email: user@byarent.com
+                  <br /> password: 123
+                </p>
               </Form>
             </Col>
             <Col md="2">

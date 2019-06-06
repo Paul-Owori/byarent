@@ -99,6 +99,11 @@ class AdminSignIn extends Component {
                   SignIn
                 </Button>
               </Form>
+              <h5 className="greyME">Default account details:</h5>
+              <p className="greyME">
+                email: admin@byarent.com
+                <br /> password: 123
+              </p>
             </Col>
           </Row>
         </Container>

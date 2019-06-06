@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const orderRoutes = require("./api/routes/orders");
 const itemRoutes = require("./api/routes/items");

@@ -165,13 +165,10 @@ class UserViewOne extends Component {
                   <div className="whiteBG">
                     <Row className="mainImgBody2  ">
                       <Col xs="1" className="align-self-center">
-                        <Button
-                          outline
-                          color="light"
+                        <i
+                          className="fas fa-caret-square-left fa-xs display-4 clicker"
                           onClick={this.minusActiveIndex}
-                        >
-                          Prev
-                        </Button>
+                        />
                       </Col>
                       <Col xs="10">
                         <img
@@ -190,14 +187,10 @@ class UserViewOne extends Component {
                         />
                       </Col>
                       <Col xs="1" className="align-self-center ">
-                        <Button
-                          className="ml-0"
-                          outline
-                          color="light"
+                        <i
+                          className="fas fa-caret-square-right fa-xs display-4 clicker"
                           onClick={this.plusActiveIndex}
-                        >
-                          Next
-                        </Button>
+                        />
                       </Col>
                     </Row>
                   </div>
