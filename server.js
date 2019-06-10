@@ -5,7 +5,7 @@ const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const DB_URI =
   process.env.MONGODB_URI ||
-  "mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"; //mongodb://localhost:27017/byarent   //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
+  "_Insert MONGODB_URI";
 
 //Configure mock database for testing purposes
 const Mockgoose = require("mockgoose").Mockgoose;
@@ -18,7 +18,7 @@ const path = require("path");
 const app = express();
 
 //Configuring when the test database should run vs when the actual database should run
-connect = () => {
+export const connect = () => {
   return new Promise((resolve, reject) => {
     //If a test is runnning, the mock database, mockgoose will be used instead of mongoose
     if (process.env.NODE_ENV === "test") {
@@ -57,7 +57,7 @@ connect();
 //for the image storage connections that only work after the database connects,
 //which it does asynchronously
 
-mongoose.connection.once("open", () => {
+export const app = mongoose.connection.once("open", () => {
   console.log("CONNECTION DB==>>", mongoose.connection.client.s.url);
 
   //Routes
@@ -104,26 +104,4 @@ mongoose.connection.once("open", () => {
   app.listen(port, () => console.log(`Server started on port ${port}`));
 });
 
-//Connect to the database(in db.js), then start the server
-// connect().then(() => {
-//   http
-//     .createServer(app)
-//     .listen(port, () => console.log(`Server started on port ${port}`));
-// });
-
-/*const http = require("http");
-const app = require("./app");
-const db = require("./db");
-
-//Configures the server port
-const port = process.env.PORT || 5000;
-
-//Link the server and the app
-
-
-//Connect to the database(in db.js), then start the server
-db.connect().then(() => {
-  const server = http.createServer(app);
-  server.listen(port, () => console.log(`Server started on port ${port}`));
-});
-*/
+app()

@@ -2,7 +2,7 @@ process.env.NODE_ENV = "test";
 const expect = require("chai").expect;
 const request = require("supertest");
 const app = require("../../../app.js");
-const conn = require("../../../db.js");
+const conn = require("../../../server.js");
 
 describe("Test all API endpoints for /admin", () => {
   before(done => {
