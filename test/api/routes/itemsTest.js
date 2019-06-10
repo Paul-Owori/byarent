@@ -1,20 +1,20 @@
 process.env.NODE_ENV = "test";
 const expect = require("chai").expect;
 const request = require("supertest");
-const {app} = require("../../../server.js");
-const {connect} = require("../../../server.js");
+
+const { app } = require("../../../server.js");
+const { conn } = require("../../../server.js");
+const { close } = require("../../../server.js");
 
 describe("Test all API endpoints for /item", () => {
   before(done => {
-    conn
-      .connect()
+    conn()
       .then(() => done())
       .catch(err => done(err));
   });
 
   after(done => {
-    conn
-      .close()
+    close()
       .then(() => done())
       .catch(err => done(err));
   });

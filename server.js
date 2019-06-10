@@ -3,9 +3,7 @@ const port = process.env.PORT || 5000;
 
 //Configuring the database
 const mongoose = require("mongoose");
-const DB_URI =
-  process.env.MONGODB_URI ||
-  "_Insert MONGODB_URI";
+const DB_URI = process.env.MONGODB_URI || "_Insert MONGODB_URI";
 
 //Configure mock database for testing purposes
 const Mockgoose = require("mockgoose").Mockgoose;
@@ -18,7 +16,7 @@ const path = require("path");
 const app = express();
 
 //Configuring when the test database should run vs when the actual database should run
-export const connect = () => {
+export const conn = () => {
   return new Promise((resolve, reject) => {
     //If a test is runnning, the mock database, mockgoose will be used instead of mongoose
     if (process.env.NODE_ENV === "test") {
@@ -50,8 +48,14 @@ export const connect = () => {
   });
 };
 
+//To close the database connection
+export const close = () => {
+  console.log("Database gone offline");
+  return mongoose.disconnect();
+};
+
 //Starting the database
-connect();
+conn();
 
 //Starting the app only if the database is running, particularly important
 //for the image storage connections that only work after the database connects,
@@ -104,4 +108,4 @@ export const app = mongoose.connection.once("open", () => {
   app.listen(port, () => console.log(`Server started on port ${port}`));
 });
 
-app()
+app();
