@@ -2,7 +2,9 @@ process.env.NODE_ENV = "test";
 const expect = require("chai").expect;
 const request = require("supertest");
 
-const { app } = require("../../../server.js");
+//const conn = require("../../../db.js");
+
+const { theApp } = require("../../../server.js");
 const { conn } = require("../../../server.js");
 const { close } = require("../../../server.js");
 
@@ -20,7 +22,7 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("Confirms that the admin database collection is empty.", done => {
-    request(app)
+    request(theApp)
       .get("/admins")
       .then(res => {
         const body = res.body;
@@ -31,7 +33,7 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("Creates a new admin", done => {
-    request(app)
+    request(theApp)
       .post("/admins/signup")
       .send({
         firstName: "Paul",
@@ -58,7 +60,7 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("logs in the new admin", done => {
-    request(app)
+    request(theApp)
       .post("/admins/signin")
       .send({
         email: "paul@bob.com",
@@ -74,12 +76,12 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("Implements a patch on the new admin object, changing their firstName", done => {
-    request(app)
+    request(theApp)
       .get("/admins")
       .then(res => {
         const admin_id = res.body[0]._id;
         const status = res.status;
-        request(app)
+        request(theApp)
           .patch(`/admins/${admin_id}`)
           .send([{ propName: "admin_firstName", value: "NewName" }])
           .then(res => {
@@ -94,11 +96,11 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("Deletes the new admin", done => {
-    request(app)
+    request(theApp)
       .get("/admins")
       .then(res => {
         const admin_id = res.body[0]._id;
-        request(app)
+        request(theApp)
           .delete(`/admins/${admin_id}`)
           .then(res => {
             const status2 = res.status;

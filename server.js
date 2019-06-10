@@ -61,51 +61,55 @@ conn();
 //for the image storage connections that only work after the database connects,
 //which it does asynchronously
 
-export const app = mongoose.connection.once("open", () => {
-  console.log("CONNECTION DB==>>", mongoose.connection.client.s.url);
+const theApp = () => {
+  mongoose.connection.once("open", () => {
+    console.log("CONNECTION DB==>>", mongoose.connection.client.s.url);
 
-  //Routes
-  const itemRoutes = require("./api/routes/items");
-  const orderRoutes = require("./api/routes/orders");
-  const userRoutes = require("./api/routes/users");
-  const adminRoutes = require("./api/routes/admins");
-  const imageRoutes = require("./api/routes/images");
+    //Routes
+    const itemRoutes = require("./api/routes/items");
+    const orderRoutes = require("./api/routes/orders");
+    const userRoutes = require("./api/routes/users");
+    const adminRoutes = require("./api/routes/admins");
+    const imageRoutes = require("./api/routes/images");
 
-  //The rest of the app
+    //The rest of the app
 
-  //bodyParser middleware
-  app.use(bodyParser.json());
-  //Routes
-  app.use("/orders", orderRoutes);
-  app.use("/items", itemRoutes);
-  app.use("/users", userRoutes);
-  app.use("/admins", adminRoutes);
-  app.use("/images", imageRoutes);
+    //bodyParser middleware
+    app.use(bodyParser.json());
+    //Routes
+    app.use("/orders", orderRoutes);
+    app.use("/items", itemRoutes);
+    app.use("/users", userRoutes);
+    app.use("/admins", adminRoutes);
+    app.use("/images", imageRoutes);
 
-  //static files(images)
-  app.use("/uploads", express.static("uploads"));
+    //static files(images)
+    app.use("/uploads", express.static("uploads"));
 
-  //Deploying conditions
-  //app.use(express.static(path.join(__dirname, 'client/build')));
-  if (process.env.NODE_ENV === "production") {
-    app.use(express.static("client/build"));
+    //Deploying conditions
+    //app.use(express.static(path.join(__dirname, 'client/build')));
+    if (process.env.NODE_ENV === "production") {
+      app.use(express.static("client/build"));
 
-    app.get("/*", function(req, res) {
-      res.sendFile(path.join(__dirname, "client/build/index.html"), function(
-        err
-      ) {
-        if (err) {
-          res.status(500).send(err);
-        }
+      app.get("/*", function(req, res) {
+        res.sendFile(path.join(__dirname, "client/build/index.html"), function(
+          err
+        ) {
+          if (err) {
+            res.status(500).send(err);
+          }
+        });
       });
-    });
-  } else {
-    app.get("/*", (req, res) => {
-      res.sendFile(path.join(__dirname + "/client/public/index.html"));
-    });
-  }
+    } else {
+      app.get("/*", (req, res) => {
+        res.sendFile(path.join(__dirname + "/client/public/index.html"));
+      });
+    }
 
-  app.listen(port, () => console.log(`Server started on port ${port}`));
-});
+    app.listen(port, () => console.log(`Server started on port ${port}`));
+  });
+};
 
-app();
+theApp();
+
+module.exports = { conn, theApp };
