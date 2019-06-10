@@ -27,6 +27,7 @@ export default function(state = initialState, action) {
     case DELETE_ADMIN:
       return {
         ...state,
+        loading: false,
         admins: state.admins.filter(admin => admin._id !== action.payload)
       };
     case ADD_ADMIN:

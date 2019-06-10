@@ -11,6 +11,7 @@ import {
 } from "./orderTypes";
 
 export const getOrdersUser = id => dispatch => {
+  dispatch(setOrdersLoading());
   fetch(`/orders/user/${id}`)
     .then(res => res.json())
     .then(res => {
@@ -36,6 +37,7 @@ export const getOrders = id => dispatch => {
 };
 
 export const addOrders = orders => dispatch => {
+  dispatch(setOrdersLoading());
   console.log("ORDERS BEING SENT BY ACTIONS==>>", orders);
   dispatch(setOrdersLoading());
   orders.forEach(order => {
@@ -72,6 +74,7 @@ export const setOrdersLoading = () => {
 };
 
 export const preOrder = order => dispatch => {
+  dispatch(setOrdersLoading());
   let cart = [];
   cart.push(order);
   if (sessionStorage.getItem("cart") === null) {
@@ -87,6 +90,7 @@ export const preOrder = order => dispatch => {
 };
 
 export const deletePreOrder = id => dispatch => {
+  dispatch(setOrdersLoading());
   let oldCart = JSON.parse(sessionStorage.getItem("cart"));
   let newCart = oldCart.filter(item => {
     return item._id !== id;

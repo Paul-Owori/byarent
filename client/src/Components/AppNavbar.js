@@ -206,6 +206,10 @@ class AppNavbar extends Component {
     }, 380);
   };
 
+  toGithub = () => {
+    window.open("https://github.com/Paul-Owori/byarent", "_self");
+  };
+
   render() {
     return (
       <div>
@@ -312,11 +316,8 @@ class AppNavbar extends Component {
 
               <NavItem>
                 <NavLink>
-                  <RouterNavLink
-                    to="https://github.com/Paul-Owori"
-                    className="greyME2"
-                  >
-                    GitHub
+                  <RouterNavLink className="greyME2" onClick={this.toGithub}>
+                    GitHub-Repo
                   </RouterNavLink>
                 </NavLink>
               </NavItem>

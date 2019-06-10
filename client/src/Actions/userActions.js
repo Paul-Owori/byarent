@@ -55,7 +55,8 @@ export const signInUser = user => dispatch => {
     });
 };
 
-export const userLogout = () => {
+export const userLogout = () => dispatch => {
+  dispatch(setUsersLoading());
   sessionStorage.removeItem("user");
 
   return {

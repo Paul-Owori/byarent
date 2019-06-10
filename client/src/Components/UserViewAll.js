@@ -14,6 +14,7 @@ import { TransitionGroup } from "react-transition-group";
 import { connect } from "react-redux";
 import { getAvailableItems, getItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
+import { currentSite } from "../client_config/config_vars";
 
 class UserViewAll extends Component {
   componentWillMount() {
@@ -127,7 +128,7 @@ class UserViewAll extends Component {
         <Container className="mb-5">
           <React.Fragment>
             <TransitionGroup>
-              {this.checker() === true ? (
+              {this.props.item.loading === false && this.checker() === true ? (
                 <Row className="">
                   {this.props.item.items.map(
                     ({
@@ -152,7 +153,7 @@ class UserViewAll extends Component {
 
                         <div className="dispImgBody">
                           <img
-                            src={"http://localhost:5000/" + item_image[0]}
+                            src={currentSite + item_image[0]}
                             className="dispImg"
                             alt=""
                           />
@@ -192,13 +193,6 @@ class UserViewAll extends Component {
                 <div className="text-center">
                   <h5 className="greyME font-weight-bold">
                     Try refreshing this page if it does not refresh automaticaly
-                    in{" "}
-                    {this.checker() === true
-                      ? setTimeout(() => {
-                          this.forceUpdate();
-                        }, 150)
-                      : console.log("ERROR")}{" "}
-                    seconds
                   </h5>
                   <div className=" loadbody my-5" />
                 </div>

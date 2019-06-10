@@ -3,6 +3,7 @@ import "./css/user_viewOne.css";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
 import { getItem, getItems } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import { preOrder } from "../Actions/orderActions"; //REQUIRED FOR REDUX
+import { currentSite } from "../client_config/config_vars";
 
 import PropTypes from "prop-types";
 
@@ -68,7 +69,7 @@ class UserViewOne extends Component {
     let count = 0;
     for (let i = 0; i < item_imageArray.length; i++) {
       itemArray.push({
-        src: `"http://localhost:5000/"${item_imageArray[i]}`,
+        src: `${currentSite + item_imageArray[i]}`,
         altText: `Slide ${count}`,
         caption: `Slide ${count}`
       });
@@ -122,6 +123,11 @@ class UserViewOne extends Component {
       this.setState({ modalWarn: !this.state.modalWarn });
     }, 1500);
   };
+  refreshME = () => {
+    setTimeout(() => {
+      this.forceUpdate();
+    }, 1000);
+  };
 
   render() {
     return (
@@ -136,7 +142,9 @@ class UserViewOne extends Component {
           Go back
         </Button>
         <React.Fragment>
-          {this.state.item && this.state.item.item_name ? (
+          {this.props.item.loading === false &&
+          this.state.item &&
+          this.state.item.item_name ? (
             <Container className="text-center greyME ">
               <Row className="justify-content-around User">
                 <Col xs="3" className="User  my-3 colorME imgScroller">
@@ -150,7 +158,7 @@ class UserViewOne extends Component {
                     >
                       <img
                         alt={item}
-                        src={"http://localhost:5000/" + item}
+                        src={currentSite + item}
                         onClick={this.assignIndex.bind(
                           this,
                           this.state.item.item_image.indexOf(item)
@@ -176,7 +184,7 @@ class UserViewOne extends Component {
                             this.state.item.item_image[this.state.activeIndex]
                           }
                           src={
-                            "http://localhost:5000/" +
+                            currentSite +
                             this.state.item.item_image[this.state.activeIndex]
                           }
                           onClick={this.setActiveImage.bind(
@@ -255,15 +263,14 @@ class UserViewOne extends Component {
                 </Col>
               </Row>
             </Container>
-          ) : this.state.item && this.state.item.item_name ? (
-            setTimeout(() => {
-              this.forceUpdate();
-              //window.stop();
-            }, 150)
           ) : (
-            setTimeout(() => {
-              this.forceUpdate();
-            }, 200)
+            <div className="text-center">
+              <h5 className="greyME font-weight-bold">
+                Try refreshing this page if it does not refresh automaticaly
+                {this.refreshME()}
+              </h5>
+              <div className=" loadbody my-5" />
+            </div>
           )}
           <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle}>
             <ModalHeader toggle={this.toggle}>
@@ -271,7 +278,7 @@ class UserViewOne extends Component {
             </ModalHeader>
             <ModalBody>
               <img
-                src={"http://localhost:5000/" + this.state.activeImage}
+                src={currentSite + this.state.activeImage}
                 alt={this.state.activeImage}
                 className="activeImage"
               />

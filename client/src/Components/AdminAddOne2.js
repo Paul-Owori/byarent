@@ -104,6 +104,7 @@ class AdminAddOne extends Component {
     for (let i = 0; i < filearray.length; i++) {
       formData.append("itemImage", filearray[i]);
     }
+
     this.setState({ item: formData });
 
     this.props.addItem(formData);
@@ -151,7 +152,7 @@ class AdminAddOne extends Component {
         });
         this.toggle();
       }
-    }, 1000);
+    }, 2500);
   };
 
   rentToggle = e => {

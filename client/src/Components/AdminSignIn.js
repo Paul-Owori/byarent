@@ -42,10 +42,21 @@ class AdminSignIn extends Component {
       } else {
         this.setState({ warnModalText: "Login Error! Please try again" });
         setTimeout(() => {
-          this.warnModaltoggle();
-        }, 100);
+          if (
+            this.props.admin.admin &&
+            this.props.admin.admin.admin_firstName
+          ) {
+            this.props.history.push("/admin/all");
+          } else {
+            this.warnModaltoggle();
+          }
+        }, 250);
       }
     }, 200);
+  };
+
+  signUp = () => {
+    this.props.history.push("/admin/signUp");
   };
 
   warnModaltoggle = () => {

@@ -59,6 +59,13 @@ class UserSignUp extends Component {
           signUpPassword2: "",
           signUpPassword1: ""
         });
+
+        this.setState({
+          warnModalText: "Success! You can try logging in now"
+        });
+        setTimeout(() => {
+          this.warnModaltoggle();
+        }, 100);
       } else {
         this.setState({
           warnModalText: "Make sure to fill in all fields before you submit"
@@ -89,8 +96,12 @@ class UserSignUp extends Component {
       } else {
         this.setState({ warnModalText: "Login Error! Please try again" });
         setTimeout(() => {
-          this.warnModaltoggle();
-        }, 100);
+          if (this.props.user.user && this.props.user.user.user_firstName) {
+            this.props.history.push("/user/all");
+          } else {
+            this.warnModaltoggle();
+          }
+        }, 150);
       }
     }, 300);
   };

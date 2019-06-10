@@ -11,18 +11,11 @@
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "client": "npm start --prefix client",
     "client-install": "npm install --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Paul-Owori/byarent.git"
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "author": "Paul Owori",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Paul-Owori/byarent/issues"
-  },
-  "homepage": "https://github.com/Paul-Owori/byarent/",
   "devDependencies": {
     "coveralls": "^3.0.3",
     "istanbul": "^0.4.5",
@@ -39,8 +32,12 @@
     "gridfs-stream": "^1.1.1",
     "mockgoose": "^8.0.2",
     "mongoose": "^5.5.9",
+    "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "multer-gridfs-storage": "^3.2.3",
     "supertest": "^4.0.2"
+  },
+  "engines": {
+    "node": "10.15.3"
   }
 }

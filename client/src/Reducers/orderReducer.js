@@ -28,11 +28,13 @@ export default function(state = initialState, action) {
     case DELETE_ORDER:
       return {
         ...state,
+        loading: false,
         orders: state.orders.filter(order => order._id !== action.payload)
       };
     case DELETE_PRE_ORDER:
       return {
         ...state,
+        loading: false,
         pre_orders: state.pre_orders.filter(
           order => order.id !== action.payload
         )

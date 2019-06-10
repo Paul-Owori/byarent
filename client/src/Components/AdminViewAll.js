@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import { getItems, getItem, deleteItem } from "../Actions/itemActions";
 import { getOrders } from "../Actions/orderActions";
 import PropTypes from "prop-types";
+import { currentSite } from "../client_config/config_vars";
 
 class AdminViewAll extends Component {
   componentWillMount() {
@@ -58,13 +59,19 @@ class AdminViewAll extends Component {
       this.props.item.items &&
       this.props.item.items.length &&
       this.props.item.items[0].item_image &&
-      this.props.item.items[0].item_image.length
+      this.props.item.items[0].item_image.length &&
+      this.props.item.items[0].item_image[0]
     ) {
       return true;
     } else {
       return false;
     }
   };
+
+  // setTimeout(() => {
+  //   this.forceUpdate();
+  //   //window.stop();
+  // }, 150)
 
   editItem = id => {
     sessionStorage.setItem("item", JSON.stringify(id));
@@ -263,7 +270,7 @@ class AdminViewAll extends Component {
             </Row>
 
             <TransitionGroup>
-              {this.checker() ? (
+              {this.props.item.loading === false && this.checker() === true ? (
                 <Row className="justify-content-start">
                   {this.props.item.items.map(
                     ({
@@ -290,7 +297,7 @@ class AdminViewAll extends Component {
 
                         <div className="dispImgBody">
                           <img
-                            src={"http://localhost:5000/" + item_image[0]}
+                            src={currentSite + item_image[0]}
                             className="dispImg"
                             alt=""
                           />
@@ -359,14 +366,6 @@ class AdminViewAll extends Component {
                 <div className="text-center">
                   <h5 className="greyME font-weight-bold">
                     Try refreshing this page if it does not refresh automaticaly
-                    in{" "}
-                    {this.checker()
-                      ? setTimeout(() => {
-                          this.forceUpdate();
-                          //window.stop();
-                        }, 150)
-                      : console.log("ERROR")}{" "}
-                    seconds
                   </h5>
                   <div className=" loadbody my-5" />
                 </div>

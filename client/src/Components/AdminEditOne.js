@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { updateItem, getItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
+import { currentSite } from "../client_config/config_vars";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import {
@@ -68,7 +69,10 @@ class AdminAddOne extends Component {
     this.setState({ id: id });
   }
   componentDidMount() {
+    console.log("PROPS", this.props);
     setTimeout(() => {
+      console.log("PROPS2", this.props);
+
       this.setState({
         item: this.props.item.item,
         oldImageCount: this.props.item.item.item_image.length,
@@ -87,7 +91,7 @@ class AdminAddOne extends Component {
     }, 150);
     setTimeout(() => {
       this.forceUpdate();
-    }, 300);
+    }, 1000);
   }
 
   handleChange = ({ target }) => {
@@ -152,7 +156,7 @@ class AdminAddOne extends Component {
         });
         this.toggle();
       }
-    }, 1000);
+    }, 2500);
   };
 
   rentToggle = e => {
@@ -387,7 +391,9 @@ class AdminAddOne extends Component {
             >
               Go Back
             </Button>
-            {this.state.item && this.state.oldImages ? (
+            {this.props.item.loading === false &&
+            this.state.item &&
+            this.state.oldImages ? (
               <Row className="justify-content-around">
                 <Col xs="3" className="User2  my-3 imgScroller text-center">
                   <h4 className="greyME  my-2">
@@ -413,7 +419,7 @@ class AdminAddOne extends Component {
                               <img
                                 alt=""
                                 className="dispImg"
-                                src={`http://localhost:5000/${image}`}
+                                src={currentSite + image}
                               />
                             </div>
                             <Button
@@ -671,9 +677,12 @@ class AdminAddOne extends Component {
                 </Col>
               </Row>
             ) : (
-              setTimeout(() => {
-                this.forceUpdate();
-              }, 500)
+              <div className="text-center">
+                <h5 className="greyME font-weight-bold">
+                  Try refreshing this page if it does not refresh automaticaly
+                </h5>
+                <div className=" loadbody my-5" />
+              </div>
             )}
           </div>
           <Modal isOpen={this.state.modal} toggle={this.toggle}>

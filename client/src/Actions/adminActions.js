@@ -55,7 +55,8 @@ export const signInAdmin = admin => dispatch => {
     });
 };
 
-export const adminLogout = () => {
+export const adminLogout = () => dispatch => {
+  dispatch(setAdminsLoading());
   sessionStorage.removeItem("admin");
 
   return {
