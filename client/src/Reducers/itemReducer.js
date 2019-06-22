@@ -6,7 +6,7 @@ import {
   UPDATE_ITEM,
   ITEMS_LOADING,
   GET_AVAILABLE_ITEMS
-} from "../Actions/itemTypes";
+} from "../Types/itemTypes";
 
 const initialState = {
   items: [],

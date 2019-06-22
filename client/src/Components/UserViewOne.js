@@ -18,18 +18,33 @@ import {
 } from "reactstrap";
 
 class UserViewOne extends Component {
-  componentWillMount() {
-    let id = this.props.match.params.item_id;
-    this.props.getItem(id);
-    this.setState({ id: id });
-  }
+  // componentWillMount() {
+  //   let id = this.props.match.params.item_id;
+  //   this.props.getItem(id);
+  //   this.setState({ id: id });
+  // }
   componentDidMount() {
-    setTimeout(() => {
+    let id = this.props.match.params.item_id;
+    if (id) {
+      this.props.getItem(id);
+    }
+
+    // setTimeout(() => {
+    //   this.setState({
+    //     item: this.props.item.item,
+    //     imageArray: this.props.item.item.item_image
+    //   });
+    // }, 50);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.item.item !== prevProps.item.item) {
       this.setState({
         item: this.props.item.item,
         imageArray: this.props.item.item.item_image
       });
-    }, 50);
+    }
   }
 
   state = {

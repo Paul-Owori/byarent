@@ -17,16 +17,14 @@ import PropTypes from "prop-types";
 import { currentSite } from "../client_config/config_vars";
 
 class UserViewAll extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const currentUser = JSON.parse(sessionStorage.getItem("user"));
     currentUser
       ? this.setState({ user: currentUser })
       : this.setState({ user: {} });
-  }
-
-  componentDidMount() {
     this.props.getAvailableItems();
     setTimeout(() => {
+      console.log("the state i just added==>>", this.state);
       let availableItemArray = [];
       this.setState({ items: this.props.item.items });
     }, 150);

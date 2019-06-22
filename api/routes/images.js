@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { connect } = require("../../db");
+//const { connect } = require("../../db");
 const mongoose = require("mongoose");
 const Item = require("../models/Item");
 const multer = require("multer");
@@ -48,6 +48,7 @@ router.get("/:imageName", (req, res) => {
         message: "Could not find file"
       });
     }
+    console.log("the file exists bambi");
     let readstream = gfs.createReadStream({
       //??
       filename: files[0].filename //??

@@ -8,7 +8,7 @@ import {
   UPDATE_ORDER,
   PRE_ORDER,
   DELETE_PRE_ORDER
-} from "../Actions/orderTypes";
+} from "../Types/orderTypes";
 
 const initialState = {
   orders: [],

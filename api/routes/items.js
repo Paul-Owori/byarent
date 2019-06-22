@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { connect } = require("../../db");
+//const { connect } = require("../../db");
 const mongoose = require("mongoose");
 const Item = require("../models/Item");
 const multer = require("multer");

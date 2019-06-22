@@ -7,7 +7,7 @@ import {
   ADMINS_LOADING,
   SIGNIN_ADMIN,
   LOGOUT_ADMIN
-} from "../Actions/adminTypes";
+} from "../Types/adminTypes";
 
 const initialState = {
   admins: [],

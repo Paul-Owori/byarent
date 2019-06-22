@@ -14,9 +14,16 @@ Clone the repository
 $ git clone https://github.com/Paul-Owori/byarent.git
 ```
 
-Install dependencies with
+Install dependencies in the root folder with
 
 ```bash
+$ npm install
+```
+
+Navigate to the client folder and install dependencies there too ;
+
+```bash
+$ cd client
 $ npm install
 ```
 

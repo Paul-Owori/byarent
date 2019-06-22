@@ -8,7 +8,7 @@ import {
   DELETE_PRE_ORDER,
   UPDATE_ORDER,
   ORDERS_LOADING
-} from "./orderTypes";
+} from "../Types/orderTypes";
 
 export const getOrdersUser = id => dispatch => {
   dispatch(setOrdersLoading());

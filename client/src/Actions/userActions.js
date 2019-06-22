@@ -7,7 +7,7 @@ import {
   USERS_LOADING,
   SIGNIN_USER,
   LOGOUT_USER
-} from "./userTypes";
+} from "../Types/userTypes";
 
 export const getUsers = () => dispatch => {
   dispatch(setUsersLoading());
