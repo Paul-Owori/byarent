@@ -117,3 +117,27 @@ CSS for Admin View All
 .invisibleItem {
   display: none;
 }
+
+.priceLabel {
+  color: #5cb85c;
+}
+
+.rentOrSaleLabel {
+  color: #d9534f;
+}
+
+.infoLabel {
+  color: #428bca;
+}
+
+.availableLabel {
+  color: #5cb85c;
+}
+
+.soldLabel {
+  color: #d9534f;
+}
+
+hr {
+  background-color: rgb(58, 58, 58);
+}

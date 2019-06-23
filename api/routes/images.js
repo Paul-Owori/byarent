@@ -48,7 +48,6 @@ router.get("/:imageName", (req, res) => {
         message: "Could not find file"
       });
     }
-    console.log("the file exists bambi");
     let readstream = gfs.createReadStream({
       //??
       filename: files[0].filename //??

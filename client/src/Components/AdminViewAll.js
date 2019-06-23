@@ -307,36 +307,42 @@ class AdminViewAll extends Component {
                           <p className="text-justify colorME dispText ">
                             {item_description}
                           </p>
-                          <Row className="justify-content-left mr-auto ">
-                            <Col xl="4" className="priceAndRent">
-                              <Button
-                                color={isSold === true ? "danger" : "success"}
-                                className="mb-3 priceAndRent "
-                              >
-                                {isSold === true ? "Sold" : "Available"}
-                              </Button>
+                          <hr />
+                          <Row className="justify-content-between mr-auto ">
+                            <Col xl="6" className="priceAndRent">
+                              <h6 className=" mb-1 infoLabel">
+                                Available for:{" "}
+                                <span className="rentOrSaleLabel">
+                                  {item_purchaseDetails.rent
+                                    ? "Rent"
+                                    : item_purchaseDetails.sell
+                                    ? "Sale"
+                                    : ""}
+                                </span>
+                              </h6>
                             </Col>
-                            <Col xl="4" className="priceAndRent">
-                              <Button
-                                color="warning"
-                                className="mb-3 priceAndRent "
-                              >
-                                {item_price}
-                              </Button>
-                            </Col>
-                            <Col xl="2" className="priceAndRent">
-                              <Button
-                                color="info"
-                                className=" mb-3 priceAndRent"
-                              >
-                                {item_purchaseDetails.rent
-                                  ? "Rent"
-                                  : item_purchaseDetails.sell
-                                  ? "Buy"
-                                  : ""}
-                              </Button>
+                            <Col xl="5" className="">
+                              <h6 className="mb-1 infoLabel">
+                                For UGX:{" "}
+                                <span className="priceLabel">{item_price}</span>
+                              </h6>
                             </Col>
                           </Row>
+                          <hr />
+                          <div className="">
+                            <h6 className="mb-3 infoLabel ">
+                              Status:{" "}
+                              <span
+                                className={
+                                  isSold === true
+                                    ? "soldLabel "
+                                    : "availableLabel"
+                                }
+                              >
+                                {isSold === true ? "Sold" : "Available"}
+                              </span>
+                            </h6>
+                          </div>
 
                           <Button
                             color="light"

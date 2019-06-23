@@ -161,23 +161,25 @@ class UserViewAll extends Component {
                           <p className="text-justify colorME dispText ">
                             {item_description}
                           </p>
-                          <Button
-                            color="warning"
-                            className="mb-3 priceAndRent "
-                          >
-                            {item_price}
-                          </Button>
-                          <Button color="info" className=" mb-3 priceAndRent">
-                            {item_purchaseDetails.rent
-                              ? "Rent"
-                              : item_purchaseDetails.sell
-                              ? "Buy"
-                              : ""}
-                          </Button>
+                          <hr />
+                          <h6 className="mb-2 priceLabel font-weight-bold">
+                            UGX {item_price}
+                          </h6>
+                          <h6 className=" mb-3 infoLabel">
+                            Available for:{" "}
+                            <span className="rentOrSaleLabel">
+                              {" "}
+                              {item_purchaseDetails.rent
+                                ? "Rent"
+                                : item_purchaseDetails.sell
+                                ? "Sale"
+                                : ""}
+                            </span>
+                          </h6>
                           <Button
                             color="light"
                             block
-                            className="mr-2 mb-3 seeMore "
+                            className="mr-2 my-3 seeMore "
                             onClick={this.getItem.bind(this, _id)}
                           >
                             See More

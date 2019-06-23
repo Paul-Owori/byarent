@@ -233,10 +233,10 @@ class UserViewOne extends Component {
                         </Col>
                       </Row>
                       <Row>
-                        <Col xs="4" className="font-weight-bold">
+                        <Col xs="5" className="mr-0 font-weight-bold">
                           Available for:
                         </Col>
-                        <Col xs="8" className="font-weight-bold">
+                        <Col xs="7" className="ml-0 font-weight-bold">
                           {this.state.item.item_purchaseDetails.rent === true
                             ? "Rent"
                             : "Sale"}
@@ -262,12 +262,12 @@ class UserViewOne extends Component {
                       </Row>
                     </Col>
                     <Col xs="4" className="mt-3 ">
-                      <Button block color="primary" class="mb-1 mt-3">
+                      <h5 className="mb-1 mt-3 font-weight-bold priceLabel">
                         UGX {this.state.item.item_price}
-                      </Button>
+                      </h5>
                       <Button
                         block
-                        color="success"
+                        color="danger"
                         className="mb-1"
                         onClick={this.addToCart}
                       >
@@ -282,7 +282,6 @@ class UserViewOne extends Component {
             <div className="text-center">
               <h5 className="greyME font-weight-bold">
                 Try refreshing this page if it does not refresh automaticaly
-                {this.refreshME()}
               </h5>
               <div className=" loadbody my-5" />
             </div>

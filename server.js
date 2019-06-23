@@ -5,7 +5,7 @@ const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const DB_URI =
   process.env.MONGODB_URI ||
-  "mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"; //"mongodb://localhost:27017/byarent" //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
+  /*"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority";*/ "mongodb://localhost:27017/byarent"; //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
 
 //Configure mock database for testing purposes
 const Mockgoose = require("mockgoose").Mockgoose;
