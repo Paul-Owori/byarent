@@ -7,7 +7,11 @@ import {
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  ModalBody
 } from "reactstrap";
 import "./css/view_all.css";
 import { TransitionGroup } from "react-transition-group";
@@ -37,7 +41,11 @@ class UserViewAll extends Component {
     items: [],
     filter: false,
     saleItemsVisible: true,
-    rentItemsVisible: true
+    rentItemsVisible: true,
+    modal: false,
+    activeImage: "",
+    item_name: "",
+    _id: ""
   };
 
   checker = () => {
@@ -93,6 +101,22 @@ class UserViewAll extends Component {
 
   showAll = () => {
     this.setState({ saleItemsVisible: true, rentItemsVisible: true });
+  };
+
+  toggle = () => {
+    this.setState({ modal: !this.state.modal });
+  };
+
+  imageModal = item => {
+    this.setState({
+      activeImage: item.item_image[0],
+      item_name: item.item_name,
+      _id: item._id
+    });
+
+    setTimeout(() => {
+      this.toggle();
+    }, 500);
   };
 
   render() {
@@ -154,6 +178,11 @@ class UserViewAll extends Component {
                             src={currentSite + item_image[0]}
                             className="dispImg"
                             alt=""
+                            onClick={this.imageModal.bind(this, {
+                              item_name: item_name,
+                              item_image: item_image,
+                              _id: _id
+                            })}
                           />
                         </div>
 
@@ -200,6 +229,27 @@ class UserViewAll extends Component {
             </TransitionGroup>
           </React.Fragment>
         </Container>
+        <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>
+            {this.state.item_name ? this.state.item_name : ""}
+          </ModalHeader>
+          <ModalBody>
+            <img
+              src={currentSite + this.state.activeImage}
+              alt={this.state.activeImage}
+              className="activeImage"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              block
+              color="dark"
+              onClick={this.getItem.bind(this, this.state._id)}
+            >
+              See more
+            </Button>
+          </ModalFooter>
+        </Modal>
       </Container>
     );
   }

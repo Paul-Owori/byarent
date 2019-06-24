@@ -7,6 +7,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -51,7 +52,11 @@ class AdminViewAll extends Component {
     rentItemsVisible: true,
     saleItemsVisible: true,
     availableItemsVisible: "",
-    soldItemsVisible: ""
+    soldItemsVisible: "",
+    imageModal: false,
+    activeImage: "",
+    item_name: "",
+    _id: ""
   };
 
   checker = () => {
@@ -181,6 +186,21 @@ class AdminViewAll extends Component {
     });
   };
 
+  imageToggle = () => {
+    this.setState({ imageModal: !this.state.imageModal });
+  };
+
+  imageModal = item => {
+    this.setState({
+      activeImage: item.item_image[0],
+      item_name: item.item_name,
+      _id: item._id
+    });
+
+    setTimeout(() => {
+      this.imageToggle();
+    }, 500);
+  };
   render() {
     return (
       <Container fluid className="allContainer">
@@ -300,6 +320,11 @@ class AdminViewAll extends Component {
                             src={currentSite + item_image[0]}
                             className="dispImg"
                             alt=""
+                            onClick={this.imageModal.bind(this, {
+                              item_name: item_name,
+                              item_image: item_image,
+                              _id: _id
+                            })}
                           />
                         </div>
 
@@ -478,6 +503,42 @@ class AdminViewAll extends Component {
               </Col>
             </Row>
           </ModalBody>
+        </Modal>
+        <Modal
+          size="lg"
+          isOpen={this.state.imageModal}
+          toggle={this.imageToggle}
+        >
+          <ModalHeader toggle={this.imageToggle}>
+            {this.state.item_name ? this.state.item_name : ""}
+          </ModalHeader>
+          <ModalBody>
+            <img
+              src={currentSite + this.state.activeImage}
+              alt={this.state.activeImage}
+              className="activeImage"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              block
+              color="dark"
+              onClick={this.editItem.bind(this, this.state._id)}
+            >
+              Edit this unit
+            </Button>
+            <Button
+              color="danger"
+              block
+              className="mb-2"
+              onClick={this.deleteItem.bind(this, {
+                _id: this.state._id,
+                item_name: this.state.item_name
+              })}
+            >
+              Delete this unit
+            </Button>
+          </ModalFooter>
         </Modal>
       </Container>
     );
