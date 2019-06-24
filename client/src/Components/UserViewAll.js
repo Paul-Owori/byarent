@@ -191,10 +191,10 @@ class UserViewAll extends Component {
                 </Row>
               ) : (
                 <div className="text-center">
-                  <h5 className="greyME font-weight-bold">
-                    Try refreshing this page if it does not refresh automaticaly
-                  </h5>
-                  <div className=" loadbody my-5" />
+                  <h4 className="greyME font-weight-bold mt-3 ">
+                    Please wait...{" "}
+                  </h4>
+                  <div className="spinner-grow text-secondary loader my-5" />
                 </div>
               )}
             </TransitionGroup>

@@ -106,7 +106,7 @@ CSS for Admin View All
 }
 
 .loadbody {
-  height: 500px;
+  height: 550px;
   width: auto;
   border-radius: 5px;
   margin-top: 0.8rem;
@@ -140,4 +140,10 @@ CSS for Admin View All
 
 hr {
   background-color: rgb(58, 58, 58);
+}
+
+.loader {
+  width: 10em;
+  height: 10rem;
+  margin-bottom: 20rem !important;
 }
