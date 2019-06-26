@@ -63,14 +63,14 @@ class AdminAddOne extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let id = this.props.match.params.item_id;
     this.props.getItem(id);
     this.setState({ id: id });
   }
-  componentDidMount() {
-    console.log("PROPS", this.props);
-    setTimeout(() => {
+  componentDidUpdate(prevProps, prevState) {
+    // console.log("PROPS", this.props);
+    if (this.props.item.item !== prevProps.item.item) {
       console.log("PROPS2", this.props);
 
       this.setState({
@@ -88,10 +88,7 @@ class AdminAddOne extends Component {
         rent: this.props.item.item.item_purchaseDetails.rent,
         sell: this.props.item.item.item_purchaseDetails.sell
       });
-    }, 150);
-    setTimeout(() => {
-      this.forceUpdate();
-    }, 1000);
+    }
   }
 
   handleChange = ({ target }) => {

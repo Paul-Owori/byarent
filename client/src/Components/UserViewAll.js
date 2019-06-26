@@ -27,12 +27,12 @@ class UserViewAll extends Component {
       ? this.setState({ user: currentUser })
       : this.setState({ user: {} });
     this.props.getAvailableItems();
-    setTimeout(() => {
-      console.log("the state i just added==>>", this.state);
-      let availableItemArray = [];
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.item.items !== prevProps.item.items) {
       this.setState({ items: this.props.item.items });
-    }, 150);
-    console.log("Mounted");
+    }
   }
 
   state = {
@@ -116,7 +116,11 @@ class UserViewAll extends Component {
 
     setTimeout(() => {
       this.toggle();
-    }, 500);
+    }, 250);
+  };
+
+  onLoadEnd = message => {
+    console.log(message);
   };
 
   render() {

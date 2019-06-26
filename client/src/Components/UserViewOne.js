@@ -18,27 +18,14 @@ import {
 } from "reactstrap";
 
 class UserViewOne extends Component {
-  // componentWillMount() {
-  //   let id = this.props.match.params.item_id;
-  //   this.props.getItem(id);
-  //   this.setState({ id: id });
-  // }
   componentDidMount() {
     let id = this.props.match.params.item_id;
     if (id) {
       this.props.getItem(id);
     }
-
-    // setTimeout(() => {
-    //   this.setState({
-    //     item: this.props.item.item,
-    //     imageArray: this.props.item.item.item_image
-    //   });
-    // }, 50);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Typical usage (don't forget to compare props):
     if (this.props.item.item !== prevProps.item.item) {
       this.setState({
         item: this.props.item.item,
@@ -279,9 +266,10 @@ class UserViewOne extends Component {
               </Row>
             </Container>
           ) : (
-            <div className="text-center">
-              <h4 className="greyME font-weight-bold mt-3 ">Please wait... </h4>
+            <div className="text-center mt-5">
+              <h4 className="greyME font-weight-bold mt-5 ">Please wait... </h4>
               <div className="spinner-grow text-secondary loader my-5" />
+              <div className="loader" />
             </div>
           )}
           <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle}>

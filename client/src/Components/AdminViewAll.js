@@ -22,22 +22,22 @@ import PropTypes from "prop-types";
 import { currentSite } from "../client_config/config_vars";
 
 class AdminViewAll extends Component {
-  componentWillMount() {
+  componentDidMount() {
+    this.props.getItems();
+    this.props.getOrders();
     const currentAdmin = JSON.parse(sessionStorage.getItem("admin"));
     currentAdmin
       ? this.setState({ admin: currentAdmin })
       : this.setState({ admin: {} });
   }
 
-  componentDidMount() {
-    this.props.getItems();
-    this.props.getOrders();
-    setTimeout(() => {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.item.items !== prevProps.item.items) {
       this.setState({
         items: this.props.item.items,
         orders: this.props.order.orders
       });
-    }, 200);
+    }
   }
 
   state = {
@@ -199,7 +199,7 @@ class AdminViewAll extends Component {
 
     setTimeout(() => {
       this.imageToggle();
-    }, 500);
+    }, 250);
   };
   render() {
     return (
