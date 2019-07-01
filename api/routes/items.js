@@ -195,9 +195,10 @@ router.post("/", upload, (req, res, next) => {
   item
     .save()
     .then(result => {
-      res.status(201).json({ result: result, message: "SUCCESS!" });
+      res.status(201).json(result);
     })
     .catch(err => {
+      res.status(500).json({ error: err });
       console.log(err);
     });
 });

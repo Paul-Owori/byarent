@@ -59,100 +59,124 @@ class AdminAddOne extends Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const prevPropsLength = prevProps.item.items.length;
+    const newPropsLength = this.props.item.items.length;
+
+    if (newPropsLength > prevPropsLength) {
+      if (this.props.item.item.item_name) {
+        this.setState({
+          item_name: "",
+          item_description: "",
+          item_price: "",
+          files: "",
+          address: "",
+          bedrooms: "",
+          bathrooms: "",
+          garage: "",
+          rent: false,
+          sell: false,
+          picUpload: "",
+          picSlotsUsed: [],
+          one: "",
+          two: "",
+          three: "",
+          four: "",
+          five: "",
+          six: "",
+          seven: "",
+          eight: "",
+          warner: "greyME",
+          item: "",
+
+          added: `${this.props.item.item.item_name} has been added successfuly.`
+        });
+        setTimeout(() => {
+          this.toggle();
+        }, 100);
+      }
+    } else if (this.props.item.item.error) {
+      this.setState({
+        added: `There was an error uploading this item. Please try again. Error:${
+          this.props.item.item.error
+        }`
+      });
+      setTimeout(() => {
+        this.toggle();
+      }, 100);
+    }
+  }
+
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
 
   onSubmit = e => {
     e.preventDefault();
-    let filearray = [];
-    if (this.state.one) {
-      filearray.push(this.state.one.image);
-    }
-    if (this.state.two) {
-      filearray.push(this.state.two.image);
-    }
-    if (this.state.three) {
-      filearray.push(this.state.three.image);
-    }
-    if (this.state.four) {
-      filearray.push(this.state.four.image);
-    }
-    if (this.state.five) {
-      filearray.push(this.state.five.image);
-    }
-    if (this.state.six) {
-      filearray.push(this.state.one.image);
-    }
-    if (this.state.seven) {
-      filearray.push(this.state.seven.image);
-    }
-    if (this.state.eight) {
-      filearray.push(this.state.eight.image);
-    }
 
-    let formData = new FormData();
-    formData.append("item_name", `${this.state.item_name}`);
-    formData.append("item_description", `${this.state.item_description}`);
-    formData.append("item_price", `${this.state.item_price}`);
-    formData.append("address", `${this.state.address}`);
-    formData.append("bedrooms", `${this.state.bedrooms}`);
-    formData.append("bathrooms", `${this.state.bathrooms}`);
-    formData.append("garage", `${this.state.garage}`);
-    formData.append("rent", `${this.state.rent}`);
-    formData.append("sell", `${this.state.sell}`);
-    for (let i = 0; i < filearray.length; i++) {
-      formData.append("itemImage", filearray[i]);
-    }
-
-    this.setState({ item: formData });
-
-    this.props.addItem(formData);
-
-    const count1 = this.props.item.items.length;
-
-    setTimeout(() => {
-      const count2 = this.props.item.items.length;
-      if (count2 > count1) {
-        this.setState({ added: "SUCCESS!" });
-        this.toggle();
-
-        setTimeout(() => {
-          this.setState({
-            item_name: "",
-            item_description: "",
-            item_price: "",
-            files: "",
-            address: "",
-            bedrooms: "",
-            bathrooms: "",
-            garage: "",
-            rent: false,
-            sell: false,
-            picUpload: "",
-            picSlotsUsed: [],
-            one: "",
-            two: "",
-            three: "",
-            four: "",
-            five: "",
-            six: "",
-            seven: "",
-            eight: "",
-            warner: "greyME",
-            item: "",
-
-            added: ""
-          });
-        }, 1600);
-      } else {
-        this.setState({
-          added:
-            "Something went wrong! Check to make sure all fields have content."
-        });
-        this.toggle();
+    if (
+      this.state.picSlotsUsed.length &&
+      this.state.item_name &&
+      this.state.item_description &&
+      this.state.item_price &&
+      this.state.address &&
+      this.state.bedrooms &&
+      this.state.bathrooms &&
+      this.state.garage &&
+      (this.state.rent === true || this.state.sell === true)
+    ) {
+      let filearray = [];
+      if (this.state.one) {
+        filearray.push(this.state.one.image);
       }
-    }, 2500);
+      if (this.state.two) {
+        filearray.push(this.state.two.image);
+      }
+      if (this.state.three) {
+        filearray.push(this.state.three.image);
+      }
+      if (this.state.four) {
+        filearray.push(this.state.four.image);
+      }
+      if (this.state.five) {
+        filearray.push(this.state.five.image);
+      }
+      if (this.state.six) {
+        filearray.push(this.state.one.image);
+      }
+      if (this.state.seven) {
+        filearray.push(this.state.seven.image);
+      }
+      if (this.state.eight) {
+        filearray.push(this.state.eight.image);
+      }
+
+      let formData = new FormData();
+      formData.append("item_name", `${this.state.item_name}`);
+      formData.append("item_description", `${this.state.item_description}`);
+      formData.append("item_price", `${this.state.item_price}`);
+      formData.append("address", `${this.state.address}`);
+      formData.append("bedrooms", `${this.state.bedrooms}`);
+      formData.append("bathrooms", `${this.state.bathrooms}`);
+      formData.append("garage", `${this.state.garage}`);
+      formData.append("rent", `${this.state.rent}`);
+      formData.append("sell", `${this.state.sell}`);
+      for (let i = 0; i < filearray.length; i++) {
+        formData.append("itemImage", filearray[i]);
+      }
+
+      this.setState({ item: formData });
+
+      this.props.addItem(formData);
+    } else {
+      this.setState({
+        added:
+          "Something went wrong! Check to make sure all fields have content."
+      });
+      setTimeout(() => {
+        this.toggle();
+      }, 100);
+    }
   };
 
   rentToggle = e => {
