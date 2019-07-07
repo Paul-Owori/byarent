@@ -67,6 +67,8 @@ const theApp = () => {
   mongoose.connection.once("open", () => {
     console.log("CONNECTION DB==>>", mongoose.connection.client.s.url);
 
+    const fileUpload = require("express-fileupload");
+
     //Routes
     const itemRoutes = require("./api/routes/items");
     const orderRoutes = require("./api/routes/orders");
@@ -76,6 +78,8 @@ const theApp = () => {
 
     //The rest of the app
 
+    //file uploader middleware
+    app.use(fileUpload());
     //bodyParser middleware
     app.use(bodyParser.json());
     //Routes

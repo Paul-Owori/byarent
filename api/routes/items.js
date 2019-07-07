@@ -5,13 +5,23 @@ const mongoose = require("mongoose");
 const Item = require("../models/Item");
 const multer = require("multer");
 const fs = require("fs");
+const path = require("path");
 // const Grid = require("gridfs-stream");
 //const { DB } = require("../../db");
 
 const { mongo, connection } = require("mongoose");
 const Grid = require("gridfs-stream");
 Grid.mongo = mongo;
-var gfs = Grid(mongoose.connection.db);
+const gfs = Grid(mongoose.connection.db);
+const Dropbox = require("dropbox").Dropbox;
+const fetch = require("isomorphic-fetch");
+
+const dbx = new Dropbox({
+  accessToken:
+    "RxRWzkK6ykAAAAAAAAAANQfZTG5D-yjpBUU_f85zhyNqH36grW7ewP2dsHsqrdvQ",
+  fetch: fetch
+});
+
 //Grid.mongo = mongo;
 //var gfs = Grid(conn.db);
 
@@ -60,6 +70,7 @@ var gfs = Grid(mongoose.connection.db);
 // );
 
 //Function to generate new names for stored images with the dates they were uploaded on
+
 nameGen = name => {
   return new Date().toISOString() + "." + name;
 };
@@ -87,6 +98,64 @@ const upload = multer({
   storage: newStorage,
   fileFilter: fileFilter
 }).array("itemImage", 8);
+
+router.get("/dbx", (req, res) => {
+  dbx
+    .filesListFolder({ path: "" })
+    .then(response => {
+      //res.status(200).send(response);
+      console.log(response);
+    })
+    .catch(error => {
+      //res.status(500).send(error);
+      console.log(error);
+    });
+});
+
+router.post("/dbx", (req, res) => {
+  //filesUpload(arg)
+  let fileArray;
+  if (req.files.itemImage.length) {
+    fileArray = [...req.files.itemImage];
+  } else {
+    fileArray = [req.files.itemImage];
+  }
+  fileArray.forEach(file => {
+    console.log("Actual file I'm sending==>", file);
+    console.log("Buffer I'm sending==>", file.data);
+
+    fs.readFile(file.data, "utf8", (err, contents) => {
+      if (err) {
+        console.log("Error: ", err);
+      }
+
+      // This uploads the image to the root of your dropbox
+      dbx
+        .filesUpload({ path: `/${file.name}`, contents: contents })
+        .then(function(response) {
+          console.log(response);
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+    });
+  });
+
+  //   dbx
+  //     .filesUpload(
+  //       { path: `/${file.name}`, contents: file },
+  //       console.log("THE FILE NIGGAAA", file)
+  //     )
+  //     .then(response => {
+  //       //res.status(200).send(response);
+  //       console.log(response);
+  //     })
+  //     .catch(error => {
+  //       //res.status(500).send(error);
+  //       console.log(error);
+  //     });
+  // });
+});
 
 router.get("/files/:filename", (req, res) => {
   console.log("FileName==>>", req.params.filename);

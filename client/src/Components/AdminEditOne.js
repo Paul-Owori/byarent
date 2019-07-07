@@ -88,6 +88,18 @@ class AdminAddOne extends Component {
         rent: this.props.item.item.item_purchaseDetails.rent,
         sell: this.props.item.item.item_purchaseDetails.sell
       });
+
+      setTimeout(() => {
+        if (prevState.item.item_name && prevState.item !== this.state.item) {
+          console.log("Prev itemNAme==>>", prevState.item.item_name);
+          this.setState({
+            picUpload: "",
+            picSlotsUsed: [],
+            added: `${this.props.item.item.item_name} was successfully updated.`
+          });
+          this.toggle();
+        }
+      }, 100);
     }
   }
 
@@ -140,20 +152,6 @@ class AdminAddOne extends Component {
     }
 
     this.props.updateItem(formData, this.state.item._id);
-
-    setTimeout(() => {
-      const success = this.props.item.item.message;
-      if (success === "SUCCESS!") {
-        this.setState({ added: "SUCCESS!" });
-        this.toggle();
-      } else {
-        this.setState({
-          added:
-            "Something went wrong! Check to make sure all fields have content."
-        });
-        this.toggle();
-      }
-    }, 2500);
   };
 
   rentToggle = e => {
