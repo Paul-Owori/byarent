@@ -1,11 +1,13 @@
 //Configures the server port
 const port = process.env.PORT || 5000;
 
+//Load environmental variables
+require("dotenv").config();
+
 //Configuring the database
 const mongoose = require("mongoose");
-const DB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"; /*"mongodb://localhost:27017/byarent"; */ //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
+const DB_URI = process.env.MONGODB_URI;
+//"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"; /*"mongodb://localhost:27017/byarent"; */ //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
 
 //Configure mock database for testing purposes
 const Mockgoose = require("mockgoose").Mockgoose;
@@ -66,6 +68,7 @@ conn();
 const theApp = () => {
   mongoose.connection.once("open", () => {
     console.log("CONNECTION DB==>>", mongoose.connection.client.s.url);
+    console.log("Node DB==>>", process.env.MONGODB_URI);
 
     const fileUpload = require("express-fileupload");
 

@@ -6,8 +6,7 @@ const Dropbox = require("dropbox").Dropbox;
 const fetch = require("isomorphic-fetch");
 
 const dbx = new Dropbox({
-  accessToken:
-    "RxRWzkK6ykAAAAAAAAAANQfZTG5D-yjpBUU_f85zhyNqH36grW7ewP2dsHsqrdvQ",
+  accessToken: process.env.DBX_ACCESS_TOKEN,
   fetch: fetch
 });
 
