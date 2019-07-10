@@ -1,18 +1,7 @@
 const express = require("express");
 const router = express.Router();
-//const { connect } = require("../../db");
 const mongoose = require("mongoose");
 const Item = require("../models/Item");
-const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
-// const Grid = require("gridfs-stream");
-//const { DB } = require("../../db");
-
-const { mongo, connection } = require("mongoose");
-const Grid = require("gridfs-stream");
-Grid.mongo = mongo;
-const gfs = Grid(mongoose.connection.db);
 const Dropbox = require("dropbox").Dropbox;
 const fetch = require("isomorphic-fetch");
 
@@ -22,194 +11,11 @@ const dbx = new Dropbox({
   fetch: fetch
 });
 
-//Grid.mongo = mongo;
-//var gfs = Grid(conn.db);
-
-// const storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, "./uploads");
-//   },
-//   filename: function(req, file, cb) {
-//     cb(null, new Date().toISOString() + file.originalname);
-//   }
-// });
-
-// const fileFilter = (req, file, cb) => {
-//   //Reject any files that are not images
-//   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-//     cb(null, true);
-//   } else {
-//     cb(null, false);
-//   }
-// };
-
-// const upload = multer({ storage: storage, fileFilter: fileFilter }).array(
-//   "itemImage",
-//   8
-// );
-
-// set up connection to db for file storage
-// const storage = require("multer-gridfs-storage")({
-//   db: conn.db,
-//   file: (req, file) => {
-//     return {
-//       //filename: file.originalname,
-//       filename: function(req, file, cb) {
-//         cb(null, new Date().toISOString() + file.originalname);
-//       }
-//     };
-//   }
-// });
-
-// sets file input to single file
-//const upload = multer({ storage: storage }).single("file");
-
-// const upload = multer({ storage: storage, fileFilter: fileFilter }).array(
-//   "itemImage",
-//   8
-// );
-
 //Function to generate new names for stored images with the dates they were uploaded on
 
 nameGen = name => {
   return new Date().toISOString() + "." + name;
 };
-
-let newStorage = require("multer-gridfs-storage")({
-  db: mongoose.connection.db,
-  file: (req, file) => {
-    return {
-      //filename: file.originalname,
-      filename: nameGen(file.originalname)
-    };
-  }
-});
-
-const fileFilter = (req, file, cb) => {
-  //Reject any files that are not images
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
-
-const upload = multer({
-  storage: newStorage,
-  fileFilter: fileFilter
-}).array("itemImage", 8);
-
-router.get("/dbx", (req, res) => {
-  dbx
-    .filesListFolder({ path: "" })
-    .then(response => {
-      //res.status(200).send(response);
-      console.log(response);
-    })
-    .catch(error => {
-      //res.status(500).send(error);
-      console.log(error);
-    });
-});
-
-router.post("/dbx", (req, res) => {
-  //filesUpload(arg)
-  let fileArray;
-  if (req.files.itemImage.length) {
-    fileArray = [...req.files.itemImage];
-  } else {
-    fileArray = [req.files.itemImage];
-  }
-  fileArray.forEach(file => {
-    console.log("Actual file I'm sending==>", file);
-    console.log("Buffer I'm sending==>", file.data);
-
-    fs.readFile(file.data, "utf8", (err, contents) => {
-      if (err) {
-        console.log("Error: ", err);
-      }
-
-      // This uploads the image to the root of your dropbox
-      dbx
-        .filesUpload({ path: `/${file.name}`, contents: contents })
-        .then(function(response) {
-          console.log(response);
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
-    });
-  });
-
-  //   dbx
-  //     .filesUpload(
-  //       { path: `/${file.name}`, contents: file },
-  //       console.log("THE FILE NIGGAAA", file)
-  //     )
-  //     .then(response => {
-  //       //res.status(200).send(response);
-  //       console.log(response);
-  //     })
-  //     .catch(error => {
-  //       //res.status(500).send(error);
-  //       console.log(error);
-  //     });
-  // });
-});
-
-router.get("/files/:filename", (req, res) => {
-  console.log("FileName==>>", req.params.filename);
-  gfs.files.find({ filename: req.params.filename }).toArray((err, files) => {
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        message: "Could not find file"
-      });
-    }
-    let readstream = gfs.createReadStream({
-      //??
-      filename: files[0].filename //??
-    });
-    res.set("Content-Type", files[0].contentType); //??
-    return readstream.pipe(res); //??
-  });
-});
-
-router.get("/files", (req, res) => {
-  gfs.files.find().toArray((err, files) => {
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        message: "Could not find files"
-      });
-    }
-    return res.json(files);
-  });
-});
-
-router.post("/files", upload, (req, res) => {
-  console.log("Starting file upload");
-  const imageArray = [...req.files];
-  const fileNameArray = [];
-  imageArray.forEach(image => {
-    fileNameArray.push(image.filename);
-  });
-  console.log("file==>>", imageArray);
-  if (req.files) {
-    console.log("file ids==>>", fileNameArray);
-    return res.json({
-      success: true,
-      randomOtherthins: "this",
-      file: fileNameArray
-    });
-  }
-  res.send({ success: false });
-});
-
-router.delete("/files/:id", (req, res) => {
-  gfs.remove({ _id: req.params.id }, err => {
-    if (err) return res.status(500).json({ success: false });
-    return res.json({ success: true });
-  });
-});
 
 ////ITEMS:::
 
@@ -217,9 +23,47 @@ router.get("/", (req, res, next) => {
   console.log("REACHED BEGINNING OF REQUEST!!");
   Item.find()
     .exec()
-    .then(docs => {
-      console.log("JSON DOCS FROM ITEMS.JS=>", docs[0].item_image[0]);
-      res.status(200).send(docs);
+    .then(items => {
+      console.log("JSON items FROM ITEMS.JS=>", items);
+      let itemsWithLinks = [];
+      items.forEach(item => {
+        let imageName = item.item_image[0];
+
+        dbx
+          .filesGetTemporaryLink({
+            path: `/${imageName}`
+          })
+          .then(function(response) {
+            //imageLinks.push(response.link);
+
+            let actualItem = {
+              _id: item._id,
+              item_name: item.item_name,
+              item_price: item.item_price,
+              isSold: item.isSold,
+              item_description: item.item_description,
+              item_purchaseDetails: {
+                bedrooms: item.item_purchaseDetails.bedrooms,
+                bathrooms: item.item_purchaseDetails.bathrooms,
+                garage: item.item_purchaseDetails.garage,
+                rent: item.item_purchaseDetails.rent,
+                sell: item.item_purchaseDetails.sell,
+                address: item.item_purchaseDetails.address
+              },
+              item_image: [{ imageName: imageName, imageLink: response.link }]
+            };
+            itemsWithLinks.push(actualItem);
+            if (itemsWithLinks.length === items.length) {
+              console.log("The items==>>", itemsWithLinks);
+
+              res.status(200).send(itemsWithLinks);
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      });
+      //res.status(200).send(items);
     })
     .catch(err => {
       console.log(err);
@@ -229,262 +73,38 @@ router.get("/", (req, res, next) => {
     });
 });
 
-// router.post("/", upload.single("itemImage"), (req, res, next) => {
-//   console.log(req.file);
+router.post("/", (req, res, next) => {
+  //First we rename all the images and then save them in dropbox
 
-router.post("/", upload, (req, res, next) => {
-  //Get the paths of each of the images uploaded
-  console.log("REACHED BEGINNING OF post!!");
-  console.log(req.body);
+  //newImageNameArray will contain all the new names of the images once renaming has been completed.
+  let newImageNameArray = [];
 
-  const imageArray = [...req.files];
-  const fileNameArray = [];
-  imageArray.forEach(image => {
-    fileNameArray.push(image.filename);
-  });
-
-  //This creates a new item object in the database using the item model
-  const item = new Item({
-    _id: new mongoose.Types.ObjectId(),
-    item_name: req.body.item_name,
-    item_description: req.body.item_description,
-    item_price: req.body.item_price,
-    item_image: [...fileNameArray],
-    item_purchaseDetails: {
-      address: req.body.address,
-      bedrooms: req.body.bedrooms,
-      bathrooms: req.body.bathrooms,
-      garage: req.body.garage,
-      rent: req.body.rent,
-      sell: req.body.sell
-    }
-  });
-
-  //This saves the item in the database
-  item
-    .save()
-    .then(result => {
-      res.status(201).json(result);
-    })
-    .catch(err => {
-      res.status(500).json({ error: err });
-      console.log(err);
-    });
-});
-
-router.get("/:itemID", (req, res, next) => {
-  const id = req.params.itemID;
-  Item.findById(id)
-    .exec()
-    .then(doc => {
-      console.log("From database", doc);
-      if (doc) {
-        res.status(200).json(doc);
-      } else {
-        res.status(404).json({
-          message: "Nothing found"
-        });
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({ error: err });
-    });
-});
-
-router.patch("/:itemID", upload, (req, res, next) => {
-  const id = req.params.itemID;
-
-  const imageArray = [...req.files];
-  const fileNameArray = [];
-  imageArray.forEach(image => {
-    fileNameArray.push(image.filename);
-  });
-
-  const oldImagesReceived = JSON.parse(req.body.oldImages);
-  const oldImagesInStore = [];
-
-  //Checking which images should be deleted from the ones already in the store.
-  arrayCompare = (arr1, arr2) => {
-    arr3 = [];
-    arr1.forEach(item => {
-      if (arr2.includes(item) === false) {
-        arr3.push(item);
-      }
-    });
-    return arr3;
-  };
-
-  Item.findById(id)
-    .exec()
-    .then(doc => {
-      if (doc) {
-        oldImagesInStore.push(...doc.item_image);
-      } else {
-        res.status(404).json({
-          message: "Nothing found"
-        });
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({ error: err });
-    });
-
-  // router.delete("/:imageName", (req, res) => {
-  // gfs.remove({ _id: req.params.imageName }, err => {
-  //   if (err) return res.status(500).json({ success: false });
-  //   return res.json({ success: true });
-  // });
-  // });
-
-  setTimeout(() => {
-    const oldImagesToDelete = arrayCompare(oldImagesInStore, oldImagesReceived);
-    const newImageArray = [...oldImagesReceived, ...fileNameArray];
-    console.log(newImageArray);
-    oldImagesToDelete.forEach(image => {
-      gfs.remove({ filename: image });
-    });
-    let updater = {
-      item_name: req.body.item_name,
-      item_description: req.body.item_description,
-      item_price: req.body.item_price,
-      item_purchaseDetails: {
-        address: req.body.address,
-        bedrooms: req.body.bedrooms,
-        bathrooms: req.body.bathrooms,
-        garage: req.body.garage,
-        rent: req.body.rent,
-        sell: req.body.sell
-      },
-      item_image: [...newImageArray]
-    };
-
-    setTimeout(() => {
-      Item.updateMany({ _id: id }, updater)
-        .exec()
-        .then(result => {
-          console.log(result);
-          res.status(200).json({ result: result, message: "SUCCESS!" });
-        })
-        .catch(err => {
-          console.log(error);
-          res.status(500).json({ error: err });
-        });
-    }, 100);
-  }, 500);
-});
-
-router.patch("/buy/:itemID", (req, res, next) => {
-  const id = req.params.itemID;
-
-  // A function that allows us to update only one value at a time
-  //   where necessary instead of forcing us to update all or nothing
-
-  Item.updateOne({ _id: id }, { isSold: true })
-    .exec()
-    .then(result => {
-      res.status(200).json({ result });
-    })
-    .catch(err => {
-      console.log(error);
-      res.status(500).json({ error: err });
-    });
-});
-
-router.delete("/:itemID", (req, res, next) => {
-  //First we search for the item by its _id to allow us to delete its images from
-  //the uploads folder
-  const id = req.params.itemID;
-  Item.findById(id)
-    .exec()
-    .then(doc => {
-      if (doc) {
-        //First we extract the array of image paths
-        const imagePath = [...doc.item_image];
-        //console.log(imagePath);
-
-        imagePath.forEach(element => {
-          gfs.remove({ filename: element });
-        });
-
-        //Then we extract the item _id and use that to help us delete the item itself
-        Item.deleteOne({ _id: id })
-          .exec()
-          .then(result => {
-            res.status(200).json(result);
-          })
-          .catch(err => {
-            res.status(500).json({
-              error: err
-            });
-          });
-      } else {
-        res.status(404).json({
-          message: "Nothing found"
-        });
-      }
-    });
-});
-
-module.exports = router;
-
-/*
-const express = require("express");
-const router = express.Router();
-const mongoose = require("mongoose");
-const Item = require("../models/Item");
-const multer = require("multer");
-const fs = require("fs");
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, "./uploads");
-  },
-  filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  }
-});
-const fileFilter = (req, file, cb) => {
-  //Reject any files that are not images
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    cb(null, true);
+  //receivedImageArray is where all the received images will be placed after they are extracted from req.files
+  //The npm package express-fileupload makes them available in req.files
+  let receivedImageArray;
+  if (req.files.itemImage.length) {
+    receivedImageArray = [...req.files.itemImage];
   } else {
-    cb(null, false);
+    receivedImageArray = [req.files.itemImage];
   }
-};
-const upload = multer({ storage: storage, fileFilter: fileFilter }).array(
-  "itemImage",
-  8
-);
 
-router.get("/", (req, res, next) => {
-  console.log("REACHED BEGINNING OF REQUEST!!");
-  Item.find()
-    .exec()
-    .then(docs => {
-      console.log("JSON DOCS FROM ITEMS.JS=>", docs[0].item_image[0]);
-      res.status(200).send(docs);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
+  receivedImageArray.forEach(image => {
+    console.log("Actual file I'm sending==>", image);
+
+    let newName = nameGen(image.name);
+    newImageNameArray.push(newName);
+
+    dbx
+      .filesUpload({
+        path: `/${newName}`,
+        contents: image.data
+      })
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        console.log(err);
       });
-    });
-});
-
-//
-// router.post("/", upload.single("itemImage"), (req, res, next) => {
-//   console.log(req.file);
-//
-
-router.post("/", upload, (req, res, next) => {
-  //Get the paths of each of the images uploaded
-  console.log("REACHED BEGINNING OF post!!");
-  console.log(req.body);
-  const imageArray = [...req.files];
-  pathArray = imageArray.map((image, i, imageArray) => {
-    return image.path;
   });
 
   //This creates a new item object in the database using the item model
@@ -493,7 +113,7 @@ router.post("/", upload, (req, res, next) => {
     item_name: req.body.item_name,
     item_description: req.body.item_description,
     item_price: req.body.item_price,
-    item_image: [...pathArray],
+    item_image: [...newImageNameArray],
     item_purchaseDetails: {
       address: req.body.address,
       bedrooms: req.body.bedrooms,
@@ -511,23 +131,56 @@ router.post("/", upload, (req, res, next) => {
       res.status(201).json(result);
     })
     .catch(err => {
+      res.status(500).json({ error: err });
       console.log(err);
     });
 });
 
 router.get("/:itemID", (req, res, next) => {
+  console.log("Trying to get item");
   const id = req.params.itemID;
   Item.findById(id)
     .exec()
-    .then(doc => {
-      console.log("From database", doc);
-      if (doc) {
-        res.status(200).json(doc);
-      } else {
-        res.status(404).json({
-          message: "Nothing found"
-        });
-      }
+    .then(item => {
+      //Get links for each item
+      let imageLinks = [];
+
+      item.item_image.forEach(imageName => {
+        dbx
+          .filesGetTemporaryLink({
+            path: `/${imageName}`
+          })
+          .then(function(response) {
+            imageLinks.push({ imageName: imageName, imageLink: response.link });
+            // console.log("A link was generated==>>", response.link);
+            if (imageLinks.length === item.item_image.length) {
+              //console.log("Finally got the stuff done with==>>", imageLinks);
+              let actualItem = {
+                _id: item._id,
+                item_name: item.item_name,
+                item_price: item.item_price,
+
+                isSold: item.isSold,
+                item_description: item.item_description,
+                item_purchaseDetails: {
+                  bedrooms: item.item_purchaseDetails.bedrooms,
+                  bathrooms: item.item_purchaseDetails.bathrooms,
+                  garage: item.item_purchaseDetails.garage,
+                  rent: item.item_purchaseDetails.rent,
+                  sell: item.item_purchaseDetails.sell,
+                  address: item.item_purchaseDetails.address
+                },
+                item_image: [...imageLinks]
+              };
+              console.log("The item==>>", actualItem);
+
+              res.status(200).send(actualItem);
+            }
+          })
+          .catch(function(error) {
+            console.log(error);
+          });
+      });
     })
     .catch(err => {
       console.log(err);
@@ -535,18 +188,51 @@ router.get("/:itemID", (req, res, next) => {
     });
 });
 
-router.patch("/:itemID", upload, (req, res, next) => {
+router.patch("/:itemID", (req, res, next) => {
   const id = req.params.itemID;
 
-  const imageArray = [...req.files];
-  const pathArray = imageArray.map((image, i, imageArray) => {
-    return image.path;
-  });
+  let imageArray;
+  let fileNameArray;
+
+  if (req.files) {
+    if (req.files.itemImage.length) {
+      imageArray = [...req.files.itemImage];
+    } else {
+      imageArray = [req.files.itemImage];
+    }
+
+    if (imageArray.length) {
+      fileNameArray = [];
+      imageArray.forEach(image => {
+        let newName = nameGen(image.name);
+        fileNameArray.push(newName);
+
+        dbx
+          .filesUpload({
+            path: `/${newName}`,
+            contents: image.data
+          })
+          .then(response => {
+            console.log(response);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      });
+    }
+  }
+  //The images received arrive in the format [{imageName1, imageLink1},{imageName2, imageLink2}]
+  //So the following generates a new array that only has the imageNames
 
   const oldImagesReceived = JSON.parse(req.body.oldImages);
-  const oldImagesInStore = [];
 
-  //Checking which images should be deleted from the ones already in the store.
+  let oldImageNames = [];
+
+  oldImagesReceived.forEach(imageItem => {
+    oldImageNames.push(imageItem.imageName);
+  });
+
+  //A function for checking which images should be deleted from the ones already in the store.
   arrayCompare = (arr1, arr2) => {
     arr3 = [];
     arr1.forEach(item => {
@@ -560,41 +246,53 @@ router.patch("/:itemID", upload, (req, res, next) => {
   Item.findById(id)
     .exec()
     .then(doc => {
-      if (doc) {
-        oldImagesInStore.push(...doc.item_image);
+      let oldImagesInStore = [...doc.item_image];
+
+      const oldImagesToDelete = arrayCompare(oldImagesInStore, oldImageNames);
+
+      let newImageArray;
+      if (fileNameArray) {
+        if (fileNameArray.length) {
+          newImageArray = [...oldImageNames, ...fileNameArray];
+        }
       } else {
-        res.status(404).json({
-          message: "Nothing found"
+        newImageArray = [...oldImageNames];
+      }
+
+      console.log(newImageArray);
+
+      if (oldImagesToDelete.length) {
+        oldImagesToDelete.forEach(image => {
+          dbx
+            .filesDelete({
+              path: `/${image}`
+            })
+            .then(function(response) {
+              console.log("Response ==>", response);
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
         });
       }
+
+      let updater = {
+        item_name: req.body.item_name,
+        item_description: req.body.item_description,
+        item_price: req.body.item_price,
+        item_purchaseDetails: {
+          address: req.body.address,
+          bedrooms: req.body.bedrooms,
+          bathrooms: req.body.bathrooms,
+          garage: req.body.garage,
+          rent: req.body.rent,
+          sell: req.body.sell
+        },
+        item_image: [...newImageArray]
+      };
+      return updater;
     })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({ error: err });
-    });
-
-  setTimeout(() => {
-    const oldImagesToDelete = arrayCompare(oldImagesInStore, oldImagesReceived);
-    const newImageArray = [...oldImagesReceived, ...pathArray];
-    oldImagesToDelete.forEach(image => {
-      fs.unlinkSync(image);
-    });
-    let updater = {
-      item_name: req.body.item_name,
-      item_description: req.body.item_description,
-      item_price: req.body.item_price,
-      item_purchaseDetails: {
-        address: req.body.address,
-        bedrooms: req.body.bedrooms,
-        bathrooms: req.body.bathrooms,
-        garage: req.body.garage,
-        rent: req.body.rent,
-        sell: req.body.sell
-      },
-      item_image: [...newImageArray]
-    };
-
-    setTimeout(() => {
+    .then(updater => {
       Item.updateMany({ _id: id }, updater)
         .exec()
         .then(result => {
@@ -605,10 +303,15 @@ router.patch("/:itemID", upload, (req, res, next) => {
           console.log(error);
           res.status(500).json({ error: err });
         });
-    }, 100);
-  }, 500);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
 });
 
+//A route triggered only when an item is bought. It updates the item isSold status
+//to show that its nolonger available
 router.patch("/buy/:itemID", (req, res, next) => {
   const id = req.params.itemID;
 
@@ -627,22 +330,32 @@ router.patch("/buy/:itemID", (req, res, next) => {
 });
 
 router.delete("/:itemID", (req, res, next) => {
-  //First we search for the item by its _id to allow us to delete its images from
-  //the uploads folder
+  //First we search for the item by its _id so that we can access its item_image array which
+  //will give us the information necessary to allow us to delete its images from dropbox
+
   const id = req.params.itemID;
   Item.findById(id)
     .exec()
-    .then(doc => {
-      if (doc) {
+    .then(item => {
+      if (item) {
         //First we extract the array of image paths
-        const imagePath = [...doc.item_image];
-        //console.log(imagePath);
+        const imagePath = [...item.item_image];
 
-        imagePath.forEach(element => {
-          fs.unlinkSync(element); //Delete each image
+        //Then we delete each image from dropbox, one by one
+        imagePath.forEach(image => {
+          dbx
+            .filesDelete({
+              path: `/${image}`
+            })
+            .then(function(response) {
+              console.log("Response ==>", response);
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
         });
 
-        //Then we extract the item _id and use that to help us delete the item itself
+        //Then we use the item _id to help us delete the item itself
         Item.deleteOne({ _id: id })
           .exec()
           .then(result => {
@@ -662,4 +375,3 @@ router.delete("/:itemID", (req, res, next) => {
 });
 
 module.exports = router;
-*/

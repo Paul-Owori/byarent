@@ -16,9 +16,12 @@ import {
 import "./css/view_all.css";
 import { TransitionGroup } from "react-transition-group";
 import { connect } from "react-redux";
-import { getAvailableItems, getItem } from "../Actions/itemActions";
+import {
+  getAvailableItems,
+  getItem,
+  getImageLinks
+} from "../Actions/itemActions";
 import PropTypes from "prop-types";
-import { currentSite } from "../client_config/config_vars";
 
 class UserViewAll extends Component {
   componentDidMount() {
@@ -31,6 +34,7 @@ class UserViewAll extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.item.items !== prevProps.item.items) {
+      console.log("Valid Update");
       this.setState({ items: this.props.item.items });
     }
   }
@@ -179,7 +183,7 @@ class UserViewAll extends Component {
 
                         <div className="dispImgBody">
                           <img
-                            src={currentSite + item_image[0]}
+                            src={item_image[0].imageLink}
                             className="dispImg"
                             alt=""
                             onClick={this.imageModal.bind(this, {
@@ -239,8 +243,8 @@ class UserViewAll extends Component {
           </ModalHeader>
           <ModalBody>
             <img
-              src={currentSite + this.state.activeImage}
-              alt={this.state.activeImage}
+              src={this.state.activeImage.imageLink}
+              alt={this.state.activeImage.imageLink}
               className="activeImage"
             />
           </ModalBody>
@@ -262,6 +266,7 @@ class UserViewAll extends Component {
 UserViewAll.propTypes = {
   getAvailableItems: PropTypes.func.isRequired,
   getItem: PropTypes.func.isRequired,
+  getImageLinks: PropTypes.func.isRequired,
   item: PropTypes.object,
   user: PropTypes.object
 };
@@ -272,5 +277,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { getAvailableItems, getItem }
+  { getAvailableItems, getItem, getImageLinks }
 )(UserViewAll);

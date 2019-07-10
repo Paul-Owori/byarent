@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { updateItem, getItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
-import { currentSite } from "../client_config/config_vars";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import {
@@ -69,9 +68,15 @@ class AdminAddOne extends Component {
     this.setState({ id: id });
   }
   componentDidUpdate(prevProps, prevState) {
-    // console.log("PROPS", this.props);
-    if (this.props.item.item !== prevProps.item.item) {
-      console.log("PROPS2", this.props);
+    console.log("PROPS==>>", this.props);
+    console.log("State==>>", this.state);
+    if (
+      this.props.item.item.item_name &&
+      this.props.item.item.item_image.length &&
+      this.props.item.item !== prevProps.item.item
+    ) {
+      console.log("PROPS2==>>", this.props);
+      console.log("State2==>>", this.state);
 
       this.setState({
         item: this.props.item.item,
@@ -359,13 +364,13 @@ class AdminAddOne extends Component {
     this.props.history.push("/admin/all");
   };
 
-  deleteOldImage = image => {
+  deleteOldImage = imageName => {
     this.setState({
       oldImageCount: this.state.oldImageCount - 1,
       totalCount: this.state.totalCount - 1,
       warner: "greyME",
       oldImages: this.state.oldImages.filter(item => {
-        return item !== image;
+        return item.imageName !== imageName;
       })
     });
   };
@@ -405,7 +410,7 @@ class AdminAddOne extends Component {
                     <TransitionGroup className="shopping-list">
                       {this.state.oldImages.map(image => (
                         <CSSTransition
-                          key={image}
+                          key={image.imageName}
                           timeout={500}
                           classNames="fade"
                         >
@@ -414,7 +419,7 @@ class AdminAddOne extends Component {
                               <img
                                 alt=""
                                 className="dispImg"
-                                src={currentSite + image}
+                                src={image.imageLink}
                               />
                             </div>
                             <Button
@@ -422,7 +427,10 @@ class AdminAddOne extends Component {
                               color="danger"
                               size="sm"
                               block
-                              onClick={this.deleteOldImage.bind(this, image)}
+                              onClick={this.deleteOldImage.bind(
+                                this,
+                                image.imageName
+                              )}
                             >
                               Delete
                             </Button>

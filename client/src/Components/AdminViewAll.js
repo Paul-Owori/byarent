@@ -19,7 +19,6 @@ import { connect } from "react-redux";
 import { getItems, getItem, deleteItem } from "../Actions/itemActions";
 import { getOrders } from "../Actions/orderActions";
 import PropTypes from "prop-types";
-import { currentSite } from "../client_config/config_vars";
 
 class AdminViewAll extends Component {
   componentDidMount() {
@@ -317,7 +316,7 @@ class AdminViewAll extends Component {
 
                         <div className="dispImgBody">
                           <img
-                            src={currentSite + item_image[0]}
+                            src={item_image[0].imageLink}
                             className="dispImg"
                             alt=""
                             onClick={this.imageModal.bind(this, {
@@ -514,8 +513,8 @@ class AdminViewAll extends Component {
           </ModalHeader>
           <ModalBody>
             <img
-              src={currentSite + this.state.activeImage}
-              alt={this.state.activeImage}
+              src={this.state.activeImage.imageLink}
+              alt={this.state.activeImage.imageLink}
               className="activeImage"
             />
           </ModalBody>

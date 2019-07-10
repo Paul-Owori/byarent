@@ -60,15 +60,15 @@ class AppNavbar extends Component {
         ? JSON.parse(sessionStorage.getItem("cart"))
         : [],
       pre_orders:
-        this.props.pre_orders && this.props.pre_orders.length
-          ? this.props.pre_orders
+        this.props.order.pre_orders && this.props.order.pre_orders.length
+          ? this.props.order.pre_orders
           : JSON.parse(sessionStorage.getItem("cart")),
       loggedIn: sessionStorage.getItem("user") === null ? false : true,
       orders: sessionStorage.getItem("orders")
         ? JSON.parse(sessionStorage.getItem("orders"))
         : [],
       cartColor:
-        (this.props.pre_orders && this.props.pre_orders.length) ||
+        (this.props.order.pre_orders && this.props.order.pre_orders.length) ||
         (JSON.parse(sessionStorage.getItem("cart")) &&
           JSON.parse(sessionStorage.getItem("cart")).length)
           ? "fas fa-shopping-cart cart fa-lg"
@@ -82,34 +82,51 @@ class AppNavbar extends Component {
     });
   }
 
-  componentWillReceiveProps() {
-    this.setState({
-      user: sessionStorage.getItem("user")
-        ? JSON.parse(sessionStorage.getItem("user"))
-        : "",
-      admin: sessionStorage.getItem("admin")
-        ? JSON.parse(sessionStorage.getItem("admin"))
-        : "",
-      cart: sessionStorage.getItem("cart")
-        ? JSON.parse(sessionStorage.getItem("cart"))
-        : [],
-      pre_orders:
-        this.props.pre_orders && this.props.pre_orders.length
-          ? this.props.pre_orders
-          : JSON.parse(sessionStorage.getItem("cart")),
-      loggedIn: sessionStorage.getItem("user") === null ? false : true,
-      orders:
-        this.props.order.orders && this.props.order.orders.length
-          ? this.props.order.orders
-          : sessionStorage.getItem("orders")
-          ? JSON.parse(sessionStorage.getItem("orders"))
-          : [],
-      cartColor:
-        (this.props.pre_orders && this.props.pre_orders.length) ||
-        sessionStorage.getItem("cart")
+  componentDidUpdate(prevProps, prevState) {
+    console.log("PropsCheck==>>", this.props);
+    if (
+      this.props.order.orders &&
+      this.props.order.orders !== prevProps.order.orders
+    ) {
+      this.setState({
+        orders:
+          this.props.order.orders && this.props.order.orders.length
+            ? this.props.order.orders
+            : sessionStorage.getItem("orders")
+            ? JSON.parse(sessionStorage.getItem("orders"))
+            : []
+      });
+    }
+    if (
+      this.props.order.pre_orders &&
+      this.props.order.pre_orders !== prevProps.order.pre_orders
+    ) {
+      console.log("SOmething CHanged!!");
+      this.setState({
+        pre_orders:
+          this.props.order.pre_orders && this.props.order.pre_orders.length
+            ? this.props.order.pre_orders
+            : JSON.parse(sessionStorage.getItem("cart")),
+        cartColor: sessionStorage.getItem("cart")
           ? "fas fa-shopping-cart cart"
           : "fas fa-shopping-cart"
-    });
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.order.pre_orders !== this.props.order.pre_orders) {
+      console.log("SOmething CHanged!!");
+      this.setState({
+        pre_orders:
+          nextProps.order.pre_orders && nextProps.order.pre_orders.length
+            ? nextProps.order.pre_orders
+            : JSON.parse(sessionStorage.getItem("cart")),
+        cartColor: sessionStorage.getItem("cart")
+          ? "fas fa-shopping-cart cart"
+          : "fas fa-shopping-cart"
+      });
+    }
   }
 
   toggle = () => {
@@ -155,24 +172,9 @@ class AppNavbar extends Component {
     this.setState({ user: "", admin: "" });
   };
 
-  signIn = () => {
-    this.setState({});
-  };
-
-  updateComponent = () => {
-    console.log("This just doesnt work");
-    this.forceUpdate();
-  };
-
   deleteCartItem = _id => {
     this.props.deletePreOrder(_id);
     this.forceUpdate();
-  };
-
-  housesNav = () => {
-    sessionStorage.getItem("admin") !== null
-      ? this.props.history.push("/admin/all")
-      : this.props.history.push("/user/all");
   };
 
   orderCheckout = orders => {
@@ -332,9 +334,7 @@ class AppNavbar extends Component {
           </ModalHeader>
           <ModalBody>
             <TransitionGroup>
-              {this.state.cart &&
-              this.state.cart.length &&
-              sessionStorage.getItem("cart") !== null ? (
+              {this.state.cart && this.state.cart.length ? (
                 this.state.cart.map(
                   ({ _id, item_name, item_purchaseDetails, item_price }) => (
                     <CSSTransition key={_id} timeout={500} classNames="fade">

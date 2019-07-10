@@ -3,7 +3,6 @@ import "./css/user_viewOne.css";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
 import { getItem, getItems } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import { preOrder } from "../Actions/orderActions"; //REQUIRED FOR REDUX
-import { currentSite } from "../client_config/config_vars";
 
 import PropTypes from "prop-types";
 
@@ -71,7 +70,7 @@ class UserViewOne extends Component {
     let count = 0;
     for (let i = 0; i < item_imageArray.length; i++) {
       itemArray.push({
-        src: `${currentSite + item_imageArray[i]}`,
+        src: `${item_imageArray[i].imageLink}`,
         altText: `Slide ${count}`,
         caption: `Slide ${count}`
       });
@@ -159,8 +158,8 @@ class UserViewOne extends Component {
                       key={this.state.item.item_image.indexOf(item)}
                     >
                       <img
-                        alt={item}
-                        src={currentSite + item}
+                        alt={item.imageName}
+                        src={item.imageLink}
                         onClick={this.assignIndex.bind(
                           this,
                           this.state.item.item_image.indexOf(item)
@@ -186,8 +185,8 @@ class UserViewOne extends Component {
                             this.state.item.item_image[this.state.activeIndex]
                           }
                           src={
-                            currentSite +
                             this.state.item.item_image[this.state.activeIndex]
+                              .imageLink
                           }
                           onClick={this.setActiveImage.bind(
                             this,
@@ -278,8 +277,8 @@ class UserViewOne extends Component {
             </ModalHeader>
             <ModalBody>
               <img
-                src={currentSite + this.state.activeImage}
-                alt={this.state.activeImage}
+                src={this.state.activeImage.imageLink}
+                alt={this.state.activeImage.imageName}
                 className="activeImage"
               />
             </ModalBody>
