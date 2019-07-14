@@ -29,15 +29,17 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        orders: state.orders.filter(order => order._id !== action.payload)
+        orders: state.orders.filter(order => {
+          return order._id !== action.payload;
+        })
       };
     case DELETE_PRE_ORDER:
       return {
         ...state,
         loading: false,
-        pre_orders: state.pre_orders.filter(
-          order => order.id !== action.payload
-        )
+        pre_orders: state.pre_orders.filter(order => {
+          return order._id !== action.payload;
+        })
       };
     case UPDATE_ORDER:
       return {

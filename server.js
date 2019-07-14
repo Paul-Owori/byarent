@@ -1,3 +1,4 @@
+/*
 //Configures the server port
 const port = process.env.PORT || 5000;
 
@@ -8,7 +9,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const DB_URI = process.env.MONGODB_URI;
 //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"; /*"mongodb://localhost:27017/byarent"; */ //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
-
+/*
 //Configure mock database for testing purposes
 const Mockgoose = require("mockgoose").Mockgoose;
 const mockgoose = new Mockgoose(mongoose);
@@ -122,3 +123,17 @@ const theApp = () => {
 theApp();
 
 module.exports = { conn, theApp };
+*/
+
+const http = require("http");
+const app = require("./app");
+const db = require("./db");
+
+//Configures the server port
+const port = process.env.PORT || 5000;
+
+//Connect to the database(in db.js), then start the server
+db.connect().then(() => {
+  const server = http.createServer(app);
+  server.listen(port, () => console.log(`Server started on port ${port}`));
+});

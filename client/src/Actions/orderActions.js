@@ -40,17 +40,29 @@ export const addOrders = orders => dispatch => {
   dispatch(setOrdersLoading());
   console.log("ORDERS BEING SENT BY ACTIONS==>>", orders);
   dispatch(setOrdersLoading());
-  orders.forEach(order => {
-    fetch("/orders", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(order)
-    }).then(response => {
-      console.log(response);
+
+  let sendOrders = orders => {
+    let newOrders = [];
+    orders.forEach(order => {
+      fetch("/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(order)
+      })
+        .then(response => {
+          console.log(response);
+          newOrders.push(response.order);
+          return newOrders;
+        })
+        .then(newOrders => {
+          if (newOrders.length === orders.length) {
+            dispatch({ type: ADD_ORDERS, payload: newOrders });
+          }
+        });
     });
-  });
+  };
 };
 
 export const deleteOrder = id => dispatch => {
@@ -78,11 +90,13 @@ export const preOrder = order => dispatch => {
   let cart = [];
   cart.push(order);
   if (sessionStorage.getItem("cart") === null) {
+    console.log("Cart was empty so this is fresh cart==>>", cart);
     sessionStorage.setItem("cart", JSON.stringify(cart));
   } else {
     let oldCart = JSON.parse(sessionStorage.getItem("cart"));
     if (oldCart.includes(order) === false) {
       let newCart = [...oldCart, ...cart];
+      console.log("This is the new cart made==>>", newCart);
       sessionStorage.setItem("cart", JSON.stringify(newCart));
     }
   }
@@ -91,11 +105,26 @@ export const preOrder = order => dispatch => {
 
 export const deletePreOrder = id => dispatch => {
   dispatch(setOrdersLoading());
-  let oldCart = JSON.parse(sessionStorage.getItem("cart"));
-  let newCart = oldCart.filter(item => {
-    return item._id !== id;
-  });
-  sessionStorage.setItem("cart", JSON.stringify(newCart));
+  console.log("id received==>>", id);
 
-  dispatch({ type: PRE_ORDER, payload: id });
+  const makeNewCart = (_id, _oldCart, callReplaceCart) => {
+    console.log("Old cart==>>", _oldCart);
+    let newCart = _oldCart.filter(item => {
+      return item._id !== _id;
+    });
+    console.log("New Cart==>>", newCart);
+    callReplaceCart(newCart);
+  };
+
+  const replaceCart = newCart => {
+    sessionStorage.setItem("cart", JSON.stringify(newCart));
+    dispatch({ type: DELETE_PRE_ORDER, payload: id });
+  };
+
+  console.log(
+    "JSON.parse(sessionStorage.getItem(`cart`))==>>",
+    JSON.parse(sessionStorage.getItem("cart"))
+  );
+
+  makeNewCart(id, JSON.parse(sessionStorage.getItem("cart")), replaceCart);
 };

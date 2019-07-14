@@ -62,7 +62,9 @@ class AppNavbar extends Component {
       pre_orders:
         this.props.order.pre_orders && this.props.order.pre_orders.length
           ? this.props.order.pre_orders
-          : JSON.parse(sessionStorage.getItem("cart")),
+          : sessionStorage.getItem("cart")
+          ? JSON.parse(sessionStorage.getItem("cart"))
+          : [],
       loggedIn: sessionStorage.getItem("user") === null ? false : true,
       orders: sessionStorage.getItem("orders")
         ? JSON.parse(sessionStorage.getItem("orders"))
@@ -84,48 +86,74 @@ class AppNavbar extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     console.log("PropsCheck==>>", this.props);
-    if (
-      this.props.order.orders &&
-      this.props.order.orders !== prevProps.order.orders
-    ) {
+    if (this.props.order.orders !== prevProps.order.orders) {
       this.setState({
-        orders:
-          this.props.order.orders && this.props.order.orders.length
-            ? this.props.order.orders
-            : sessionStorage.getItem("orders")
-            ? JSON.parse(sessionStorage.getItem("orders"))
-            : []
+        orders: this.props.order.orders.length
+          ? this.props.order.orders
+          : sessionStorage.getItem("orders")
+          ? JSON.parse(sessionStorage.getItem("orders"))
+          : []
       });
+      if (
+        sessionStorage.getItem("orders") &&
+        JSON.parse(sessionStorage.getItem("orders")).length > 0
+      ) {
+        console.log("Colour should update to red!!");
+        this.setState({
+          fav_color: "fas fa-heart redME fa-lg"
+        });
+      } else {
+        console.log("Colour should update to grey!!");
+        this.setState({
+          fav_color: "fas fa-heart fa-lg"
+        });
+      }
     }
-    if (
-      this.props.order.pre_orders &&
-      this.props.order.pre_orders !== prevProps.order.pre_orders
-    ) {
-      console.log("SOmething CHanged!!");
+    if (this.props.order.pre_orders !== prevProps.order.pre_orders) {
       this.setState({
         pre_orders:
           this.props.order.pre_orders && this.props.order.pre_orders.length
             ? this.props.order.pre_orders
-            : JSON.parse(sessionStorage.getItem("cart")),
-        cartColor: sessionStorage.getItem("cart")
-          ? "fas fa-shopping-cart cart"
-          : "fas fa-shopping-cart"
+            : sessionStorage.getItem("cart")
+            ? JSON.parse(sessionStorage.getItem("cart"))
+            : []
       });
+      if (
+        sessionStorage.getItem("cart") &&
+        JSON.parse(sessionStorage.getItem("cart")).length > 0
+      ) {
+        console.log("Colour should update to green!!");
+        this.setState({
+          cartColor: "fas fa-shopping-cart cart fa-lg"
+        });
+      } else {
+        console.log("Colour should update to grey!!");
+        this.setState({
+          cartColor: "fas fa-shopping-cart fa-lg"
+        });
+      }
     }
   }
 
   componentWillReceiveProps(nextProps) {
+    let currentCart;
+
     if (nextProps.order.pre_orders !== this.props.order.pre_orders) {
-      console.log("SOmething CHanged!!");
-      this.setState({
-        pre_orders:
-          nextProps.order.pre_orders && nextProps.order.pre_orders.length
-            ? nextProps.order.pre_orders
-            : JSON.parse(sessionStorage.getItem("cart")),
-        cartColor: sessionStorage.getItem("cart")
-          ? "fas fa-shopping-cart cart"
-          : "fas fa-shopping-cart"
-      });
+      console.log("SOmething CHanged!!==>", this.props);
+      console.log("Next Props!!==>", nextProps);
+      if (nextProps.order.pre_orders.length) {
+        currentCart = nextProps.order.pre_orders;
+        this.setState({
+          pre_orders: [...currentCart],
+          cartColor: "fas fa-shopping-cart"
+        });
+      } else if (sessionStorage.getItem("cart") !== null) {
+        currentCart = JSON.parse(sessionStorage.getItem("cart"));
+        this.setState({
+          pre_orders: [...currentCart],
+          cartColor: "fas fa-shopping-cart cart"
+        });
+      }
     }
   }
 
@@ -173,8 +201,10 @@ class AppNavbar extends Component {
   };
 
   deleteCartItem = _id => {
+    console.log("Before deleting pre order==>>", this.props);
+    console.log("Id received by deleteCartItem func==>>", _id);
     this.props.deletePreOrder(_id);
-    this.forceUpdate();
+    //this.forceUpdate();
   };
 
   orderCheckout = orders => {
@@ -293,9 +323,9 @@ class AppNavbar extends Component {
                       onClick={this.modalToggle}
                     />
                     <small>
-                      {this.state.pre_orders
+                      {this.state.pre_orders.length
                         ? this.state.pre_orders.length
-                        : sessionStorage.getItem("cart")
+                        : JSON.parse(sessionStorage.getItem("cart")).length
                         ? JSON.parse(sessionStorage.getItem("cart")).length
                         : 0}
                     </small>
@@ -311,7 +341,13 @@ class AppNavbar extends Component {
                       className={this.state.fav_color}
                       onClick={this.fav_modalToggle}
                     />
-                    <small>{this.state.orders.length}</small>
+                    <small>
+                      {this.state.orders.length
+                        ? this.state.orders.length
+                        : JSON.parse(sessionStorage.getItem("orders")).length
+                        ? JSON.parse(sessionStorage.getItem("orders")).length
+                        : 0}
+                    </small>
                   </NavLink>
                 </NavItem>
               )}
@@ -334,8 +370,8 @@ class AppNavbar extends Component {
           </ModalHeader>
           <ModalBody>
             <TransitionGroup>
-              {this.state.cart && this.state.cart.length ? (
-                this.state.cart.map(
+              {this.state.pre_orders.length ? (
+                this.state.pre_orders.map(
                   ({ _id, item_name, item_purchaseDetails, item_price }) => (
                     <CSSTransition key={_id} timeout={500} classNames="fade">
                       <Row className="mb-3">
@@ -442,7 +478,6 @@ AppNavbar.propTypes = {
   order: PropTypes.object.isRequired,
   deletePreOrder: PropTypes.func.isRequired,
   addOrders: PropTypes.func.isRequired,
-  pre_orders: PropTypes.object.isRequired,
   getOrdersUser: PropTypes.func.isRequired,
   buyItem: PropTypes.func.isRequired
 };
