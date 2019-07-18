@@ -27,7 +27,6 @@ class AdminAddOne extends Component {
     this.fileUpload = React.createRef();
     this.resetForm = React.createRef();
     this.showFileUpload = this.showFileUpload.bind(this);
-    this.resetNow = this.resetNow.bind(this);
     this.onDragOver = this.onDragOver.bind(this);
     this.onDrop = this.onDrop.bind(this);
 
@@ -62,11 +61,14 @@ class AdminAddOne extends Component {
     };
   }
 
+  //Call functions to fetch relevant information from the backend
   componentDidMount() {
     let id = this.props.match.params.item_id;
     this.props.getItem(id);
     this.setState({ id: id });
   }
+
+  //Check and change the state appropriately when the props are updated
   componentDidUpdate(prevProps, prevState) {
     console.log("PROPS==>>", this.props);
     console.log("State==>>", this.state);
@@ -108,13 +110,15 @@ class AdminAddOne extends Component {
     }
   }
 
+  //Change a field in the state when its partner field in the form is edited
   handleChange = ({ target }) => {
     this.setState({ [target.name]: target.value });
   };
 
+  //Function to execute when the form is submitted
   onSubmit = e => {
     e.preventDefault();
-    console.log("STARTING SUBMISSION");
+    //Make an array of all images that have been submitted
     let filearray = [];
     if (this.state.one) {
       filearray.push(this.state.one.image);
@@ -155,10 +159,11 @@ class AdminAddOne extends Component {
     for (let i = 0; i < filearray.length; i++) {
       formData.append("itemImage", filearray[i]);
     }
-
+    //Call the function updateItem() from the itemActions in redux to update the selected item
     this.props.updateItem(formData, this.state.item._id);
   };
 
+  //Function to toggle field "rent" in the state.
   rentToggle = e => {
     e.preventDefault();
     this.setState({ rent: true });
@@ -167,6 +172,7 @@ class AdminAddOne extends Component {
     }
   };
 
+  //Function to toggle field "sell" in the state.
   sellToggle = e => {
     e.preventDefault();
     this.setState({ sell: true });
@@ -175,6 +181,7 @@ class AdminAddOne extends Component {
     }
   };
 
+  //Function to place images into the state.
   imageUpload = e => {
     e.persist();
     e.preventDefault();
@@ -192,6 +199,8 @@ class AdminAddOne extends Component {
     }
   };
 
+  //Function to check for available slots in the state where an image can be stored
+  //If all of the eight slots are full, the user is warned that they cannot add more than 8
   imageHandler = image => {
     if (image) {
       let picSlotCount = [];
@@ -230,6 +239,7 @@ class AdminAddOne extends Component {
     }
   };
 
+  //Function to delete a particular image from its respective slot in the state
   deleteimage = number => {
     this.setState({ warner: "greyME" });
     if (number === "one") {
@@ -299,6 +309,7 @@ class AdminAddOne extends Component {
     }
   };
 
+  //Function to assign "numbers" to images to make them easily identifiable by other functions
   numberer = number => {
     if (number === "one") {
       return this.state.one.imagePreviewUrl;
@@ -321,13 +332,14 @@ class AdminAddOne extends Component {
   showFileUpload() {
     this.fileUpload.current.click();
   }
-  resetNow() {
-    this.resetForm.current.click();
-  }
 
+  //Function to turn off the dragover feature so that there is no reaction when an image is dragged over
+  //the image drop field
   onDragOver(e) {
     e.preventDefault();
   }
+
+  //Function to trigger image upload when an image is dropped into the drop field
   onDrop(e) {
     e.preventDefault();
 
@@ -343,6 +355,9 @@ class AdminAddOne extends Component {
       reader.readAsDataURL(file);
     }
   }
+
+  //Function to warn the user when they've exceeded the number of allowed images
+  //by changing the colour of the warning text from gray to red
   warner = () => {
     if (this.state.picSlotsUsed.length < 8) {
       this.setState({ warner: "greyME" });
@@ -353,6 +368,7 @@ class AdminAddOne extends Component {
     }
   };
 
+  //Function to toggle the modal
   toggle = () => {
     this.setState({ modal: !this.state.modal });
     setTimeout(() => {
@@ -360,10 +376,12 @@ class AdminAddOne extends Component {
     }, 2000);
   };
 
+  //Function for the goBack button to send the user back to the houses page
   goBack = () => {
     this.props.history.push("/admin/all");
   };
 
+  //Function to delete old images stored in the status(diffenre from the new images being added)
   deleteOldImage = imageName => {
     this.setState({
       oldImageCount: this.state.oldImageCount - 1,

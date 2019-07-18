@@ -5,8 +5,7 @@ import {
   DELETE_ITEM,
   UPDATE_ITEM,
   ITEMS_LOADING,
-  GET_AVAILABLE_ITEMS,
-  GET_IMAGE_LINKS
+  GET_AVAILABLE_ITEMS
 } from "../Types/itemTypes";
 
 const initialState = {
@@ -40,15 +39,7 @@ export default function(state = initialState, action) {
         loading: false,
         items: state.items.filter(item => item._id !== action.payload)
       };
-    case GET_IMAGE_LINKS: {
-      return {
-        ...state,
-        imageLinks: state.imageLinks.length
-          ? [...state.imageLinks, action.payload]
-          : [action.payload],
-        loading: false
-      };
-    }
+
     case ADD_ITEM:
       return {
         ...state,
