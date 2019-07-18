@@ -36,7 +36,7 @@ router.post("/signup", (req, res, next) => {
     .save()
     .then(result => {
       //console.log("SERVER SIDE =>", json(result));
-      res.status(201).json(result);
+      res.status(201).json({ user: user, result: result });
     })
     .catch(err => {
       res.status(500).json({
@@ -104,7 +104,7 @@ router.patch("/:userID", (req, res, next) => {
   User.updateMany({ _id: id }, { $set: updateOps })
     .exec()
     .then(result => {
-      res.status(200).json({ result });
+      res.status(200).json({ result: result });
     })
     .catch(err => {
       res.status(500).json({ error: err });

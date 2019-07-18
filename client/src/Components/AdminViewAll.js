@@ -7,6 +7,7 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
@@ -18,25 +19,24 @@ import { connect } from "react-redux";
 import { getItems, getItem, deleteItem } from "../Actions/itemActions";
 import { getOrders } from "../Actions/orderActions";
 import PropTypes from "prop-types";
-import { currentSite } from "../client_config/config_vars";
 
 class AdminViewAll extends Component {
-  componentWillMount() {
+  componentDidMount() {
+    this.props.getItems();
+    this.props.getOrders();
     const currentAdmin = JSON.parse(sessionStorage.getItem("admin"));
     currentAdmin
       ? this.setState({ admin: currentAdmin })
       : this.setState({ admin: {} });
   }
 
-  componentDidMount() {
-    this.props.getItems();
-    this.props.getOrders();
-    setTimeout(() => {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.item.items !== prevProps.item.items) {
       this.setState({
         items: this.props.item.items,
         orders: this.props.order.orders
       });
-    }, 200);
+    }
   }
 
   state = {
@@ -51,7 +51,11 @@ class AdminViewAll extends Component {
     rentItemsVisible: true,
     saleItemsVisible: true,
     availableItemsVisible: "",
-    soldItemsVisible: ""
+    soldItemsVisible: "",
+    imageModal: false,
+    activeImage: "",
+    item_name: "",
+    _id: ""
   };
 
   checker = () => {
@@ -181,6 +185,21 @@ class AdminViewAll extends Component {
     });
   };
 
+  imageToggle = () => {
+    this.setState({ imageModal: !this.state.imageModal });
+  };
+
+  imageModal = item => {
+    this.setState({
+      activeImage: item.item_image[0],
+      item_name: item.item_name,
+      _id: item._id
+    });
+
+    setTimeout(() => {
+      this.imageToggle();
+    }, 250);
+  };
   render() {
     return (
       <Container fluid className="allContainer">
@@ -297,9 +316,14 @@ class AdminViewAll extends Component {
 
                         <div className="dispImgBody">
                           <img
-                            src={currentSite + item_image[0]}
+                            src={item_image[0].imageLink}
                             className="dispImg"
                             alt=""
+                            onClick={this.imageModal.bind(this, {
+                              item_name: item_name,
+                              item_image: item_image,
+                              _id: _id
+                            })}
                           />
                         </div>
 
@@ -307,36 +331,42 @@ class AdminViewAll extends Component {
                           <p className="text-justify colorME dispText ">
                             {item_description}
                           </p>
-                          <Row className="justify-content-left mr-auto ">
-                            <Col xl="4" className="priceAndRent">
-                              <Button
-                                color={isSold === true ? "danger" : "success"}
-                                className="mb-3 priceAndRent "
-                              >
-                                {isSold === true ? "Sold" : "Available"}
-                              </Button>
+                          <hr />
+                          <Row className="justify-content-between mr-auto ">
+                            <Col xl="6" className="priceAndRent">
+                              <h6 className=" mb-1 infoLabel">
+                                Available for:{" "}
+                                <span className="rentOrSaleLabel">
+                                  {item_purchaseDetails.rent
+                                    ? "Rent"
+                                    : item_purchaseDetails.sell
+                                    ? "Sale"
+                                    : ""}
+                                </span>
+                              </h6>
                             </Col>
-                            <Col xl="4" className="priceAndRent">
-                              <Button
-                                color="warning"
-                                className="mb-3 priceAndRent "
-                              >
-                                {item_price}
-                              </Button>
-                            </Col>
-                            <Col xl="2" className="priceAndRent">
-                              <Button
-                                color="info"
-                                className=" mb-3 priceAndRent"
-                              >
-                                {item_purchaseDetails.rent
-                                  ? "Rent"
-                                  : item_purchaseDetails.sell
-                                  ? "Buy"
-                                  : ""}
-                              </Button>
+                            <Col xl="5" className="">
+                              <h6 className="mb-1 infoLabel">
+                                For UGX:{" "}
+                                <span className="priceLabel">{item_price}</span>
+                              </h6>
                             </Col>
                           </Row>
+                          <hr />
+                          <div className="">
+                            <h6 className="mb-3 infoLabel ">
+                              Status:{" "}
+                              <span
+                                className={
+                                  isSold === true
+                                    ? "soldLabel "
+                                    : "availableLabel"
+                                }
+                              >
+                                {isSold === true ? "Sold" : "Available"}
+                              </span>
+                            </h6>
+                          </div>
 
                           <Button
                             color="light"
@@ -364,10 +394,10 @@ class AdminViewAll extends Component {
                 </Row>
               ) : (
                 <div className="text-center">
-                  <h5 className="greyME font-weight-bold">
-                    Try refreshing this page if it does not refresh automaticaly
-                  </h5>
-                  <div className=" loadbody my-5" />
+                  <h4 className="greyME font-weight-bold mt-3 ">
+                    Please wait...{" "}
+                  </h4>
+                  <div className="spinner-grow text-secondary loader my-5" />
                 </div>
               )}
             </TransitionGroup>
@@ -472,6 +502,42 @@ class AdminViewAll extends Component {
               </Col>
             </Row>
           </ModalBody>
+        </Modal>
+        <Modal
+          size="lg"
+          isOpen={this.state.imageModal}
+          toggle={this.imageToggle}
+        >
+          <ModalHeader toggle={this.imageToggle}>
+            {this.state.item_name ? this.state.item_name : ""}
+          </ModalHeader>
+          <ModalBody>
+            <img
+              src={this.state.activeImage.imageLink}
+              alt={this.state.activeImage.imageLink}
+              className="activeImage"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              block
+              color="dark"
+              onClick={this.editItem.bind(this, this.state._id)}
+            >
+              Edit this unit
+            </Button>
+            <Button
+              color="danger"
+              block
+              className="mb-2"
+              onClick={this.deleteItem.bind(this, {
+                _id: this.state._id,
+                item_name: this.state.item_name
+              })}
+            >
+              Delete this unit
+            </Button>
+          </ModalFooter>
         </Modal>
       </Container>
     );

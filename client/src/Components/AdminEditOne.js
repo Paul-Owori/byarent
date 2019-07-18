@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { updateItem, getItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
-import { currentSite } from "../client_config/config_vars";
 
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import {
@@ -63,15 +62,21 @@ class AdminAddOne extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let id = this.props.match.params.item_id;
     this.props.getItem(id);
     this.setState({ id: id });
   }
-  componentDidMount() {
-    console.log("PROPS", this.props);
-    setTimeout(() => {
-      console.log("PROPS2", this.props);
+  componentDidUpdate(prevProps, prevState) {
+    console.log("PROPS==>>", this.props);
+    console.log("State==>>", this.state);
+    if (
+      this.props.item.item.item_name &&
+      this.props.item.item.item_image.length &&
+      this.props.item.item !== prevProps.item.item
+    ) {
+      console.log("PROPS2==>>", this.props);
+      console.log("State2==>>", this.state);
 
       this.setState({
         item: this.props.item.item,
@@ -88,10 +93,19 @@ class AdminAddOne extends Component {
         rent: this.props.item.item.item_purchaseDetails.rent,
         sell: this.props.item.item.item_purchaseDetails.sell
       });
-    }, 150);
-    setTimeout(() => {
-      this.forceUpdate();
-    }, 1000);
+
+      setTimeout(() => {
+        if (prevState.item.item_name && prevState.item !== this.state.item) {
+          console.log("Prev itemNAme==>>", prevState.item.item_name);
+          this.setState({
+            picUpload: "",
+            picSlotsUsed: [],
+            added: `${this.props.item.item.item_name} was successfully updated.`
+          });
+          this.toggle();
+        }
+      }, 100);
+    }
   }
 
   handleChange = ({ target }) => {
@@ -143,20 +157,6 @@ class AdminAddOne extends Component {
     }
 
     this.props.updateItem(formData, this.state.item._id);
-
-    setTimeout(() => {
-      const success = this.props.item.item.message;
-      if (success === "SUCCESS!") {
-        this.setState({ added: "SUCCESS!" });
-        this.toggle();
-      } else {
-        this.setState({
-          added:
-            "Something went wrong! Check to make sure all fields have content."
-        });
-        this.toggle();
-      }
-    }, 2500);
   };
 
   rentToggle = e => {
@@ -364,13 +364,13 @@ class AdminAddOne extends Component {
     this.props.history.push("/admin/all");
   };
 
-  deleteOldImage = image => {
+  deleteOldImage = imageName => {
     this.setState({
       oldImageCount: this.state.oldImageCount - 1,
       totalCount: this.state.totalCount - 1,
       warner: "greyME",
       oldImages: this.state.oldImages.filter(item => {
-        return item !== image;
+        return item.imageName !== imageName;
       })
     });
   };
@@ -410,7 +410,7 @@ class AdminAddOne extends Component {
                     <TransitionGroup className="shopping-list">
                       {this.state.oldImages.map(image => (
                         <CSSTransition
-                          key={image}
+                          key={image.imageName}
                           timeout={500}
                           classNames="fade"
                         >
@@ -419,7 +419,7 @@ class AdminAddOne extends Component {
                               <img
                                 alt=""
                                 className="dispImg"
-                                src={currentSite + image}
+                                src={image.imageLink}
                               />
                             </div>
                             <Button
@@ -427,7 +427,10 @@ class AdminAddOne extends Component {
                               color="danger"
                               size="sm"
                               block
-                              onClick={this.deleteOldImage.bind(this, image)}
+                              onClick={this.deleteOldImage.bind(
+                                this,
+                                image.imageName
+                              )}
                             >
                               Delete
                             </Button>
@@ -678,10 +681,10 @@ class AdminAddOne extends Component {
               </Row>
             ) : (
               <div className="text-center">
-                <h5 className="greyME font-weight-bold">
-                  Try refreshing this page if it does not refresh automaticaly
-                </h5>
-                <div className=" loadbody my-5" />
+                <h4 className="greyME font-weight-bold mt-3 ">
+                  Please wait...{" "}
+                </h4>
+                <div className="spinner-grow text-secondary loader my-5" />
               </div>
             )}
           </div>

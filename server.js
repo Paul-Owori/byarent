@@ -1,10 +1,15 @@
+/*
 //Configures the server port
 const port = process.env.PORT || 5000;
 
+//Load environmental variables
+require("dotenv").config();
+
 //Configuring the database
 const mongoose = require("mongoose");
-const DB_URI = process.env.MONGODB_URI || "_Insert MONGODB_URI";
-
+const DB_URI = process.env.MONGODB_URI;
+//"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"; /*"mongodb://localhost:27017/byarent"; */ //"mongodb+srv://Paule:Paule@byarentcluster-gfhab.mongodb.net/test?retryWrites=true&w=majority"
+/*
 //Configure mock database for testing purposes
 const Mockgoose = require("mockgoose").Mockgoose;
 const mockgoose = new Mockgoose(mongoose);
@@ -16,7 +21,7 @@ const path = require("path");
 const app = express();
 
 //Configuring when the test database should run vs when the actual database should run
-export const conn = () => {
+const conn = () => {
   return new Promise((resolve, reject) => {
     //If a test is runnning, the mock database, mockgoose will be used instead of mongoose
     if (process.env.NODE_ENV === "test") {
@@ -49,7 +54,7 @@ export const conn = () => {
 };
 
 //To close the database connection
-export const close = () => {
+const close = () => {
   console.log("Database gone offline");
   return mongoose.disconnect();
 };
@@ -64,6 +69,9 @@ conn();
 const theApp = () => {
   mongoose.connection.once("open", () => {
     console.log("CONNECTION DB==>>", mongoose.connection.client.s.url);
+    console.log("Node DB==>>", process.env.MONGODB_URI);
+
+    const fileUpload = require("express-fileupload");
 
     //Routes
     const itemRoutes = require("./api/routes/items");
@@ -74,6 +82,8 @@ const theApp = () => {
 
     //The rest of the app
 
+    //file uploader middleware
+    app.use(fileUpload());
     //bodyParser middleware
     app.use(bodyParser.json());
     //Routes
@@ -113,3 +123,22 @@ const theApp = () => {
 theApp();
 
 module.exports = { conn, theApp };
+*/
+
+const http = require("http");
+const app = require("./app");
+const db = require("./db");
+
+//Configures the server port
+const port = process.env.PORT || 5000;
+
+//Connect to the database(in db.js), then start the server
+db.connect().then(() => {
+  console.log("ACCESS TOKEN==>>", process.env.DBX_ACCESS_TOKEN);
+  console.log(
+    "ACCESS TOKEN to string==>>",
+    JSON.parse(JSON.stringify(process.env.DBX_ACCESS_TOKEN))
+  );
+  const server = http.createServer(app);
+  server.listen(port, () => console.log(`Server started on port ${port}`));
+});

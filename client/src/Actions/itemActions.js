@@ -112,8 +112,9 @@ import {
   DELETE_ITEM,
   UPDATE_ITEM,
   ITEMS_LOADING,
-  GET_AVAILABLE_ITEMS
-} from "../Actions/itemTypes";
+  GET_AVAILABLE_ITEMS,
+  GET_IMAGE_LINKS
+} from "../Types/itemTypes";
 
 export const getItems = () => dispatch => {
   dispatch(setItemsLoading());
@@ -137,9 +138,10 @@ export const getAvailableItems = () => dispatch => {
           availableItemArray.push(item);
         }
       });
-      setTimeout(() => {
-        dispatch({ type: GET_AVAILABLE_ITEMS, payload: availableItemArray });
-      }, 150);
+      return availableItemArray;
+    })
+    .then(itemArray => {
+      dispatch({ type: GET_AVAILABLE_ITEMS, payload: itemArray });
     })
     .catch(error => {
       console.error("Error:", error);
@@ -217,6 +219,19 @@ export const deleteItem = _id => dispatch => {
     .then(response => response.json())
     .then(res => {
       dispatch({ type: DELETE_ITEM, payload: _id });
+    })
+    .catch(error => {
+      console.error("Error:", error);
+    });
+};
+
+export const getImageLinks = imageName => dispatch => {
+  console.log("Image received==>>", imageName);
+  dispatch(setItemsLoading());
+  fetch(`/items/dbx/${imageName}`)
+    .then(res => res.json())
+    .then(res => {
+      dispatch({ type: GET_IMAGE_LINKS, payload: res });
     })
     .catch(error => {
       console.error("Error:", error);

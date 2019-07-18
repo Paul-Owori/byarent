@@ -2,21 +2,32 @@ process.env.NODE_ENV = "test";
 const expect = require("chai").expect;
 const request = require("supertest");
 
-const { app } = require("../../../server.js");
-const { conn } = require("../../../server.js");
-const { close } = require("../../../server.js");
+// const { conn } = require("../../../db.js");
+// const { close } = require("../../../db.js");
+const mongoose = require("mongoose");
+const MongoMemoryServer = require("mongodb-memory-server").MongoMemoryServer;
+const mongoServer = new MongoMemoryServer();
+const app = require("../../../app.js");
+const fs = require("fs");
 
 describe("Test all API endpoints for /item", () => {
   before(done => {
-    conn()
-      .then(() => done())
-      .catch(err => done(err));
+    const mongoServer = new MongoMemoryServer();
+    const opts = { useNewUrlParser: true };
+
+    mongoServer
+      .getConnectionString()
+      .then(mongoUri => {
+        return mongoose.connect(mongoUri, opts, err => {
+          if (err) done(err);
+        });
+      })
+      .then(() => done());
   });
 
-  after(done => {
-    close()
-      .then(() => done())
-      .catch(err => done(err));
+  after(() => {
+    mongoose.disconnect();
+    mongoServer.stop();
   });
 
   it("Confirms that the item database collection is empty.", done => {
@@ -31,24 +42,40 @@ describe("Test all API endpoints for /item", () => {
   });
 
   it("Creates a new item", done => {
+    let purchaseDetails = {
+      garage: 1,
+      bedrooms: 1,
+      bathrooms: 1,
+      address: "Alta",
+      sell: false,
+      rent: true
+    };
     request(app)
       .post("/items/")
-      .field("Content-Type", "multipart/form-data")
+      .set("Accept", "application/form-data")
       .field("item_name", "House1")
       .field("item_price", "120000")
+      .field("isSold", false)
       .field("item_description", "A big house")
+      .field("garage", 1)
+      .field("bedrooms", 1)
+      .field("bathrooms", 1)
+      .field("address", "Alta")
+      .field("sell", false)
+      .field("rent", true)
+      //.field("item_purchaseDetails", purchaseDetails)
       .attach("itemImage", "test/api/routes/testImages/039alta.jpg")
-      .attach("itemImage", "test/api/routes/testImages/053alta.jpg")
+      // .attach("itemImage", "/test/api/routes/testImages/039alta.jpg")
       .then(res => {
         const body = res.body;
         const status = res.status;
-        expect(status).to.equal(201);
 
-        // expect(body).to.contain.property("_id");
-        // expect(body).to.contain.property("item_name");
-        // expect(body).to.contain.property("item_description");
-        // expect(body).to.contain.property("item_image");
-        // expect(body).to.contain.property("isSold");
+        expect(status).to.equal(201);
+        expect(body).to.contain.property("_id");
+        expect(body).to.contain.property("item_name");
+        expect(body).to.contain.property("item_description");
+        expect(body).to.contain.property("item_image");
+        expect(body).to.contain.property("isSold");
         done();
       })
       .catch(err => {
@@ -69,9 +96,9 @@ describe("Test all API endpoints for /item", () => {
           .then(res => {
             //console.log("ITEM RESPONSE => ", res.body);
 
-            const status2 = res.status;
+            const status = res.status;
             const deletedCount = res.body.deletedCount;
-            expect(status2).to.equal(200);
+            expect(status).to.equal(200);
             expect(deletedCount).to.equal(1);
 
             done();

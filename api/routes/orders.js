@@ -39,7 +39,8 @@ router.post("/", (req, res, next) => {
   order
     .save()
     .then(result => {
-      res.status(201).json(result);
+      //console.log(result);
+      res.status(201).json({ order: order, result: result });
     })
     .catch(err => {
       console.log(err);

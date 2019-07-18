@@ -7,7 +7,7 @@ import {
   ADMINS_LOADING,
   SIGNIN_ADMIN,
   LOGOUT_ADMIN
-} from "./adminTypes";
+} from "../Types/adminTypes";
 
 export const getAdmins = () => dispatch => {
   dispatch(setAdminsLoading());

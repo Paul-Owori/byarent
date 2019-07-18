@@ -46,7 +46,7 @@ CSS for Admin View All
   height: 200px;
   width: 100%;
   border-radius: 5px;
-  background: whitesmoke;
+  background: #202225;
   margin-top: 0.8rem;
   display: inline-block; /* change the default display type to inline-block */
   overflow: hidden;
@@ -54,12 +54,14 @@ CSS for Admin View All
 }
 
 .dispImg {
-  max-height: 200px;
-  max-width: 100%;
+  max-height: 100%;
+  max-width: auto;
   object-fit: cover;
+  cursor: pointer;
 }
 
 .dispImg:hover {
+  cursor: pointer;
   transition: all 0.2s ease;
   vertical-align: middle;
   transform: scale(1.5);
@@ -106,7 +108,7 @@ CSS for Admin View All
 }
 
 .loadbody {
-  height: 500px;
+  height: 550px;
   width: auto;
   border-radius: 5px;
   margin-top: 0.8rem;
@@ -116,4 +118,34 @@ CSS for Admin View All
 
 .invisibleItem {
   display: none;
+}
+
+.priceLabel {
+  color: #5cb85c;
+}
+
+.rentOrSaleLabel {
+  color: #d9534f;
+}
+
+.infoLabel {
+  color: #428bca;
+}
+
+.availableLabel {
+  color: #5cb85c;
+}
+
+.soldLabel {
+  color: #d9534f;
+}
+
+hr {
+  background-color: rgb(58, 58, 58);
+}
+
+.loader {
+  width: 10em;
+  height: 10rem;
+  margin-bottom: 20rem !important;
 }

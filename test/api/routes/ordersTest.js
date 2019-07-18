@@ -1,22 +1,29 @@
 process.env.NODE_ENV = "test";
 const expect = require("chai").expect;
 const request = require("supertest");
-
-const { app } = require("../../../server.js");
-const { conn } = require("../../../server.js");
-const { close } = require("../../../server.js");
+const mongoose = require("mongoose");
+const MongoMemoryServer = require("mongodb-memory-server").MongoMemoryServer;
+const mongoServer = new MongoMemoryServer();
+const app = require("../../../app.js");
 
 describe("Test all API endpoints for /orders", () => {
   before(done => {
-    conn()
-      .then(() => done())
-      .catch(err => done(err));
+    const mongoServer = new MongoMemoryServer();
+    const opts = { useNewUrlParser: true };
+
+    mongoServer
+      .getConnectionString()
+      .then(mongoUri => {
+        return mongoose.connect(mongoUri, opts, err => {
+          if (err) done(err);
+        });
+      })
+      .then(() => done());
   });
 
-  after(done => {
-    close()
-      .then(() => done())
-      .catch(err => done(err));
+  after(() => {
+    mongoose.disconnect();
+    mongoServer.stop();
   });
 
   it("Confirms that the orders database collection is empty.", done => {
@@ -37,10 +44,12 @@ describe("Test all API endpoints for /orders", () => {
         name: "Big House",
         price: "120000",
         id: "5cebe3b915bc5f35e43f18de",
-        user: "5cebe3b915bc5f35e43f18de"
+        user_id: "5cebe3b915bc5f35e43f18de",
+        rentOrSale: "rent",
+        date: new Date().toString()
       })
       .then(res => {
-        const body = res.body;
+        const body = res.body.order;
         expect(body).to.contain.property("_id");
         expect(body).to.contain.property("item_name");
         expect(body).to.contain.property("item_id");

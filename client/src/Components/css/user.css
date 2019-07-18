@@ -53,7 +53,7 @@ CSS for Admin View All
   height: 200px;
   width: 100%;
   border-radius: 5px;
-  background: whitesmoke;
+  background: #202225;
   margin-top: 0.8rem;
   display: inline-block; /* change the default display type to inline-block */
   overflow: hidden;
@@ -61,12 +61,14 @@ CSS for Admin View All
 }
 
 .dispImg {
-  max-height: 200px;
-  max-width: 100%;
+  max-height: 100%;
+  max-width: auto;
   object-fit: cover;
+  cursor: pointer;
 }
 
 .dispImg:hover {
+  cursor: pointer;
   transition: all 0.2s ease;
   vertical-align: middle;
   transform: scale(1.5);

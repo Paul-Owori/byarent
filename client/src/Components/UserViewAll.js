@@ -7,30 +7,36 @@ import {
   ButtonDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  ModalBody
 } from "reactstrap";
 import "./css/view_all.css";
 import { TransitionGroup } from "react-transition-group";
 import { connect } from "react-redux";
-import { getAvailableItems, getItem } from "../Actions/itemActions";
+import {
+  getAvailableItems,
+  getItem,
+  getImageLinks
+} from "../Actions/itemActions";
 import PropTypes from "prop-types";
-import { currentSite } from "../client_config/config_vars";
 
 class UserViewAll extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const currentUser = JSON.parse(sessionStorage.getItem("user"));
     currentUser
       ? this.setState({ user: currentUser })
       : this.setState({ user: {} });
+    this.props.getAvailableItems();
   }
 
-  componentDidMount() {
-    this.props.getAvailableItems();
-    setTimeout(() => {
-      let availableItemArray = [];
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.item.items !== prevProps.item.items) {
+      console.log("Valid Update");
       this.setState({ items: this.props.item.items });
-    }, 150);
-    console.log("Mounted");
+    }
   }
 
   state = {
@@ -39,7 +45,11 @@ class UserViewAll extends Component {
     items: [],
     filter: false,
     saleItemsVisible: true,
-    rentItemsVisible: true
+    rentItemsVisible: true,
+    modal: false,
+    activeImage: "",
+    item_name: "",
+    _id: ""
   };
 
   checker = () => {
@@ -95,6 +105,26 @@ class UserViewAll extends Component {
 
   showAll = () => {
     this.setState({ saleItemsVisible: true, rentItemsVisible: true });
+  };
+
+  toggle = () => {
+    this.setState({ modal: !this.state.modal });
+  };
+
+  imageModal = item => {
+    this.setState({
+      activeImage: item.item_image[0],
+      item_name: item.item_name,
+      _id: item._id
+    });
+
+    setTimeout(() => {
+      this.toggle();
+    }, 250);
+  };
+
+  onLoadEnd = message => {
+    console.log(message);
   };
 
   render() {
@@ -153,9 +183,14 @@ class UserViewAll extends Component {
 
                         <div className="dispImgBody">
                           <img
-                            src={currentSite + item_image[0]}
+                            src={item_image[0].imageLink}
                             className="dispImg"
                             alt=""
+                            onClick={this.imageModal.bind(this, {
+                              item_name: item_name,
+                              item_image: item_image,
+                              _id: _id
+                            })}
                           />
                         </div>
 
@@ -163,23 +198,25 @@ class UserViewAll extends Component {
                           <p className="text-justify colorME dispText ">
                             {item_description}
                           </p>
-                          <Button
-                            color="warning"
-                            className="mb-3 priceAndRent "
-                          >
-                            {item_price}
-                          </Button>
-                          <Button color="info" className=" mb-3 priceAndRent">
-                            {item_purchaseDetails.rent
-                              ? "Rent"
-                              : item_purchaseDetails.sell
-                              ? "Buy"
-                              : ""}
-                          </Button>
+                          <hr />
+                          <h6 className="mb-2 priceLabel font-weight-bold">
+                            UGX {item_price}
+                          </h6>
+                          <h6 className=" mb-3 infoLabel">
+                            Available for:{" "}
+                            <span className="rentOrSaleLabel">
+                              {" "}
+                              {item_purchaseDetails.rent
+                                ? "Rent"
+                                : item_purchaseDetails.sell
+                                ? "Sale"
+                                : ""}
+                            </span>
+                          </h6>
                           <Button
                             color="light"
                             block
-                            className="mr-2 mb-3 seeMore "
+                            className="mr-2 my-3 seeMore "
                             onClick={this.getItem.bind(this, _id)}
                           >
                             See More
@@ -191,15 +228,36 @@ class UserViewAll extends Component {
                 </Row>
               ) : (
                 <div className="text-center">
-                  <h5 className="greyME font-weight-bold">
-                    Try refreshing this page if it does not refresh automaticaly
-                  </h5>
-                  <div className=" loadbody my-5" />
+                  <h4 className="greyME font-weight-bold mt-3 ">
+                    Please wait...{" "}
+                  </h4>
+                  <div className="spinner-grow text-secondary loader my-5" />
                 </div>
               )}
             </TransitionGroup>
           </React.Fragment>
         </Container>
+        <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle}>
+          <ModalHeader toggle={this.toggle}>
+            {this.state.item_name ? this.state.item_name : ""}
+          </ModalHeader>
+          <ModalBody>
+            <img
+              src={this.state.activeImage.imageLink}
+              alt={this.state.activeImage.imageLink}
+              className="activeImage"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              block
+              color="dark"
+              onClick={this.getItem.bind(this, this.state._id)}
+            >
+              See more
+            </Button>
+          </ModalFooter>
+        </Modal>
       </Container>
     );
   }
@@ -208,6 +266,7 @@ class UserViewAll extends Component {
 UserViewAll.propTypes = {
   getAvailableItems: PropTypes.func.isRequired,
   getItem: PropTypes.func.isRequired,
+  getImageLinks: PropTypes.func.isRequired,
   item: PropTypes.object,
   user: PropTypes.object
 };
@@ -218,5 +277,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { getAvailableItems, getItem }
+  { getAvailableItems, getItem, getImageLinks }
 )(UserViewAll);

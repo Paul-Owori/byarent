@@ -3,7 +3,6 @@ import "./css/user_viewOne.css";
 import { connect } from "react-redux"; //REQUIRED FOR REDUX
 import { getItem, getItems } from "../Actions/itemActions"; //REQUIRED FOR REDUX
 import { preOrder } from "../Actions/orderActions"; //REQUIRED FOR REDUX
-import { currentSite } from "../client_config/config_vars";
 
 import PropTypes from "prop-types";
 
@@ -18,18 +17,20 @@ import {
 } from "reactstrap";
 
 class UserViewOne extends Component {
-  componentWillMount() {
-    let id = this.props.match.params.item_id;
-    this.props.getItem(id);
-    this.setState({ id: id });
-  }
   componentDidMount() {
-    setTimeout(() => {
+    let id = this.props.match.params.item_id;
+    if (id) {
+      this.props.getItem(id);
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.item.item !== prevProps.item.item) {
       this.setState({
         item: this.props.item.item,
         imageArray: this.props.item.item.item_image
       });
-    }, 50);
+    }
   }
 
   state = {
@@ -69,7 +70,7 @@ class UserViewOne extends Component {
     let count = 0;
     for (let i = 0; i < item_imageArray.length; i++) {
       itemArray.push({
-        src: `${currentSite + item_imageArray[i]}`,
+        src: `${item_imageArray[i].imageLink}`,
         altText: `Slide ${count}`,
         caption: `Slide ${count}`
       });
@@ -157,8 +158,8 @@ class UserViewOne extends Component {
                       key={this.state.item.item_image.indexOf(item)}
                     >
                       <img
-                        alt={item}
-                        src={currentSite + item}
+                        alt={item.imageName}
+                        src={item.imageLink}
                         onClick={this.assignIndex.bind(
                           this,
                           this.state.item.item_image.indexOf(item)
@@ -184,8 +185,8 @@ class UserViewOne extends Component {
                             this.state.item.item_image[this.state.activeIndex]
                           }
                           src={
-                            currentSite +
                             this.state.item.item_image[this.state.activeIndex]
+                              .imageLink
                           }
                           onClick={this.setActiveImage.bind(
                             this,
@@ -218,10 +219,10 @@ class UserViewOne extends Component {
                         </Col>
                       </Row>
                       <Row>
-                        <Col xs="4" className="font-weight-bold">
+                        <Col xs="5" className="mr-0 font-weight-bold">
                           Available for:
                         </Col>
-                        <Col xs="8" className="font-weight-bold">
+                        <Col xs="7" className="ml-0 font-weight-bold">
                           {this.state.item.item_purchaseDetails.rent === true
                             ? "Rent"
                             : "Sale"}
@@ -247,12 +248,12 @@ class UserViewOne extends Component {
                       </Row>
                     </Col>
                     <Col xs="4" className="mt-3 ">
-                      <Button block color="primary" class="mb-1 mt-3">
+                      <h5 className="mb-1 mt-3 font-weight-bold priceLabel">
                         UGX {this.state.item.item_price}
-                      </Button>
+                      </h5>
                       <Button
                         block
-                        color="success"
+                        color="danger"
                         className="mb-1"
                         onClick={this.addToCart}
                       >
@@ -264,12 +265,10 @@ class UserViewOne extends Component {
               </Row>
             </Container>
           ) : (
-            <div className="text-center">
-              <h5 className="greyME font-weight-bold">
-                Try refreshing this page if it does not refresh automaticaly
-                {this.refreshME()}
-              </h5>
-              <div className=" loadbody my-5" />
+            <div className="text-center mt-5">
+              <h4 className="greyME font-weight-bold mt-5 ">Please wait... </h4>
+              <div className="spinner-grow text-secondary loader my-5" />
+              <div className="loader" />
             </div>
           )}
           <Modal size="lg" isOpen={this.state.modal} toggle={this.toggle}>
@@ -278,8 +277,8 @@ class UserViewOne extends Component {
             </ModalHeader>
             <ModalBody>
               <img
-                src={currentSite + this.state.activeImage}
-                alt={this.state.activeImage}
+                src={this.state.activeImage.imageLink}
+                alt={this.state.activeImage.imageName}
                 className="activeImage"
               />
             </ModalBody>

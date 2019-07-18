@@ -7,7 +7,7 @@ import {
   USERS_LOADING,
   SIGNIN_USER,
   LOGOUT_USER
-} from "../Actions/userTypes";
+} from "../Types/userTypes";
 
 const initialState = {
   users: [],
