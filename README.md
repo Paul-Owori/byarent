@@ -2,7 +2,7 @@
 
 Byarent is an online e-commerce platform that connects home-buyers to home owners.
 
-You can see a hosted version of Byarent on [Heroku](https://frozen-sea-50507.herokuapp.com/)
+You can see a hosted version of Byarent on [Heroku](https://byarental.herokuapp.com/)
 
 You can also see the User Interface templates used for Byarent on [GH-pages](https://paul-owori.github.io/byarent/)
 

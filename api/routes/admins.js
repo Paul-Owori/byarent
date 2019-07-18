@@ -95,8 +95,8 @@ router.get("/:adminID", (req, res, next) => {
 router.patch("/:adminID", (req, res, next) => {
   const id = req.params.adminID;
 
-  /*A function that allows us to update only one value at a time 
-    where necessary instead of forcing us to update all or nothing*/
+  //A function that allows us to update only one value at a time
+  //where necessary
 
   const updateOps = {};
   for (const ops of req.body) {

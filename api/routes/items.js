@@ -1,9 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const Item = require("../models/Item");
+
 //Load environmental variables
 require("dotenv").config();
-const Item = require("../models/Item");
+
+//Setup Dropbox API
 const Dropbox = require("dropbox").Dropbox;
 const fetch = require("isomorphic-fetch");
 
@@ -12,33 +15,36 @@ const dbx = new Dropbox({
   fetch: fetch
 });
 
-//Function to generate new names for stored images with the dates they were uploaded on
-
+//Function to generate new names with the current date and time
+//for images that will be stored.
 nameGen = name => {
   return new Date().toISOString() + "." + name;
 };
 
-////ITEMS:::
+//ITEMS routes;
 
+//Function to get all items
 router.get("/", (req, res, next) => {
-  //console.log("REACHED BEGINNING OF REQUEST!!");
+  //Find and return all items stored in the database
   Item.find()
     .exec()
     .then(items => {
       if (items.length) {
-        console.log("JSON items FROM ITEMS.JS=>", items);
         let itemsWithLinks = [];
         items.forEach(item => {
+          //item_image is field available on each item that contains an array
+          //with all the names of the images associated with that item.
+          //Since this function is usually called for a page where only one image will be displayed, we
+          //only require one CDN. The function below fetches a CDN for one image from dropbox
+
           let imageName = item.item_image[0];
-          console.log("ATTEMPT==>>", imageName);
 
           dbx
             .filesGetTemporaryLink({
               path: `/${imageName}`
             })
             .then(function(response) {
-              //imageLinks.push(response.link);
-
+              //The single link is stored in the field item_image along with the image name
               let actualItem = {
                 _id: item._id,
                 item_name: item.item_name,
@@ -55,11 +61,9 @@ router.get("/", (req, res, next) => {
                 },
                 item_image: [{ imageName: imageName, imageLink: response.link }]
               };
-              console.log("ACTUAL ITEM==>>", actualItem);
+
               itemsWithLinks.push(actualItem);
               if (itemsWithLinks.length === items.length) {
-                console.log("The items==>>", itemsWithLinks);
-
                 res.status(200).send(itemsWithLinks);
               }
             })
@@ -67,7 +71,6 @@ router.get("/", (req, res, next) => {
               console.log(error);
             });
         });
-        //res.status(200).send(items);
       } else {
         res.status(404).send({ Message: "No items found" });
       }
@@ -80,15 +83,18 @@ router.get("/", (req, res, next) => {
     });
 });
 
+//Function for posting new Items
+
 router.post("/", (req, res, next) => {
-  //First we rename all the images and then save them in dropbox
-
-  //newImageNameArray will contain all the new names of the images once renaming has been completed.
-  let newImageNameArray = [];
-
   //receivedImageArray is where all the received images will be placed after they are extracted from req.files
   //The npm package express-fileupload makes them available in req.files
   let receivedImageArray;
+
+  //First we rename all the images before we save them in dropbox
+  //newImageNameArray will contain all the new names of the images once renaming has been completed.
+  let newImageNameArray = [];
+
+  //Populate receivedImageArray with images received from req.files
   if (req.files.itemImage.length) {
     receivedImageArray = [...req.files.itemImage];
   } else {
@@ -97,8 +103,6 @@ router.post("/", (req, res, next) => {
   let imagesUploadedCount = [];
 
   receivedImageArray.forEach(image => {
-    console.log("Actual file I'm sending==>", image);
-
     let newName = nameGen(image.name);
     newImageNameArray.push(newName);
 
@@ -109,7 +113,6 @@ router.post("/", (req, res, next) => {
       })
       .then(response => {
         imagesUploadedCount.push(newName);
-        console.log(response);
       })
       .then(() => {
         if (imagesUploadedCount.length === newImageNameArray.length) {
@@ -151,12 +154,12 @@ router.post("/", (req, res, next) => {
 });
 
 router.get("/:itemID", (req, res, next) => {
-  console.log("Trying to get item");
+  //Function to get the details for the requested item
   const id = req.params.itemID;
   Item.findById(id)
     .exec()
     .then(item => {
-      //Get links for each item
+      //Get CDN links  from dropbox for each image in the item_image field of the requested item
       let imageLinks = [];
 
       item.item_image.forEach(imageName => {
@@ -166,14 +169,14 @@ router.get("/:itemID", (req, res, next) => {
           })
           .then(function(response) {
             imageLinks.push({ imageName: imageName, imageLink: response.link });
-            // console.log("A link was generated==>>", response.link);
+
             if (imageLinks.length === item.item_image.length) {
-              //console.log("Finally got the stuff done with==>>", imageLinks);
+              //The image is only sent to the front end after all the CDNs have been
+              //successfuly generated and stored in the item_image field
               let actualItem = {
                 _id: item._id,
                 item_name: item.item_name,
                 item_price: item.item_price,
-
                 isSold: item.isSold,
                 item_description: item.item_description,
                 item_purchaseDetails: {
@@ -186,7 +189,6 @@ router.get("/:itemID", (req, res, next) => {
                 },
                 item_image: [...imageLinks]
               };
-              console.log("The item==>>", actualItem);
 
               res.status(200).send(actualItem);
             }
@@ -202,9 +204,11 @@ router.get("/:itemID", (req, res, next) => {
     });
 });
 
+//Function to update an item
 router.patch("/:itemID", (req, res, next) => {
   const id = req.params.itemID;
 
+  //Function to process any images that will be added to the item
   let imageArray;
   let fileNameArray;
 
@@ -235,7 +239,8 @@ router.patch("/:itemID", (req, res, next) => {
       });
     }
   }
-  //The images received arrive in the format [{imageName1, imageLink1},{imageName2, imageLink2}]
+
+  //The images received arrive in the format [{imageName1, imageCDN1},{imageName2, imageCDN2}]
   //So the following generates a new array that only has the imageNames
 
   const oldImagesReceived = JSON.parse(req.body.oldImages);
@@ -246,7 +251,8 @@ router.patch("/:itemID", (req, res, next) => {
     oldImageNames.push(imageItem.imageName);
   });
 
-  //A function for checking which images should be deleted from the ones already in the store.
+  //A function for checking which images should be deleted by comparing the names of
+  // the ones received to the names of the ones already in the store.
   arrayCompare = (arr1, arr2) => {
     arr3 = [];
     arr1.forEach(item => {
@@ -257,11 +263,12 @@ router.patch("/:itemID", (req, res, next) => {
     return arr3;
   };
 
+  //FInd the Item(not yet updated) in the store so we can check what images(old) it has attached to it
   Item.findById(id)
     .exec()
     .then(doc => {
       let oldImagesInStore = [...doc.item_image];
-
+      //Compare the new image list to the old one to see if there are any images to delete
       const oldImagesToDelete = arrayCompare(oldImagesInStore, oldImageNames);
 
       let newImageArray;
@@ -273,8 +280,8 @@ router.patch("/:itemID", (req, res, next) => {
         newImageArray = [...oldImageNames];
       }
 
-      console.log(newImageArray);
-
+      //If there are any images to delete, delete them by updating the item in the database,
+      //then deleting the images from dropbox
       if (oldImagesToDelete.length) {
         oldImagesToDelete.forEach(image => {
           dbx

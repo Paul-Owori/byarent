@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const User = require("../models/User");
-const crypto = require("crypto");
 
+//Route to get all users
 router.get("/", (req, res, next) => {
   User.find()
     .exec()
@@ -94,7 +94,7 @@ router.patch("/:userID", (req, res, next) => {
   const id = req.params.userID;
 
   /*A function that allows us to update only one value at a time 
-    where necessary instead of forcing us to update all or nothing*/
+    where necessary*/
 
   const updateOps = {};
   for (const ops of req.body) {
@@ -111,6 +111,7 @@ router.patch("/:userID", (req, res, next) => {
     });
 });
 
+//Route to delete a single user
 router.delete("/:userID", (req, res, next) => {
   const id = req.params.userID;
   User.deleteOne({ _id: id })

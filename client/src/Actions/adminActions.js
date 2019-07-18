@@ -9,6 +9,7 @@ import {
   LOGOUT_ADMIN
 } from "../Types/adminTypes";
 
+//Function to get all admins in the database
 export const getAdmins = () => dispatch => {
   dispatch(setAdminsLoading());
   fetch("/admins")
@@ -16,6 +17,7 @@ export const getAdmins = () => dispatch => {
     .then(res => dispatch({ type: GET_ADMINS, payload: res }));
 };
 
+//Function to add a new admin to the database
 export const addAdmin = admin => dispatch => {
   dispatch(setAdminsLoading());
   fetch("/admins/signup", {
@@ -33,6 +35,7 @@ export const addAdmin = admin => dispatch => {
     });
 };
 
+//Function to sign in an admin
 export const signInAdmin = admin => dispatch => {
   dispatch(setAdminsLoading());
   fetch("/admins/signin", {
@@ -47,6 +50,7 @@ export const signInAdmin = admin => dispatch => {
     })
     .then(res => {
       if (res && res.admin_firstName) {
+        //Save the admin to the sessionstorage, then dispatch the admin to the redux storage
         sessionStorage.setItem("admin", JSON.stringify(res));
         dispatch({ type: SIGNIN_ADMIN, payload: res });
       } else {
@@ -55,13 +59,14 @@ export const signInAdmin = admin => dispatch => {
     });
 };
 
+//Logout an admin
 export const adminLogout = () => dispatch => {
   dispatch(setAdminsLoading());
-  sessionStorage.removeItem("admin");
 
-  return {
-    type: LOGOUT_ADMIN
-  };
+  //Remove the admin from session storage
+  sessionStorage.removeItem("admin");
+  //
+  dispatch({ type: LOGOUT_ADMIN });
 };
 
 export const setAdminsLoading = () => {

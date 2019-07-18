@@ -50,6 +50,7 @@ router.post("/", (req, res, next) => {
     });
 });
 
+//Route to get all the orders associated with a particular user
 router.get("/user/:userID", (req, res, next) => {
   const id = req.params.userID;
 
@@ -72,6 +73,7 @@ router.get("/user/:userID", (req, res, next) => {
     });
 });
 
+//Route to get a particular orders details
 router.get("/:orderID", (req, res, next) => {
   const id = req.params.orderID;
   Order.findById(id)
@@ -91,11 +93,12 @@ router.get("/:orderID", (req, res, next) => {
     });
 });
 
+//Route to update one order
 router.patch("/:orderID", (req, res, next) => {
   const id = req.params.orderID;
 
   /*A function that allows us to update only one value at a time 
-    where necessary instead of forcing us to update all or nothing*/
+    where necessary*/
 
   const updateOps = {};
   for (const ops of req.body) {
@@ -113,6 +116,7 @@ router.patch("/:orderID", (req, res, next) => {
     });
 });
 
+//Delete a single order
 router.delete("/:orderID", (req, res, next) => {
   const id = req.params.orderID;
   Order.deleteOne({ _id: id })
