@@ -30,6 +30,8 @@ $ npm install
 ## Requirements
 
 A connection to MongoDB, either local or online should be placed in ./server
+A dropbox account with an app folder made separately for this app is required and
+an access token to it should be placed in ./api/routes/items
 
 ## Usage
 
