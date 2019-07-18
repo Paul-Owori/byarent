@@ -1,4 +1,4 @@
-# Byarent
+# Byarent [![Build Status](https://travis-ci.org/Paul-Owori/byarent.svg?branch=master)](https://travis-ci.org/Paul-Owori/byarent)
 
 Byarent is an online e-commerce platform that connects home-buyers to home owners.
 
