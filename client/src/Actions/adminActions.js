@@ -65,7 +65,7 @@ export const adminLogout = () => dispatch => {
 
   //Remove the admin from session storage
   sessionStorage.removeItem("admin");
-  //
+  //Remove the admin from the redux storage
   dispatch({ type: LOGOUT_ADMIN });
 };
 

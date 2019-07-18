@@ -9,6 +9,7 @@ import {
   LOGOUT_USER
 } from "../Types/userTypes";
 
+//Function to get all the users in the database
 export const getUsers = () => dispatch => {
   dispatch(setUsersLoading());
   fetch("/users")
@@ -16,6 +17,7 @@ export const getUsers = () => dispatch => {
     .then(res => dispatch({ type: GET_USERS, payload: res }));
 };
 
+//Add a new user
 export const addUser = user => dispatch => {
   dispatch(setUsersLoading(), { STUFF: "RANDOM OBJECT" });
   fetch("/users/signup", {
@@ -33,6 +35,7 @@ export const addUser = user => dispatch => {
     });
 };
 
+//Sign in a user
 export const signInUser = user => dispatch => {
   dispatch(setUsersLoading());
   fetch("/users/signin", {
@@ -55,6 +58,7 @@ export const signInUser = user => dispatch => {
     });
 };
 
+//Logout a user
 export const userLogout = () => dispatch => {
   dispatch(setUsersLoading());
   sessionStorage.removeItem("user");

@@ -16,11 +16,7 @@ import {
 import "./css/view_all.css";
 import { TransitionGroup } from "react-transition-group";
 import { connect } from "react-redux";
-import {
-  getAvailableItems,
-  getItem,
-  getImageLinks
-} from "../Actions/itemActions";
+import { getAvailableItems, getItem } from "../Actions/itemActions";
 import PropTypes from "prop-types";
 
 class UserViewAll extends Component {
@@ -266,7 +262,6 @@ class UserViewAll extends Component {
 UserViewAll.propTypes = {
   getAvailableItems: PropTypes.func.isRequired,
   getItem: PropTypes.func.isRequired,
-  getImageLinks: PropTypes.func.isRequired,
   item: PropTypes.object,
   user: PropTypes.object
 };
@@ -277,5 +272,5 @@ const mapStateToProps = state => ({
 });
 export default connect(
   mapStateToProps,
-  { getAvailableItems, getItem, getImageLinks }
+  { getAvailableItems, getItem }
 )(UserViewAll);
