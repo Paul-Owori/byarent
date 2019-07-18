@@ -26,15 +26,6 @@ function connect() {
           }
           console.log(e);
         });
-        // mockgoose.prepareStorage().then(() => {
-        //   mongoose.connect(DB_URI, { useNewUrlParser: true }).then((res, err) => {
-        //     if (err) return reject(err);
-
-        //     console.log("Mock database online");
-
-        //     resolve();
-        //   });
-        // });
       });
     }
     //Otherwise, the actual database is used
