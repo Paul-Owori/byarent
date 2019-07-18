@@ -134,6 +134,11 @@ const port = process.env.PORT || 5000;
 
 //Connect to the database(in db.js), then start the server
 db.connect().then(() => {
+  console.log("ACCESS TOKEN==>>", process.env.DBX_ACCESS_TOKEN);
+  console.log(
+    "ACCESS TOKEN to string==>>",
+    JSON.parse(JSON.stringify(process.env.DBX_ACCESS_TOKEN))
+  );
   const server = http.createServer(app);
   server.listen(port, () => console.log(`Server started on port ${port}`));
 });

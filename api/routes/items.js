@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+//Load environmental variables
+require("dotenv").config();
 const Item = require("../models/Item");
 const Dropbox = require("dropbox").Dropbox;
 const fetch = require("isomorphic-fetch");
@@ -19,50 +21,56 @@ nameGen = name => {
 ////ITEMS:::
 
 router.get("/", (req, res, next) => {
-  console.log("REACHED BEGINNING OF REQUEST!!");
+  //console.log("REACHED BEGINNING OF REQUEST!!");
   Item.find()
     .exec()
     .then(items => {
-      console.log("JSON items FROM ITEMS.JS=>", items);
-      let itemsWithLinks = [];
-      items.forEach(item => {
-        let imageName = item.item_image[0];
+      if (items.length) {
+        console.log("JSON items FROM ITEMS.JS=>", items);
+        let itemsWithLinks = [];
+        items.forEach(item => {
+          let imageName = item.item_image[0];
+          console.log("ATTEMPT==>>", imageName);
 
-        dbx
-          .filesGetTemporaryLink({
-            path: `/${imageName}`
-          })
-          .then(function(response) {
-            //imageLinks.push(response.link);
+          dbx
+            .filesGetTemporaryLink({
+              path: `/${imageName}`
+            })
+            .then(function(response) {
+              //imageLinks.push(response.link);
 
-            let actualItem = {
-              _id: item._id,
-              item_name: item.item_name,
-              item_price: item.item_price,
-              isSold: item.isSold,
-              item_description: item.item_description,
-              item_purchaseDetails: {
-                bedrooms: item.item_purchaseDetails.bedrooms,
-                bathrooms: item.item_purchaseDetails.bathrooms,
-                garage: item.item_purchaseDetails.garage,
-                rent: item.item_purchaseDetails.rent,
-                sell: item.item_purchaseDetails.sell,
-                address: item.item_purchaseDetails.address
-              },
-              item_image: [{ imageName: imageName, imageLink: response.link }]
-            };
-            itemsWithLinks.push(actualItem);
-            if (itemsWithLinks.length === items.length) {
-              console.log("The items==>>", itemsWithLinks);
+              let actualItem = {
+                _id: item._id,
+                item_name: item.item_name,
+                item_price: item.item_price,
+                isSold: item.isSold,
+                item_description: item.item_description,
+                item_purchaseDetails: {
+                  bedrooms: item.item_purchaseDetails.bedrooms,
+                  bathrooms: item.item_purchaseDetails.bathrooms,
+                  garage: item.item_purchaseDetails.garage,
+                  rent: item.item_purchaseDetails.rent,
+                  sell: item.item_purchaseDetails.sell,
+                  address: item.item_purchaseDetails.address
+                },
+                item_image: [{ imageName: imageName, imageLink: response.link }]
+              };
+              console.log("ACTUAL ITEM==>>", actualItem);
+              itemsWithLinks.push(actualItem);
+              if (itemsWithLinks.length === items.length) {
+                console.log("The items==>>", itemsWithLinks);
 
-              res.status(200).send(itemsWithLinks);
-            }
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-      });
-      //res.status(200).send(items);
+                res.status(200).send(itemsWithLinks);
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        });
+        //res.status(200).send(items);
+      } else {
+        res.status(404).send({ Message: "No items found" });
+      }
     })
     .catch(err => {
       console.log(err);
@@ -86,6 +94,7 @@ router.post("/", (req, res, next) => {
   } else {
     receivedImageArray = [req.files.itemImage];
   }
+  let imagesUploadedCount = [];
 
   receivedImageArray.forEach(image => {
     console.log("Actual file I'm sending==>", image);
@@ -99,40 +108,46 @@ router.post("/", (req, res, next) => {
         contents: image.data
       })
       .then(response => {
+        imagesUploadedCount.push(newName);
         console.log(response);
+      })
+      .then(() => {
+        if (imagesUploadedCount.length === newImageNameArray.length) {
+          {
+            //This creates a new item object in the database using the item model
+            const item = new Item({
+              _id: new mongoose.Types.ObjectId(),
+              item_name: req.body.item_name,
+              item_description: req.body.item_description,
+              item_price: req.body.item_price,
+              item_image: [...newImageNameArray],
+              item_purchaseDetails: {
+                address: req.body.address,
+                bedrooms: req.body.bedrooms,
+                bathrooms: req.body.bathrooms,
+                garage: req.body.garage,
+                rent: req.body.rent,
+                sell: req.body.sell
+              }
+            });
+
+            //This saves the item in the database
+            item
+              .save()
+              .then(result => {
+                res.status(201).json(result);
+              })
+              .catch(err => {
+                res.status(500).json({ error: err });
+                console.log(err);
+              });
+          }
+        }
       })
       .catch(err => {
         console.log(err);
       });
   });
-
-  //This creates a new item object in the database using the item model
-  const item = new Item({
-    _id: new mongoose.Types.ObjectId(),
-    item_name: req.body.item_name,
-    item_description: req.body.item_description,
-    item_price: req.body.item_price,
-    item_image: [...newImageNameArray],
-    item_purchaseDetails: {
-      address: req.body.address,
-      bedrooms: req.body.bedrooms,
-      bathrooms: req.body.bathrooms,
-      garage: req.body.garage,
-      rent: req.body.rent,
-      sell: req.body.sell
-    }
-  });
-
-  //This saves the item in the database
-  item
-    .save()
-    .then(result => {
-      res.status(201).json(result);
-    })
-    .catch(err => {
-      res.status(500).json({ error: err });
-      console.log(err);
-    });
 });
 
 router.get("/:itemID", (req, res, next) => {

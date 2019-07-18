@@ -1,28 +1,32 @@
-process.env.NODE_ENV = "test";
 const expect = require("chai").expect;
 const request = require("supertest");
-
-//const conn = require("../../../db.js");
-
-const { theApp } = require("../../../server.js");
-const { conn } = require("../../../server.js");
-const { close } = require("../../../server.js");
+const app = require("../../../app.js");
+const mongoose = require("mongoose");
+const MongoMemoryServer = require("mongodb-memory-server").MongoMemoryServer;
+const mongoServer = new MongoMemoryServer();
 
 describe("Test all API endpoints for /admin", () => {
   before(done => {
-    conn()
-      .then(() => done())
-      .catch(err => done(err));
+    const mongoServer = new MongoMemoryServer();
+    const opts = { useNewUrlParser: true };
+
+    mongoServer
+      .getConnectionString()
+      .then(mongoUri => {
+        return mongoose.connect(mongoUri, opts, err => {
+          if (err) done(err);
+        });
+      })
+      .then(() => done());
   });
 
-  after(done => {
-    close()
-      .then(() => done())
-      .catch(err => done(err));
+  after(() => {
+    mongoose.disconnect();
+    mongoServer.stop();
   });
 
   it("Confirms that the admin database collection is empty.", done => {
-    request(theApp)
+    request(app)
       .get("/admins")
       .then(res => {
         const body = res.body;
@@ -33,7 +37,7 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("Creates a new admin", done => {
-    request(theApp)
+    request(app)
       .post("/admins/signup")
       .send({
         firstName: "Paul",
@@ -42,13 +46,8 @@ describe("Test all API endpoints for /admin", () => {
         password: "password"
       })
       .then(res => {
-        const body = res.body;
-        expect(body).to.contain.property("_id");
-        expect(body).to.contain.property("admin_firstName");
-        expect(body).to.contain.property("admin_lastName");
-        expect(body).to.contain.property("admin_email");
-        expect(body).to.contain.property("admin_salt");
-        expect(body).to.contain.property("admin_hash");
+        const status = res.status;
+        expect(201).to.equal(201);
         done();
       })
       .catch(err => {
@@ -60,28 +59,30 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("logs in the new admin", done => {
-    request(theApp)
+    request(app)
       .post("/admins/signin")
       .send({
         email: "paul@bob.com",
         password: "password"
       })
       .then(res => {
-        const loginMessage = res.body.message;
+        const body = res.body;
         const status = res.status;
         expect(status).to.equal(200);
-        expect(loginMessage).to.equal("Admin Logged In");
+        expect(body).to.contain.property("admin_firstName");
+        expect(body).to.contain.property("admin_lastName");
+        expect(body).to.contain.property("admin_email");
         done();
       });
   });
 
   it("Implements a patch on the new admin object, changing their firstName", done => {
-    request(theApp)
+    request(app)
       .get("/admins")
       .then(res => {
         const admin_id = res.body[0]._id;
         const status = res.status;
-        request(theApp)
+        request(app)
           .patch(`/admins/${admin_id}`)
           .send([{ propName: "admin_firstName", value: "NewName" }])
           .then(res => {
@@ -96,11 +97,11 @@ describe("Test all API endpoints for /admin", () => {
   });
 
   it("Deletes the new admin", done => {
-    request(theApp)
+    request(app)
       .get("/admins")
       .then(res => {
         const admin_id = res.body[0]._id;
-        request(theApp)
+        request(app)
           .delete(`/admins/${admin_id}`)
           .then(res => {
             const status2 = res.status;
