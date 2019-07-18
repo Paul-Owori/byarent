@@ -1,5 +1,5 @@
 /*
-//Configures the server port
+
 const port = process.env.PORT || 5000;
 
 //Load environmental variables

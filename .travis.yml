@@ -7,10 +7,9 @@ cache:
 script:
   - npm test
 deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $github_token
-  local_dir: build
+  provider: heroku
+  api_key:
+    secure: "YOUR ENCRYPTED API KEY"
   on:
     branch: master
     condition: $MY_ENV = production
