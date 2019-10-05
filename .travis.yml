@@ -1,18 +1,18 @@
 language: node_js
 node_js:
-  - "stable"
+    - "stable"
 cache:
-  directories:
-    - node_modules
+    directories:
+        - node_modules
 script:
-  - npm test
+    - npm test:coveralls
 deploy:
-  provider: heroku
-  api_key:
-    secure: "YOUR ENCRYPTED API KEY"
-  on:
-    branch: master
-    condition: $MY_ENV = production
+    provider: heroku
+    api_key:
+        secure: "YOUR ENCRYPTED API KEY"
+    on:
+        branch: master
+        condition: $MY_ENV = production
 
 notifications:
-  email: false
+    email: false
