@@ -7,7 +7,7 @@
         "start": "node server.js",
         "server": "nodemon server.js",
         "test": "nyc mocha --timeout 120000 --recursive --exit",
-        "coverage": "nyc report --reporter=text-lcov | coveralls",
+        "posttest": "nyc report --reporter=text-lcov | coveralls",
         "test:coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
         "cover": "istanbul cover _mocha",
         "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
