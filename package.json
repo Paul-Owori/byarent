@@ -40,7 +40,7 @@
         "isomorphic-fetch": "^2.2.1",
         "mockgoose": "^8.0.2",
         "mongodb-memory-server": "^5.1.5",
-        "mongoose": "^5.5.9",
+        "mongoose": "^5.7.5",
         "morgan": "^1.9.1",
         "multer": "^1.4.1",
         "multer-gridfs-storage": "^3.2.3",
