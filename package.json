@@ -34,7 +34,7 @@
         "dotenv": "^8.0.0",
         "dropbox": "^4.0.28",
         "express": "^4.17.0",
-        "express-fileupload": "^1.1.5",
+        "express-fileupload": "^1.1.9",
         "fetch": "^1.1.0",
         "gridfs-stream": "^1.1.1",
         "isomorphic-fetch": "^2.2.1",
